@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "lib": ["deno.window", "deno.ns"],
+    "strict": true
+  },
+  "imports": {
+    "@supabase/supabase-js": "jsr:@supabase/supabase-js@^2",
+    "@negrel/webpush": "jsr:@negrel/webpush@^0.5.0",
+    "date-fns": "npm:date-fns@^3",
+    "date-fns-tz": "npm:date-fns-tz@^3"
+  }
+}
