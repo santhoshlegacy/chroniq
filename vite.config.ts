@@ -7,12 +7,11 @@ import { VitePWA } from 'vite-plugin-pwa'
 // Resolve base path for GitHub Pages deployment:
 // e.g., https://<username>.github.io/chroniq/
 const getBasePath = (): string => {
-  if (process.env.BASE_PATH) return process.env.BASE_PATH
+  if (process.env.BASE_PATH) return process.env.BASE_PATH.trim()
   if (process.env.GITHUB_PAGES || process.env.GITHUB_ACTIONS) {
-    const repoName = process.env.GITHUB_REPOSITORY
-      ? process.env.GITHUB_REPOSITORY.split('/')[1]
-      : 'chroniq'
-    return `/${repoName}/`
+    const rawRepo = process.env.GITHUB_REPOSITORY?.trim()
+    const repoName = rawRepo ? rawRepo.split('/')[1]?.trim() : 'chroniq'
+    return `/${repoName || 'chroniq'}/`
   }
   return './'
 }
