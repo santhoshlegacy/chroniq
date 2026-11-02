@@ -9,7 +9,6 @@ import {
   format,
   isAfter,
   isBefore,
-  isToday,
   parseISO,
   startOfDay,
   endOfDay,
@@ -46,10 +45,11 @@ export function isTaskOverdue(task: Task, nowUtc: Date): boolean {
 /**
  * Returns true if the task was completed today (in the given timezone).
  */
-export function isCompletedToday(task: Task, timezone: string): boolean {
+export function isCompletedToday(task: Task, timezone: string, referenceDate?: Date): boolean {
   if (task.status !== 'completed' || task.completed_at === null) return false
   const completedLocal = toZonedTime(parseISO(task.completed_at), timezone)
-  return isToday(completedLocal)
+  const ref = referenceDate ? toZonedTime(referenceDate, timezone) : new Date()
+  return format(completedLocal, 'yyyy-MM-dd') === format(ref, 'yyyy-MM-dd')
 }
 
 // ─── Filtering ────────────────────────────────────────────────────────────────
@@ -62,8 +62,8 @@ export function filterOverdueTasks(tasks: Task[], nowUtc: Date): Task[] {
   return tasks.filter((t) => isTaskOverdue(t, nowUtc))
 }
 
-export function filterCompletedToday(tasks: Task[], timezone: string): Task[] {
-  return tasks.filter((t) => isCompletedToday(t, timezone))
+export function filterCompletedToday(tasks: Task[], timezone: string, referenceDate?: Date): Task[] {
+  return tasks.filter((t) => isCompletedToday(t, timezone, referenceDate))
 }
 
 export function filterUpcoming(tasks: Task[], localToday: string): Task[] {
@@ -99,7 +99,7 @@ export function calculateDashboardStats(
   const localToday = format(toZonedTime(nowUtc, timezone), 'yyyy-MM-dd')
 
   const todayTasks = filterTodayTasks(allTasks, localToday)
-  const completedToday = filterCompletedToday(allTasks, timezone)
+  const completedToday = filterCompletedToday(allTasks, timezone, nowUtc)
   const overdueTasks = filterOverdueTasks(allTasks, nowUtc)
 
   const totalToday = todayTasks.length + completedToday.filter(
