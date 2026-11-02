@@ -59,27 +59,6 @@ CREATE POLICY "profiles: owner insert"
   ON public.profiles FOR INSERT
   WITH CHECK (auth.uid() = id);
 
--- Auto-create profile on signup
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
-BEGIN
-  INSERT INTO public.profiles (id)
-  VALUES (NEW.id)
-  ON CONFLICT (id) DO NOTHING;
-
-  INSERT INTO public.notification_preferences (user_id)
-  VALUES (NEW.id)
-  ON CONFLICT (user_id) DO NOTHING;
-
-  RETURN NEW;
-END;
-$$;
-
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-CREATE TRIGGER on_auth_user_created
-  AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
-
 -- ─── tasks ────────────────────────────────────────────────────────────────────
 
 CREATE TABLE IF NOT EXISTS public.tasks (
@@ -154,6 +133,27 @@ DROP TRIGGER IF EXISTS notif_prefs_set_updated_at ON public.notification_prefere
 CREATE TRIGGER notif_prefs_set_updated_at
   BEFORE UPDATE ON public.notification_preferences
   FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+-- Auto-create profile & notification preferences on signup
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  INSERT INTO public.profiles (id)
+  VALUES (NEW.id)
+  ON CONFLICT (id) DO NOTHING;
+
+  INSERT INTO public.notification_preferences (user_id)
+  VALUES (NEW.id)
+  ON CONFLICT (user_id) DO NOTHING;
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 -- ─── push_subscriptions ───────────────────────────────────────────────────────
 

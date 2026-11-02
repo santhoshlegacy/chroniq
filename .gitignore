@@ -27,3 +27,8 @@ android/local.properties
 *.njsproj
 *.sln
 *.sw?
+.env
+.env.*
+!.env.example
+.agents/
+skills-lock.json

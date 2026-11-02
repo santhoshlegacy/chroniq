@@ -1,7 +1,19 @@
 import React, { useState } from 'react'
-import { X, Bell, Clock, Globe, Send, CheckCircle2, History, Smartphone } from 'lucide-react'
+import {
+  X,
+  Bell,
+  Globe,
+  History,
+  Volume2,
+  Phone,
+  Plus,
+  Moon,
+  Info,
+} from 'lucide-react'
 import { useSettingsStore } from '@/store/useSettingsStore'
 import { useTaskStore } from '@/store/useTaskStore'
+import { DEFAULT_REMINDER_SLOTS } from '@/lib/reminderUtils'
+import { isValidE164PhoneNumber } from '@/lib/voiceReminderClient'
 import { format, parseISO } from 'date-fns'
 
 interface SettingsModalProps {
@@ -25,52 +37,79 @@ const COMMON_TIMEZONES = [
   'Australia/Sydney',
 ]
 
+const DAYS_OF_WEEK = [
+  { id: 1, label: 'Mon' },
+  { id: 2, label: 'Tue' },
+  { id: 3, label: 'Wed' },
+  { id: 4, label: 'Thu' },
+  { id: 5, label: 'Fri' },
+  { id: 6, label: 'Sat' },
+  { id: 7, label: 'Sun' },
+]
+
 export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const {
     preferences,
+    voicePreferences,
     updatePreferences,
-    permission,
-    enablePushNotifications,
-    isSettingUpPush,
-    sendTestNotification,
+    updateVoicePreferences,
+    addCustomSlot,
+    removeCustomSlot,
+    toggleSlotActive,
+    toggleDayActive,
+    testVoiceReminder,
     events,
   } = useSettingsStore()
   const { tasks } = useTaskStore()
 
-  const [startTime, setStartTime] = useState(preferences.reminder_start_time)
-  const [endTime, setEndTime] = useState(preferences.reminder_end_time)
-  const [interval, setInterval] = useState(String(preferences.interval_minutes))
-  const [timezone, setTimezone] = useState(preferences.timezone)
-  const [suppressEmpty, setSuppressEmpty] = useState(preferences.suppress_when_no_tasks)
-  const [enabled, setEnabled] = useState(preferences.enabled)
-  const [activeTab, setActiveTab] = useState<'schedule' | 'history'>('schedule')
+  const [activeTab, setActiveTab] = useState<'schedule' | 'voice' | 'history'>('schedule')
+  const [newSlotInput, setNewSlotInput] = useState('14:00')
   const [isSaved, setIsSaved] = useState(false)
+  const [phoneInput, setPhoneInput] = useState(voicePreferences.phone_number || '')
+  const [consentChecked, setConsentChecked] = useState(Boolean(voicePreferences.phone_consent_given_at))
+  const [phoneError, setPhoneError] = useState<string | null>(null)
 
   if (!isOpen) return null
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleAddSlot = async (e: React.FormEvent) => {
     e.preventDefault()
-    await updatePreferences({
-      enabled,
-      reminder_start_time: startTime,
-      reminder_end_time: endTime,
-      interval_minutes: parseInt(interval, 10) || 180,
-      timezone,
-      suppress_when_no_tasks: suppressEmpty,
-    })
-    setIsSaved(true)
-    setTimeout(() => {
-      setIsSaved(false)
-      onClose()
-    }, 600)
+    if (!newSlotInput) return
+    await addCustomSlot(newSlotInput)
+    setNewSlotInput('')
   }
 
-  const unfinishedCount = tasks.filter((t) => t.status !== 'completed' && t.archived_at === null).length
+  const handleResetSlotsToDefault = async () => {
+    await updatePreferences({
+      custom_slots: [...DEFAULT_REMINDER_SLOTS],
+      active_slots: [...DEFAULT_REMINDER_SLOTS],
+    })
+  }
+
+  const handleSaveVoicePhone = async () => {
+    if (voicePreferences.phone_call_enabled) {
+      if (!isValidE164PhoneNumber(phoneInput)) {
+        setPhoneError('Please enter a valid international phone number in E.164 format (e.g. +14155552671).')
+        return
+      }
+      if (!consentChecked) {
+        setPhoneError('Explicit user consent is required before scheduling automated phone call reminders.')
+        return
+      }
+    }
+    setPhoneError(null)
+    await updateVoicePreferences({
+      phone_number: phoneInput.trim() || null,
+      phone_consent_given_at: consentChecked ? new Date().toISOString() : null,
+      phone_verified: isValidE164PhoneNumber(phoneInput),
+    })
+    setIsSaved(true)
+    setTimeout(() => setIsSaved(false), 2000)
+  }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#080B12]/80 backdrop-blur-md animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-[#080B12]/80 backdrop-blur-md animate-in fade-in duration-150">
       <div className="fixed inset-0" onClick={onClose} />
-      <div className="relative w-full max-w-xl bg-[#111827] border border-white/[0.08] rounded-2xl p-6 sm:p-7 shadow-2xl z-10 max-h-[90vh] flex flex-col animate-in zoom-in-95 duration-150 text-[#E7ECF4]">
+      <div className="relative w-full max-w-2xl bg-[#0E131F] border border-white/[0.08] rounded-2xl p-5 sm:p-6 shadow-2xl z-10 max-h-[92vh] flex flex-col animate-in zoom-in-95 duration-150 text-[#E7ECF4]">
         {/* Header */}
         <div className="flex items-center justify-between pb-3.5 border-b border-white/[0.06]">
           <div className="flex items-center space-x-2.5">
@@ -79,12 +118,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             </div>
             <div>
               <h2 className="text-base font-semibold text-white tracking-tight">Notification & Reminders</h2>
-              <p className="text-xs text-[#94A3B8]">Automated 3-hour check-in cadence</p>
+              <p className="text-xs text-[#94A3B8]">Configurable cadence, custom slots, and voice delivery</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-md text-[#94A3B8] hover:text-white hover:bg-white/[0.06] transition cursor-pointer"
+            className="p-1.5 rounded-md text-[#94A3B8] hover:text-white hover:bg-white/[0.06] transition cursor-pointer"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
@@ -92,249 +131,442 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
         </div>
 
         {/* Tab Selection */}
-        <div className="flex items-center space-x-1.5 mt-4 p-1 rounded-xl bg-[#151B28] border border-white/[0.06]">
+        <div className="flex items-center space-x-1.5 mt-3.5 p-1 rounded-xl bg-[#151B28] border border-white/[0.06]">
           <button
             type="button"
             onClick={() => setActiveTab('schedule')}
             className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
               activeTab === 'schedule'
-                ? 'bg-[#111827] text-white border border-white/[0.08] shadow-xs font-semibold'
+                ? 'bg-[#0E131F] text-white border border-white/[0.08] font-semibold'
                 : 'text-[#94A3B8] hover:text-white'
             }`}
           >
-            Preferences & Push
+            Schedule & Slots
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('voice')}
+            className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer flex items-center justify-center space-x-1.5 ${
+              activeTab === 'voice'
+                ? 'bg-[#0E131F] text-white border border-white/[0.08] font-semibold'
+                : 'text-[#94A3B8] hover:text-white'
+            }`}
+          >
+            <Volume2 className="w-3.5 h-3.5 text-[#A78BFA]" />
+            <span>Voice & Calls</span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('history')}
             className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer flex items-center justify-center space-x-1.5 ${
               activeTab === 'history'
-                ? 'bg-[#111827] text-white border border-white/[0.08] shadow-xs font-semibold'
+                ? 'bg-[#0E131F] text-white border border-white/[0.08] font-semibold'
                 : 'text-[#94A3B8] hover:text-white'
             }`}
           >
             <History className="w-3.5 h-3.5" />
-            <span>Delivery Audit ({events.length})</span>
+            <span>Audit History ({events.length})</span>
           </button>
         </div>
 
-        {/* Body content */}
-        <div className="overflow-y-auto flex-1 pr-1 mt-4">
-          {activeTab === 'schedule' ? (
-            <form onSubmit={handleSave} className="space-y-4">
-              {/* Progressive Web App Status Card */}
-              <div className="p-3.5 rounded-xl bg-[#151B28] border border-white/[0.06] flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#111827] border border-white/[0.08] flex items-center justify-center text-[#70DFFF]">
-                    <Smartphone className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-xs font-semibold text-white">Progressive Web App</span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-[#70DFFF]/10 text-[#70DFFF] border border-[#70DFFF]/20">
-                        PWA Standalone
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-[#94A3B8] mt-0.5">
-                      Installs directly through Google Chrome on Android and Desktop. Full offline cache and native home screen integration.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Automated Reminders Master Toggle */}
+        {/* Content Body */}
+        <div className="overflow-y-auto flex-1 pr-1 mt-4 space-y-4">
+          {/* ──────── TAB 1: SCHEDULE & SLOTS ──────── */}
+          {activeTab === 'schedule' && (
+            <div className="space-y-4">
+              {/* Master automated check-in toggle */}
               <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#151B28] border border-white/[0.06]">
                 <div>
-                  <span className="text-xs font-semibold text-white block">Automated Continuous Reminders</span>
-                  <span className="text-[11px] text-[#94A3B8]">Evaluates every minute via Supabase scheduler</span>
+                  <span className="text-xs font-semibold text-white block">Automated Reminder Engine</span>
+                  <span className="text-[11px] text-[#94A3B8]">
+                    Evaluates user reminder slots every minute via backend scheduler
+                  </span>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={enabled}
-                    onChange={(e) => setEnabled(e.target.checked)}
+                    checked={preferences.enabled}
+                    onChange={(e) => updatePreferences({ enabled: e.target.checked })}
                     className="sr-only peer"
                   />
                   <div className="w-9 h-5 bg-[#080B12] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#70DFFF]"></div>
                 </label>
               </div>
 
-              {/* Web Push Subscription Card */}
-              <div className="p-3.5 rounded-xl bg-[#151B28] border border-white/[0.06] flex items-center justify-between">
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs font-semibold text-white">Browser Web Push</span>
-                    {permission === 'granted' ? (
-                      <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-                        Active
-                      </span>
-                    ) : (
-                      <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                        {permission}
-                      </span>
-                    )}
+              {/* Custom Slots Management */}
+              <div className="p-3.5 rounded-xl bg-[#151B28] border border-white/[0.06] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-semibold text-white block">Reminder Schedule Slots</span>
+                    <span className="text-[11px] text-[#94A3B8]">
+                      Default: 9:00 AM, 12:00 PM, 3:00 PM, 6:00 PM, 9:00 PM. Toggle on/off or add custom slots.
+                    </span>
                   </div>
-                  <p className="text-[11px] text-[#94A3B8] mt-0.5">
-                    Enables background alerts even when the browser tab is closed.
-                  </p>
+                  <button
+                    type="button"
+                    onClick={handleResetSlotsToDefault}
+                    className="text-[11px] text-[#70DFFF] hover:underline cursor-pointer"
+                  >
+                    Reset Defaults
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={enablePushNotifications}
-                  disabled={isSettingUpPush || permission === 'granted'}
-                  className="btn-secondary px-3 py-1.5 text-xs font-medium disabled:opacity-50 cursor-pointer"
-                >
-                  {isSettingUpPush ? 'Subscribing...' : permission === 'granted' ? 'Subscribed' : 'Subscribe'}
-                </button>
+
+                {/* Slots Grid */}
+                <div className="flex flex-wrap gap-2">
+                  {(preferences.custom_slots || DEFAULT_REMINDER_SLOTS).map((slot) => {
+                    const isActive = (preferences.active_slots || DEFAULT_REMINDER_SLOTS).includes(slot)
+                    return (
+                      <div
+                        key={slot}
+                        className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-lg border text-xs transition ${
+                          isActive
+                            ? 'bg-[#0E131F] border-[#70DFFF]/40 text-[#70DFFF]'
+                            : 'bg-[#0E131F]/40 border-white/[0.06] text-[#64748B]'
+                        }`}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => toggleSlotActive(slot)}
+                          className="font-mono font-medium cursor-pointer"
+                          title="Click to toggle active"
+                        >
+                          {slot}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => removeCustomSlot(slot)}
+                          className="text-[#64748B] hover:text-rose-400 p-0.5 cursor-pointer"
+                          title="Remove slot"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )
+                  })}
+                </div>
+
+                {/* Add Custom Slot Input */}
+                <form onSubmit={handleAddSlot} className="flex items-center space-x-2 pt-2 border-t border-white/[0.04]">
+                  <input
+                    type="time"
+                    value={newSlotInput}
+                    onChange={(e) => setNewSlotInput(e.target.value)}
+                    className="px-2.5 py-1.5 rounded-lg bg-[#0E131F] border border-white/[0.08] text-xs text-white focus:outline-none focus:border-[#70DFFF]"
+                  />
+                  <button
+                    type="submit"
+                    className="px-3 py-1.5 rounded-lg bg-[#1C2436] hover:bg-[#253046] text-xs text-white border border-white/[0.08] flex items-center space-x-1 cursor-pointer"
+                  >
+                    <Plus className="w-3 h-3 text-[#70DFFF]" />
+                    <span>Add Slot</span>
+                  </button>
+                </form>
               </div>
 
-              {/* Interval & Schedule Window */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-xs font-medium text-[#94A3B8] mb-1 flex items-center space-x-1">
-                    <Clock className="w-3 h-3 text-[#64748B]" />
-                    <span>Cadence</span>
+              {/* Active Days of Week */}
+              <div className="p-3.5 rounded-xl bg-[#151B28] border border-white/[0.06] space-y-2">
+                <span className="text-xs font-semibold text-white block">Active Days of Week</span>
+                <div className="flex gap-1.5">
+                  {DAYS_OF_WEEK.map((day) => {
+                    const isDaySelected = (preferences.active_days || [1, 2, 3, 4, 5, 6, 7]).includes(day.id)
+                    return (
+                      <button
+                        key={day.id}
+                        type="button"
+                        onClick={() => toggleDayActive(day.id)}
+                        className={`flex-1 py-1.5 rounded-lg text-xs font-mono font-medium border transition cursor-pointer ${
+                          isDaySelected
+                            ? 'bg-[#0E131F] border-[#70DFFF]/50 text-[#70DFFF]'
+                            : 'bg-[#0E131F]/30 border-white/[0.04] text-[#64748B]'
+                        }`}
+                      >
+                        {day.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Quiet Hours */}
+              <div className="p-3.5 rounded-xl bg-[#151B28] border border-white/[0.06] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Moon className="w-3.5 h-3.5 text-[#A78BFA]" />
+                    <div>
+                      <span className="text-xs font-semibold text-white block">Quiet Hours</span>
+                      <span className="text-[11px] text-[#94A3B8]">Suppress check-in notifications during resting hours</span>
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={preferences.quiet_hours_enabled}
+                      onChange={(e) => updatePreferences({ quiet_hours_enabled: e.target.checked })}
+                      className="sr-only peer"
+                    />
+                    <div className="w-9 h-5 bg-[#080B12] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#A78BFA]"></div>
+                  </label>
+                </div>
+
+                {preferences.quiet_hours_enabled && (
+                  <div className="grid grid-cols-2 gap-3 pt-2">
+                    <div>
+                      <label className="block text-[11px] text-[#94A3B8] mb-1">Quiet Window Starts</label>
+                      <input
+                        type="time"
+                        value={preferences.quiet_hours_start}
+                        onChange={(e) => updatePreferences({ quiet_hours_start: e.target.value })}
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-[#0E131F] border border-white/[0.08] text-xs text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] text-[#94A3B8] mb-1">Quiet Window Ends</label>
+                      <input
+                        type="time"
+                        value={preferences.quiet_hours_end}
+                        onChange={(e) => updatePreferences({ quiet_hours_end: e.target.value })}
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-[#0E131F] border border-white/[0.08] text-xs text-white"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Timezone & Eligible Tasks */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="p-3 rounded-xl bg-[#151B28] border border-white/[0.06]">
+                  <label className="block text-xs font-semibold text-white mb-1.5 flex items-center space-x-1.5">
+                    <Globe className="w-3.5 h-3.5 text-[#70DFFF]" />
+                    <span>User Timezone (IANA)</span>
                   </label>
                   <select
-                    value={interval}
-                    onChange={(e) => setInterval(e.target.value)}
-                    className="w-full px-3 py-1.5 rounded-lg bg-[#151B28] border border-white/[0.06] text-xs text-white focus:outline-none focus:border-[#70DFFF]/40"
+                    value={preferences.timezone}
+                    onChange={(e) => updatePreferences({ timezone: e.target.value })}
+                    className="w-full px-2.5 py-1.5 rounded-lg bg-[#0E131F] border border-white/[0.08] text-xs text-white focus:outline-none focus:border-[#70DFFF]"
                   >
-                    <option value="180">Every 3 Hours (Default)</option>
-                    <option value="120">Every 2 Hours</option>
-                    <option value="60">Every 1 Hour</option>
-                    <option value="240">Every 4 Hours</option>
+                    {COMMON_TIMEZONES.map((tz) => (
+                      <option key={tz} value={tz}>
+                        {tz}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-medium text-[#94A3B8] mb-1">
-                    Start Window
+                <div className="p-3 rounded-xl bg-[#151B28] border border-white/[0.06]">
+                  <label className="block text-xs font-semibold text-white mb-1.5">
+                    Eligible Reminder Tasks
                   </label>
-                  <input
-                    type="time"
-                    value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
-                    className="w-full px-3 py-1.5 rounded-lg bg-[#151B28] border border-white/[0.06] text-xs text-white focus:outline-none focus:border-[#70DFFF]/40"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-[#94A3B8] mb-1">
-                    End Window
-                  </label>
-                  <input
-                    type="time"
-                    value={endTime}
-                    onChange={(e) => setEndTime(e.target.value)}
-                    className="w-full px-3 py-1.5 rounded-lg bg-[#151B28] border border-white/[0.06] text-xs text-white focus:outline-none focus:border-[#70DFFF]/40"
-                  />
+                  <select
+                    value={preferences.eligible_task_types || 'all_pending'}
+                    onChange={(e) => updatePreferences({ eligible_task_types: e.target.value as any })}
+                    className="w-full px-2.5 py-1.5 rounded-lg bg-[#0E131F] border border-white/[0.08] text-xs text-white focus:outline-none focus:border-[#70DFFF]"
+                  >
+                    <option value="all_pending">All Pending Tasks</option>
+                    <option value="due_today_or_overdue">Due Today or Overdue Only</option>
+                    <option value="urgent_only">High & Urgent Priority Only</option>
+                  </select>
                 </div>
               </div>
+            </div>
+          )}
 
-              {/* Timezone */}
-              <div>
-                <label className="block text-xs font-medium text-[#94A3B8] mb-1 flex items-center space-x-1.5">
-                  <Globe className="w-3 h-3 text-[#64748B]" />
-                  <span>Timezone (IANA)</span>
-                </label>
-                <select
-                  value={timezone}
-                  onChange={(e) => setTimezone(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-lg bg-[#151B28] border border-white/[0.06] text-xs text-white focus:outline-none focus:border-[#70DFFF]/40"
-                >
-                  {!COMMON_TIMEZONES.includes(timezone) && (
-                    <option value={timezone}>{timezone} (Detected)</option>
-                  )}
-                  {COMMON_TIMEZONES.map((tz) => (
-                    <option key={tz} value={tz}>{tz}</option>
-                  ))}
-                </select>
-              </div>
+          {/* ──────── TAB 2: VOICE & TELEPHONY ──────── */}
+          {activeTab === 'voice' && (
+            <div className="space-y-4">
+              {/* Spoken Reminders (Web Speech API) */}
+              <div className="p-3.5 rounded-xl bg-[#151B28] border border-white/[0.06] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Volume2 className="w-4 h-4 text-[#A78BFA]" />
+                    <div>
+                      <span className="text-xs font-semibold text-white block">In-App Spoken Voice Reminders</span>
+                      <span className="text-[11px] text-[#94A3B8]">
+                        Uses client-side Web Speech API to narrate pending tasks
+                      </span>
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={voicePreferences.speech_enabled}
+                      onChange={(e) => updateVoicePreferences({ speech_enabled: e.target.checked })}
+                      className="sr-only peer"
+                    />
+                    <div className="w-9 h-5 bg-[#080B12] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#A78BFA]"></div>
+                  </label>
+                </div>
 
-              {/* Suppress When No Tasks */}
-              <div className="flex items-center space-x-2 pt-1">
-                <input
-                  type="checkbox"
-                  id="suppressEmpty"
-                  checked={suppressEmpty}
-                  onChange={(e) => setSuppressEmpty(e.target.checked)}
-                  className="rounded border-white/20 bg-[#151B28] text-[#70DFFF] focus:ring-0 cursor-pointer"
-                />
-                <label htmlFor="suppressEmpty" className="text-xs text-[#94A3B8] cursor-pointer">
-                  Suppress reminders when all tasks are complete
-                </label>
-              </div>
+                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/[0.04]">
+                  <div>
+                    <label className="block text-[11px] text-[#94A3B8] mb-1">
+                      Speech Rate: {voicePreferences.speech_rate}x
+                    </label>
+                    <input
+                      type="range"
+                      min="0.7"
+                      max="1.4"
+                      step="0.1"
+                      value={voicePreferences.speech_rate}
+                      onChange={(e) => updateVoicePreferences({ speech_rate: parseFloat(e.target.value) })}
+                      className="w-full accent-[#A78BFA]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] text-[#94A3B8] mb-1">
+                      Speech Pitch: {voicePreferences.speech_pitch}
+                    </label>
+                    <input
+                      type="range"
+                      min="0.8"
+                      max="1.3"
+                      step="0.1"
+                      value={voicePreferences.speech_pitch}
+                      onChange={(e) => updateVoicePreferences({ speech_pitch: parseFloat(e.target.value) })}
+                      className="w-full accent-[#A78BFA]"
+                    />
+                  </div>
+                </div>
 
-              {/* Test Button & Save Action */}
-              <div className="pt-3.5 flex items-center justify-between border-t border-white/[0.06]">
                 <button
                   type="button"
-                  onClick={() => sendTestNotification(unfinishedCount)}
-                  className="btn-secondary px-3 py-1.5 text-xs flex items-center space-x-1.5 cursor-pointer"
+                  onClick={() => testVoiceReminder(tasks)}
+                  className="px-3 py-1.5 rounded-lg bg-[#0E131F] hover:bg-[#1C2436] border border-white/[0.08] text-xs text-[#A78BFA] flex items-center space-x-1.5 cursor-pointer"
                 >
-                  <Send className="w-3 h-3 text-[#70DFFF]" />
-                  <span>Send Test Alert</span>
+                  <Volume2 className="w-3.5 h-3.5" />
+                  <span>Test Voice Check-In</span>
                 </button>
+              </div>
 
-                <div className="flex items-center space-x-2">
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    className="px-3 py-1.5 rounded-lg text-xs text-[#94A3B8] hover:text-white transition cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn-primary px-3.5 py-1.5 text-xs font-semibold cursor-pointer"
-                  >
-                    {isSaved ? 'Saved!' : 'Save Preferences'}
-                  </button>
+              {/* Actual Phone Calls (Telephony Architecture) */}
+              <div className="p-3.5 rounded-xl bg-[#151B28] border border-white/[0.06] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Phone className="w-4 h-4 text-emerald-400" />
+                    <div>
+                      <span className="text-xs font-semibold text-white block">Actual Incoming Phone Calls</span>
+                      <span className="text-[11px] text-[#94A3B8]">
+                        Automated phone check-in via server-side telephony provider
+                      </span>
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={voicePreferences.phone_call_enabled}
+                      onChange={(e) => updateVoicePreferences({ phone_call_enabled: e.target.checked })}
+                      className="sr-only peer"
+                    />
+                    <div className="w-9 h-5 bg-[#080B12] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-400"></div>
+                  </label>
                 </div>
+
+                {voicePreferences.phone_call_enabled && (
+                  <div className="space-y-3 pt-2 border-t border-white/[0.04]">
+                    <div>
+                      <label className="block text-[11px] text-[#94A3B8] mb-1">
+                        Mobile Phone Number (E.164 Format, e.g. +14155552671)
+                      </label>
+                      <input
+                        type="tel"
+                        value={phoneInput}
+                        onChange={(e) => setPhoneInput(e.target.value)}
+                        placeholder="+14155552671"
+                        className="w-full px-3 py-1.5 rounded-lg bg-[#0E131F] border border-white/[0.08] text-xs text-white font-mono focus:outline-none focus:border-[#70DFFF]"
+                      />
+                    </div>
+
+                    <div className="flex items-start space-x-2 text-xs">
+                      <input
+                        type="checkbox"
+                        id="phoneConsent"
+                        checked={consentChecked}
+                        onChange={(e) => setConsentChecked(e.target.checked)}
+                        className="mt-0.5 rounded border-white/20 bg-[#0E131F] text-[#70DFFF] focus:ring-0"
+                      />
+                      <label htmlFor="phoneConsent" className="text-[11px] text-[#94A3B8]">
+                        I explicitly authorize Chroniq to process my phone number and place automated reminder calls according to my configured schedule.
+                      </label>
+                    </div>
+
+                    {phoneError && (
+                      <div className="p-2 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs">
+                        {phoneError}
+                      </div>
+                    )}
+
+                    <div className="p-3 rounded-lg bg-[#0E131F] border border-white/[0.06] space-y-1.5">
+                      <div className="flex items-center space-x-1.5 text-xs text-[#94A3B8]">
+                        <Info className="w-3.5 h-3.5 text-[#70DFFF]" />
+                        <span className="font-semibold text-white">Telephony Provider Status & Pricing</span>
+                      </div>
+                      <p className="text-[11px] text-[#64748B]">
+                        Telephony providers (Twilio / Vonage) require outbound call minutes (~$0.014/min) and server-side API keys. Calls are dispatched securely via Supabase Edge Functions without exposing provider secrets in frontend code.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleSaveVoicePhone}
+                      className="px-3 py-1.5 rounded-lg bg-[#70DFFF] hover:bg-[#58CFEF] text-[#080B12] font-semibold text-xs transition cursor-pointer"
+                    >
+                      Save Voice Settings
+                    </button>
+                    {isSaved && <span className="ml-2 text-xs text-emerald-400">Saved successfully!</span>}
+                  </div>
+                )}
               </div>
-            </form>
-          ) : (
-            /* Audit Delivery Log Table */
+            </div>
+          )}
+
+          {/* ──────── TAB 3: AUDIT HISTORY ──────── */}
+          {activeTab === 'history' && (
             <div className="space-y-3">
-              <div className="text-xs text-[#94A3B8]">
-                Occurrences logged and deduplicated in Supabase PostgreSQL:
+              <div className="flex items-center justify-between text-xs text-[#94A3B8]">
+                <span>Logged reminder delivery events</span>
+                <span className="text-[11px] text-[#64748B]">Total: {events.length}</span>
               </div>
-              <div className="overflow-x-auto rounded-xl border border-white/[0.06]">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-[#151B28] text-[#94A3B8] border-b border-white/[0.06]">
-                    <tr>
-                      <th className="p-2.5">Slot / Time</th>
-                      <th className="p-2.5">Status</th>
-                      <th className="p-2.5">Tasks</th>
-                      <th className="p-2.5">Result</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/[0.04]">
-                    {events.map((ev) => (
-                      <tr key={ev.id} className="hover:bg-white/[0.02]">
-                        <td className="p-2.5 font-mono text-[11px] text-[#E7ECF4]">
-                          {format(parseISO(ev.scheduled_at), 'MMM d, h:mm a')}
-                        </td>
-                        <td className="p-2.5">
-                          <span className={`inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-medium ${
-                            ev.result === 'sent'
-                              ? 'bg-emerald-500/10 text-emerald-300'
-                              : 'bg-white/[0.04] text-[#94A3B8]'
-                          }`}>
-                            <CheckCircle2 className="w-2.5 h-2.5" />
-                            <span>{ev.result}</span>
+
+              {events.length === 0 ? (
+                <div className="p-6 text-center text-xs text-[#64748B] bg-[#151B28] rounded-xl border border-white/[0.06]">
+                  No delivery events recorded yet. Test reminders or wait for scheduled cycles.
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {events.map((evt) => (
+                    <div
+                      key={evt.id}
+                      className="p-3 rounded-xl bg-[#151B28] border border-white/[0.06] flex items-center justify-between text-xs"
+                    >
+                      <div className="space-y-0.5">
+                        <div className="flex items-center space-x-2">
+                          <span
+                            className={`px-1.5 py-0.5 rounded text-[10px] font-mono uppercase font-semibold ${
+                              evt.result === 'sent'
+                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                : evt.result === 'no_tasks'
+                                ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                                : evt.result === 'quiet_hours'
+                                ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
+                                : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                            }`}
+                          >
+                            {evt.result}
                           </span>
-                        </td>
-                        <td className="p-2.5 text-[#94A3B8] tabular-nums font-mono">{ev.task_count_snapshot ?? '-'}</td>
-                        <td className="p-2.5 font-mono text-[11px] text-[#64748B]">
-                          {ev.push_status_code ?? 200}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                          <span className="text-[11px] font-mono text-[#94A3B8]">
+                            {evt.delivery_mode || 'push'}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[#64748B]">
+                          Occurrence: {evt.schedule_occurrence_key}
+                        </p>
+                      </div>
+                      <div className="text-right text-[11px] text-[#64748B] font-mono">
+                        {format(parseISO(evt.created_at || evt.scheduled_at), 'MMM d, h:mm a')}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>

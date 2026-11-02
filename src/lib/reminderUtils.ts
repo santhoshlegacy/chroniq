@@ -1,79 +1,124 @@
 /**
  * reminderUtils.ts
  *
- * Pure functions for computing reminder schedule slots.
- * These have no I/O dependencies — they are fully unit-testable with simulated time.
+ * Pure functions for computing reminder schedules, custom slots, quiet hours,
+ * day-of-week active windows, and countdowns.
  *
- * Key design decisions:
- * - All inputs are explicit; no implicit `new Date()` inside functions.
- * - Slot times are represented in the user's local timezone using date-fns-tz.
- * - schedule_occurrence_key format: "<userId>:<YYYY-MM-DD>T<HH:MM>" (local time)
- * - Start and end times are both INCLUSIVE.
+ * Fully deterministic & unit-testable.
  */
 
-import { addMinutes, format, isBefore, isEqual, parseISO, setHours, setMinutes, setSeconds } from 'date-fns'
+import { addMinutes, format, isBefore, isEqual } from 'date-fns'
 import { toZonedTime, fromZonedTime } from 'date-fns-tz'
 import type { ReminderSlot } from '@/types'
+
+// ─── Default 5-slot schedule (9:00 AM, 12:00 PM, 3:00 PM, 6:00 PM, 9:00 PM) ───
+export const DEFAULT_REMINDER_SLOTS: string[] = ['09:00', '12:00', '15:00', '18:00', '21:00']
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface ReminderScheduleConfig {
-  /** IANA timezone string, e.g. 'Asia/Kolkata' */
   timezone: string
-  /** 'HH:MM' 24-hour, e.g. '09:00' */
   reminderStartTime: string
-  /** 'HH:MM' 24-hour, e.g. '21:00' */
   reminderEndTime: string
-  /** Minutes between reminders, e.g. 180 */
   intervalMinutes: number
+}
+
+export interface CustomScheduleConfig {
+  timezone: string
+  customSlots: string[]
+  activeSlots: string[]
+  activeDays: number[] // 1=Mon ... 7=Sun (ISO weekday)
+  quietHoursEnabled: boolean
+  quietHoursStart: string // 'HH:MM'
+  quietHoursEnd: string   // 'HH:MM'
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function parseHHMM(hhmm: string): { hours: number; minutes: number } {
-  const [h, m] = hhmm.split(':').map(Number)
-  if (h === undefined || m === undefined || isNaN(h) || isNaN(m)) {
+export function parseHHMM(hhmm: string): { hours: number; minutes: number } {
+  const parts = hhmm.split(':').map(Number)
+  const h = parts[0]
+  const m = parts[1]
+  if (h === undefined || m === undefined || isNaN(h) || isNaN(m) || h < 0 || h > 23 || m < 0 || m > 59) {
     throw new Error(`Invalid HH:MM string: ${hhmm}`)
   }
   return { hours: h, minutes: m }
 }
 
+export function hhmmToMinutes(hhmm: string): number {
+  const { hours, minutes } = parseHHMM(hhmm)
+  return hours * 60 + minutes
+}
+
+export function minutesToHHMM(totalMinutes: number): string {
+  const normalized = ((totalMinutes % 1440) + 1440) % 1440
+  const h = Math.floor(normalized / 60)
+  const m = normalized % 60
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+}
+
 /**
  * Build a Date in the user's local timezone for a given HH:MM on a given local date.
- * `localDate` should be a Date that, when viewed in `timezone`, gives the correct day.
  */
-function localSlotTime(localDate: Date, hhmm: string, timezone: string): Date {
+export function localSlotTimeToUtc(localDate: Date, hhmm: string, timezone: string): Date {
   const { hours, minutes } = parseHHMM(hhmm)
-  let d = new Date(localDate)
-  d = setHours(d, 0)
-  d = setMinutes(d, 0)
-  d = setSeconds(d, 0)
-  // Construct the local datetime in the given timezone, then convert to UTC
-  const localIso = format(d, 'yyyy-MM-dd') + `T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`
+  const localIso =
+    format(toZonedTime(localDate, timezone), 'yyyy-MM-dd') +
+    `T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`
   return fromZonedTime(localIso, timezone)
+}
+
+/**
+ * Evaluates whether quiet hours are active at the given local time.
+ * Handles quiet hours that cross midnight (e.g. 22:00 -> 08:00).
+ */
+export function isQuietHoursActive(
+  nowDate: Date,
+  quietHours: { enabled: boolean; start: string; end: string },
+  timezone: string = 'UTC',
+): boolean {
+  if (!quietHours.enabled) return false
+
+  const zoned = toZonedTime(nowDate, timezone)
+  const currentMinutes = zoned.getHours() * 60 + zoned.getMinutes()
+  const startMinutes = hhmmToMinutes(quietHours.start)
+  const endMinutes = hhmmToMinutes(quietHours.end)
+
+  if (startMinutes > endMinutes) {
+    // Crosses midnight, e.g. 22:00 (1320) to 08:00 (480)
+    return currentMinutes >= startMinutes || currentMinutes < endMinutes
+  } else if (startMinutes < endMinutes) {
+    // Within same day, e.g. 13:00 (780) to 15:00 (900)
+    return currentMinutes >= startMinutes && currentMinutes < endMinutes
+  }
+  return false
+}
+
+/**
+ * Checks whether the day of the week is active (1 = Monday, 7 = Sunday).
+ */
+export function isDayActive(nowDate: Date, activeDays: number[], timezone: string = 'UTC'): boolean {
+  if (!activeDays || activeDays.length === 0) return true
+  const zoned = toZonedTime(nowDate, timezone)
+  const jsDay = zoned.getDay()
+  const isoDay = jsDay === 0 ? 7 : jsDay
+  return activeDays.includes(isoDay)
 }
 
 // ─── Core Functions ───────────────────────────────────────────────────────────
 
 /**
- * Enumerate all scheduled reminder slots for a given local day.
- *
- * @param nowUtc         - The current time (UTC). Pass a fixed value in tests.
- * @param config         - Schedule configuration.
- * @returns Array of ReminderSlot objects for today in the user's timezone.
+ * Enumerate all scheduled reminder slots for a given local day (traditional interval-based).
  */
 export function getTodayReminderSlots(
   nowUtc: Date,
   config: ReminderScheduleConfig,
 ): ReminderSlot[] {
   const { timezone, reminderStartTime, reminderEndTime, intervalMinutes } = config
-
-  // Convert now to local timezone
   const nowLocal = toZonedTime(nowUtc, timezone)
-  const localDate = nowLocal // same calendar date
 
-  const start = localSlotTime(localDate, reminderStartTime, timezone)
-  const end = localSlotTime(localDate, reminderEndTime, timezone)
+  const start = localSlotTimeToUtc(nowLocal, reminderStartTime, timezone)
+  const end = localSlotTimeToUtc(nowLocal, reminderEndTime, timezone)
 
   const slots: ReminderSlot[] = []
   let current = start
@@ -85,9 +130,13 @@ export function getTodayReminderSlots(
     const isNext = !isPast && !foundNext
     if (isNext) foundNext = true
 
+    const timeStr = format(toZonedTime(current, timezone), 'HH:mm')
+
     slots.push({
+      timeStr,
       localTime: current,
       slotKey,
+      isActive: true,
       isPast,
       isNext,
     })
@@ -99,7 +148,50 @@ export function getTodayReminderSlots(
 }
 
 /**
- * Returns the next upcoming reminder slot after `nowUtc`, or null if none today.
+ * Enumerate all customizable reminder slots for today.
+ */
+export function getCustomReminderSlots(
+  nowUtc: Date,
+  config: CustomScheduleConfig,
+): ReminderSlot[] {
+  const { timezone, customSlots, activeSlots, activeDays, quietHoursEnabled, quietHoursStart, quietHoursEnd } = config
+  const nowLocal = toZonedTime(nowUtc, timezone)
+
+  const sortedSlots = [...new Set(customSlots)].sort((a, b) => hhmmToMinutes(a) - hhmmToMinutes(b))
+  const slots: ReminderSlot[] = []
+  let foundNext = false
+
+  for (const timeStr of sortedSlots) {
+    const slotUtc = localSlotTimeToUtc(nowLocal, timeStr, timezone)
+    const slotKey = buildOccurrenceKey('__placeholder__', slotUtc, timezone)
+    const isActive = activeSlots.includes(timeStr)
+    const inQuietHours = isQuietHoursActive(slotUtc, {
+      enabled: quietHoursEnabled,
+      start: quietHoursStart,
+      end: quietHoursEnd,
+    }, timezone)
+    const isDayEnabled = isDayActive(slotUtc, activeDays, timezone)
+
+    const isPast = isBefore(slotUtc, nowUtc)
+    const eligibleForNext = isActive && !inQuietHours && isDayEnabled && !isPast
+    const isNext = eligibleForNext && !foundNext
+    if (isNext) foundNext = true
+
+    slots.push({
+      timeStr,
+      localTime: slotUtc,
+      slotKey,
+      isActive,
+      isPast,
+      isNext,
+    })
+  }
+
+  return slots
+}
+
+/**
+ * Returns the next upcoming reminder slot after `nowUtc`, or null if none remaining today.
  */
 export function getNextReminderSlot(
   nowUtc: Date,
@@ -110,16 +202,19 @@ export function getNextReminderSlot(
   return next?.localTime ?? null
 }
 
+export function getNextCustomReminderSlot(
+  nowUtc: Date,
+  config: CustomScheduleConfig,
+): Date | null {
+  const slots = getCustomReminderSlots(nowUtc, config)
+  const next = slots.find((s) => s.isNext)
+  return next?.localTime ?? null
+}
+
 /**
  * Determines whether a reminder slot at `slotUtcTime` should fire given `nowUtc`.
- *
- * A slot is "due" if:
- *   slotUtcTime <= nowUtc < slotUtcTime + intervalMinutes
- *
- * This 1-minute scheduler window guarantees each slot is only triggered once.
- * With a 1-minute cron and this check, each slot has exactly one trigger window.
  */
-export function isSlotDue(slotUtcTime: Date, nowUtc: Date, intervalMinutes: number): boolean {
+export function isSlotDue(slotUtcTime: Date, nowUtc: Date, intervalMinutes: number = 180): boolean {
   const windowEnd = addMinutes(slotUtcTime, intervalMinutes)
   return (
     (isEqual(slotUtcTime, nowUtc) || isBefore(slotUtcTime, nowUtc)) &&
@@ -129,12 +224,7 @@ export function isSlotDue(slotUtcTime: Date, nowUtc: Date, intervalMinutes: numb
 
 /**
  * Build the unique schedule_occurrence_key for a given user and slot time.
- *
  * Format: "<userId>:<YYYY-MM-DD>T<HH:MM>" (local timezone)
- *
- * This key is used as the UNIQUE constraint in notification_events to prevent
- * duplicate processing. Two concurrent scheduler invocations will both attempt
- * INSERT ... ON CONFLICT DO NOTHING, and exactly one will proceed.
  */
 export function buildOccurrenceKey(userId: string, slotUtcTime: Date, timezone: string): string {
   const local = toZonedTime(slotUtcTime, timezone)
@@ -144,28 +234,15 @@ export function buildOccurrenceKey(userId: string, slotUtcTime: Date, timezone: 
 }
 
 /**
- * Parse an ISO HH:MM string to total minutes from midnight.
- */
-export function hhmmToMinutes(hhmm: string): number {
-  const { hours, minutes } = parseHHMM(hhmm)
-  return hours * 60 + minutes
-}
-
-/**
- * Convert total minutes from midnight to HH:MM.
- */
-export function minutesToHHMM(totalMinutes: number): string {
-  const h = Math.floor(totalMinutes / 60) % 24
-  const m = totalMinutes % 60
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
-}
-
-/**
  * Compute the countdown (in seconds) until the next reminder slot.
- * Returns null if no more reminders today.
  */
-export function secondsUntilNextReminder(nowUtc: Date, config: ReminderScheduleConfig): number | null {
-  const next = getNextReminderSlot(nowUtc, config)
+export function secondsUntilNextReminder(nowUtc: Date, config: ReminderScheduleConfig | CustomScheduleConfig): number | null {
+  let next: Date | null = null
+  if ('customSlots' in config) {
+    next = getNextCustomReminderSlot(nowUtc, config)
+  } else {
+    next = getNextReminderSlot(nowUtc, config)
+  }
   if (!next) return null
   const diff = next.getTime() - nowUtc.getTime()
   return Math.max(0, Math.floor(diff / 1000))
@@ -192,15 +269,10 @@ export function formatCountdown(seconds: number): string {
 export function isWithinReminderWindow(nowUtc: Date, config: ReminderScheduleConfig): boolean {
   const { timezone, reminderStartTime, reminderEndTime } = config
   const nowLocal = toZonedTime(nowUtc, timezone)
-  const start = localSlotTime(nowLocal, reminderStartTime, timezone)
-  const end = localSlotTime(nowLocal, reminderEndTime, timezone)
+  const start = localSlotTimeToUtc(nowLocal, reminderStartTime, timezone)
+  const end = localSlotTimeToUtc(nowLocal, reminderEndTime, timezone)
   return (
     (isEqual(nowUtc, start) || isBefore(start, nowUtc)) &&
     (isBefore(nowUtc, end) || isEqual(nowUtc, end))
   )
-}
-
-/** @internal — for testing only */
-export function _parseISO(s: string): Date {
-  return parseISO(s)
 }
