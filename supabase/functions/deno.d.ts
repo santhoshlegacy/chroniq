@@ -30,8 +30,15 @@ declare module 'jsr:@supabase/supabase-js@^2' {
 }
 
 declare module 'jsr:@negrel/webpush@^0.5.0' {
+  export interface PushSubscriber {
+    pushTextMessage(payload: string, options?: any): Promise<void | Response>
+    pushMessage(payload: ArrayBuffer | ArrayBufferView, options?: any): Promise<void | Response>
+    [key: string]: any
+  }
+
   export class ApplicationServer {
     static new(options: any): Promise<ApplicationServer>
+    subscribe(subscription: any): PushSubscriber
     [key: string]: any
   }
 }

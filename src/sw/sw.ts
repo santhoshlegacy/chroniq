@@ -46,30 +46,41 @@ interface ChroniqPushPayload {
 }
 
 self.addEventListener('push', (event: PushEvent) => {
-  if (!event.data) {
-    console.warn('[SW] Push event received with no data')
-    return
-  }
+  let title = 'Chroniq — Reminder'
+  let body = 'You have pending tasks in Chroniq.'
+  let targetUrl = self.location.href
 
-  let payload: ChroniqPushPayload
-  try {
-    payload = event.data.json() as ChroniqPushPayload
-  } catch {
-    payload = {
-      title: 'Chroniq',
-      body: event.data.text(),
+  if (event.data) {
+    try {
+      const json = event.data.json() as ChroniqPushPayload
+      if (json && typeof json === 'object') {
+        title = json.title || title
+        body = json.body || body
+        if (json.url) targetUrl = getAssetUrl(json.url)
+      } else {
+        const text = event.data.text()
+        if (text) body = text
+      }
+    } catch {
+      // JSON parsing failed; fall back safely to plain text
+      try {
+        const text = event.data.text()
+        if (text) body = text
+      } catch (textErr) {
+        console.warn('[SW] Could not parse push payload as text:', textErr)
+      }
     }
   }
 
   const notificationOptions: SWNotificationOptions = {
-    body: payload.body,
+    body,
     icon: getAssetUrl('icons/icon-192.png'),
     badge: getAssetUrl('icons/badge-72.png'),
     tag: 'chroniq-reminder',
     renotify: true,
     requireInteraction: false,
     data: {
-      url: payload.url ? getAssetUrl(payload.url) : self.location.href,
+      url: targetUrl,
     },
     actions: [
       { action: 'open', title: 'View Tasks' },
@@ -77,7 +88,7 @@ self.addEventListener('push', (event: PushEvent) => {
     ],
   }
 
-  event.waitUntil(self.registration.showNotification(payload.title, notificationOptions as NotificationOptions))
+  event.waitUntil(self.registration.showNotification(title, notificationOptions as NotificationOptions))
 })
 
 // ─── Notification Click ────────────────────────────────────────────────────────

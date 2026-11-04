@@ -12,7 +12,8 @@
 
 import { supabase } from './supabase'
 
-const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY as string
+const rawVapidKey = (import.meta.env.VITE_VAPID_PUBLIC_KEY || '') as string
+const VAPID_PUBLIC_KEY = rawVapidKey.trim().replace(/^["']|["']$/g, '').trim()
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -26,9 +27,10 @@ export interface PushSetupResult {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
-  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+export function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
+  const clean = base64String.trim().replace(/^["']|["']$/g, '').trim()
+  const padding = '='.repeat((4 - (clean.length % 4)) % 4)
+  const base64 = (clean + padding).replace(/-/g, '+').replace(/_/g, '/')
   const rawData = window.atob(base64)
   // Allocate from an explicit ArrayBuffer so TS infers Uint8Array<ArrayBuffer>
   const buffer = new ArrayBuffer(rawData.length)
@@ -37,6 +39,17 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
     outputArray[i] = rawData.charCodeAt(i)
   }
   return outputArray
+}
+
+function arrayBuffersEqual(a: ArrayBuffer | null | undefined, b: ArrayBuffer | null | undefined): boolean {
+  if (!a || !b) return false
+  if (a.byteLength !== b.byteLength) return false
+  const viewA = new Uint8Array(a)
+  const viewB = new Uint8Array(b)
+  for (let i = 0; i < viewA.length; i++) {
+    if (viewA[i] !== viewB[i]) return false
+  }
+  return true
 }
 
 // ─── API ─────────────────────────────────────────────────────────────────────
@@ -127,22 +140,53 @@ export async function setupPushNotifications(deviceLabel?: string): Promise<Push
   // Wait for service worker to be ready
   await navigator.serviceWorker.ready
 
-  // Create push subscription
+  const appServerKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+
+  // 3. Inspect existing subscription and handle VAPID key rotation / mismatch
+  try {
+    const existingSub = await registration.pushManager.getSubscription()
+    if (existingSub) {
+      const existingKey = existingSub.options?.applicationServerKey
+      const keysMatch = existingKey ? arrayBuffersEqual(existingKey, appServerKey.buffer) : false
+
+      if (!keysMatch) {
+        console.log('[Chroniq] Existing subscription bound to an old VAPID key. Unsubscribing...')
+        await existingSub.unsubscribe()
+      }
+    }
+  } catch (inspectErr) {
+    console.warn('[Chroniq] Error checking existing subscription key:', inspectErr)
+  }
+
+  // 4. Create fresh push subscription with automatic recovery on mismatch
   let subscription: globalThis.PushSubscription
   try {
     subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+      applicationServerKey: appServerKey,
     })
   } catch (err) {
-    return {
-      success: false,
-      permissionState: 'granted',
-      error: `Failed to create push subscription: ${err instanceof Error ? err.message : String(err)}`,
+    // If subscribe failed, attempt forced unsubscribe of any lingering subscription and retry once
+    console.warn('[Chroniq] Push subscribe error, attempting recovery:', err)
+    try {
+      const lingeringSub = await registration.pushManager.getSubscription()
+      if (lingeringSub) {
+        await lingeringSub.unsubscribe()
+      }
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: appServerKey,
+      })
+    } catch (retryErr) {
+      return {
+        success: false,
+        permissionState: 'granted',
+        error: `Failed to create push subscription: ${retryErr instanceof Error ? retryErr.message : String(retryErr)}`,
+      }
     }
   }
 
-  // Send to backend
+  // 5. Send fresh subscription to backend
   const result = await saveSubscriptionToBackend(subscription, deviceLabel)
   if (!result.success) {
     return { success: false, permissionState: 'granted', error: result.error }
