@@ -397,73 +397,111 @@ function hhmmToMinutes(hhmm: string): number {
   return hours * 60 + minutes
 }
 
-function buildSlotTime(localDate: Date, hhmm: string, timezone: string): Date {
-  const { hours, minutes } = parseHHMM(hhmm)
-  const dateStr = format(toZonedTime(localDate, timezone), 'yyyy-MM-dd')
-  return fromZonedTime(
-    `${dateStr}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`,
-    timezone,
-  )
+/**
+ * Extracts local time details (hour, minute, date string, ISO weekday) using Intl.DateTimeFormat
+ * in Asia/Kolkata (or user's configured timezone).
+ */
+function getLocalTimeDetails(nowUtc: Date, timeZone: string = 'Asia/Kolkata') {
+  const tz = timeZone?.trim() || 'Asia/Kolkata'
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: tz,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false,
+    weekday: 'short',
+  })
+
+  const parts = formatter.formatToParts(nowUtc)
+  const hourVal = parts.find((p) => p.type === 'hour')?.value ?? '0'
+  const minuteVal = parts.find((p) => p.type === 'minute')?.value ?? '0'
+
+  // Safe 24-hour formatting ('24' -> 0)
+  let safeHour = Number(hourVal)
+  if (safeHour === 24) safeHour = 0
+
+  const currentSlot = `${String(safeHour).padStart(2, '0')}:${String(minuteVal).padStart(2, '0')}`
+  const currentMinutes = safeHour * 60 + Number(minuteVal)
+
+  const year = parts.find((p) => p.type === 'year')?.value ?? '1970'
+  const month = parts.find((p) => p.type === 'month')?.value ?? '01'
+  const day = parts.find((p) => p.type === 'day')?.value ?? '01'
+  const dateStr = `${year}-${month}-${day}`
+
+  const weekday = parts.find((p) => p.type === 'weekday')?.value ?? 'Mon'
+  const weekdayMap: Record<string, number> = {
+    Mon: 1,
+    Tue: 2,
+    Wed: 3,
+    Thu: 4,
+    Fri: 5,
+    Sat: 6,
+    Sun: 7,
+  }
+  const isoDay = weekdayMap[weekday] ?? 1
+
+  return {
+    timeZone: tz,
+    currentSlot,
+    currentMinutes,
+    dateStr,
+    isoDay,
+    hourVal: safeHour,
+    minuteVal: Number(minuteVal),
+  }
 }
 
 function buildOccurrenceKey(userId: string, slotUtc: Date, timezone: string): string {
-  const local = toZonedTime(slotUtc, timezone)
-  const dateStr = format(local, 'yyyy-MM-dd')
-  const timeStr = format(local, 'HH:mm')
-  return `${userId}:${dateStr}T${timeStr}`
+  const tz = timezone?.trim() || 'Asia/Kolkata'
+  const local = getLocalTimeDetails(slotUtc, tz)
+  return `${userId}:${local.dateStr}T${local.currentSlot}`
 }
 
-function isQuietHours(nowLocal: Date, enabled?: boolean, start?: string, end?: string): boolean {
+function isQuietHours(currentMinutes: number, enabled?: boolean, start?: string, end?: string): boolean {
   if (!enabled || !start || !end) return false
-  const current = nowLocal.getHours() * 60 + nowLocal.getMinutes()
   const s = hhmmToMinutes(start)
   const e = hhmmToMinutes(end)
   if (s > e) {
-    return current >= s || current < e
+    return currentMinutes >= s || currentMinutes < e
   } else if (s < e) {
-    return current >= s && current < e
+    return currentMinutes >= s && currentMinutes < e
   }
   return false
 }
 
-function isDayActive(nowLocal: Date, activeDays?: number[]): boolean {
-  if (!activeDays || activeDays.length === 0) return true
-  const jsDay = nowLocal.getDay()
-  const isoDay = jsDay === 0 ? 7 : jsDay
-  return activeDays.includes(isoDay)
-}
-
 /**
- * Determine if a user has a reminder slot due in the current 1-minute window.
+ * Determine if a user has a reminder slot due in Asia/Kolkata (or user's timezone).
+ * Extracts current time in Asia/Kolkata and evaluates active slots with a 5-minute grace window.
  */
 function getDueSlot(pref: NotificationPreference, nowUtc: Date): Date | null {
-  const { timezone } = pref
-  const nowLocal = toZonedTime(nowUtc, timezone)
+  const timeZone = pref.timezone?.trim() || 'Asia/Kolkata'
+  const local = getLocalTimeDetails(nowUtc, timeZone)
 
   // Check day of week
-  if (!isDayActive(nowLocal, pref.active_days)) {
+  if (pref.active_days && pref.active_days.length > 0 && !pref.active_days.includes(local.isoDay)) {
     return null
   }
 
   // Check quiet hours
-  if (isQuietHours(nowLocal, pref.quiet_hours_enabled, pref.quiet_hours_start, pref.quiet_hours_end)) {
+  if (isQuietHours(local.currentMinutes, pref.quiet_hours_enabled, pref.quiet_hours_start, pref.quiet_hours_end)) {
     return null
   }
 
-  // Use custom_slots if present, otherwise interval
+  // Use custom_slots if present, otherwise default to standard slots
   const slotsToEvaluate =
     pref.active_slots && pref.active_slots.length > 0
       ? pref.active_slots
       : ['09:00', '12:00', '15:00', '18:00', '21:00']
 
   for (const timeStr of slotsToEvaluate) {
-    const slotUtc = buildSlotTime(nowLocal, timeStr, timezone)
-    const windowEnd = addMinutes(slotUtc, 1)
-    if (
-      (isEqual(slotUtc, nowUtc) || isBefore(slotUtc, nowUtc)) &&
-      isBefore(nowUtc, windowEnd)
-    ) {
-      return slotUtc
+    const slotMinutes = hhmmToMinutes(timeStr)
+    const diff = local.currentMinutes - slotMinutes
+
+    // 5-minute grace window: matches if current local time is within [slot, slot + 5 minutes)
+    if (diff >= 0 && diff < 5) {
+      return fromZonedTime(`${local.dateStr}T${timeStr}:00`, timeZone)
     }
   }
 
@@ -474,10 +512,11 @@ function getDueSlot(pref: NotificationPreference, nowUtc: Date): Date | null {
 
 Deno.serve(async (req: Request) => {
   // Validate shared secret
-  const expectedSecret = Deno.env.get('CHRONIQ_CRON_SECRET')
-  const providedSecret = req.headers.get('x-chroniq-secret')
+  const rawCronSecret = Deno.env.get('CHRONIQ_CRON_SECRET')
+  const cronSecret = rawCronSecret ? rawCronSecret.trim().replace(/^["']|["']$/g, '').trim() : undefined
+  const providedSecret = req.headers.get('x-chroniq-secret')?.trim()
 
-  if (!expectedSecret || expectedSecret !== providedSecret) {
+  if (!cronSecret || cronSecret !== providedSecret) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' },
@@ -485,14 +524,16 @@ Deno.serve(async (req: Request) => {
   }
 
   // Supabase service-role client
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+  const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
   const supabase = createClient(
-    Deno.env.get('SUPABASE_URL')!,
-    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+    supabaseUrl,
+    supabaseServiceRoleKey,
     { auth: { persistSession: false } },
   )
 
   // VAPID credentials
-  const rawVapidPublicKey = Deno.env.get('VAPID_PUBLIC_KEY')
+  const rawVapidPublicKey = Deno.env.get('VAPID_PUBLIC_KEY') ?? Deno.env.get('VITE_VAPID_PUBLIC_KEY')
   const rawVapidPrivateKey = Deno.env.get('VAPID_PRIVATE_KEY')
   const rawVapidSubject = Deno.env.get('VAPID_SUBJECT')
 
@@ -582,7 +623,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const eventId = claimed.id as string
-    const localToday = format(toZonedTime(nowUtc, pref.timezone), 'yyyy-MM-dd')
+    const localToday = getLocalTimeDetails(nowUtc, pref.timezone || 'Asia/Kolkata').dateStr
 
     // Fetch user tasks
     let taskQuery = supabase
