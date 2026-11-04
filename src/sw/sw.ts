@@ -38,9 +38,12 @@ const getAssetUrl = (relativePath: string): string => {
 
 // ─── Push Notifications ───────────────────────────────────────────────────────
 interface ChroniqPushPayload {
-  title: string
-  body: string
+  title?: string
+  body?: string
   url?: string
+  icon?: string
+  badge?: string
+  tag?: string
   taskCount?: number
   urgentCount?: number
 }
@@ -49,14 +52,22 @@ self.addEventListener('push', (event: PushEvent) => {
   let title = 'Chroniq — Reminder'
   let body = 'You have pending tasks in Chroniq.'
   let targetUrl = self.location.href
+  let icon = getAssetUrl('icons/icon-192.png')
+  let badge = getAssetUrl('icons/badge-72.png')
+  let tag = 'chroniq-reminder'
+  let data: Record<string, unknown> = {}
 
   if (event.data) {
     try {
       const json = event.data.json() as ChroniqPushPayload
       if (json && typeof json === 'object') {
-        title = json.title || title
-        body = json.body || body
+        if (json.title) title = json.title
+        if (json.body) body = json.body
+        if (json.icon) icon = getAssetUrl(json.icon)
+        if (json.badge) badge = getAssetUrl(json.badge)
         if (json.url) targetUrl = getAssetUrl(json.url)
+        if (json.tag) tag = json.tag
+        data = { ...json }
       } else {
         const text = event.data.text()
         if (text) body = text
@@ -72,16 +83,16 @@ self.addEventListener('push', (event: PushEvent) => {
     }
   }
 
+  data.url = targetUrl
+
   const notificationOptions: SWNotificationOptions = {
     body,
-    icon: getAssetUrl('icons/icon-192.png'),
-    badge: getAssetUrl('icons/badge-72.png'),
-    tag: 'chroniq-reminder',
+    icon,
+    badge,
+    tag,
     renotify: true,
     requireInteraction: false,
-    data: {
-      url: targetUrl,
-    },
+    data,
     actions: [
       { action: 'open', title: 'View Tasks' },
       { action: 'dismiss', title: 'Dismiss' },
