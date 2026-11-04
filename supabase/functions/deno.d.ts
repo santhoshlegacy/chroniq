@@ -30,7 +30,10 @@ declare module 'jsr:@supabase/supabase-js@^2' {
 }
 
 declare module 'jsr:@negrel/webpush@^0.5.0' {
-  export const ApplicationServer: any
+  export class ApplicationServer {
+    static new(options: any): Promise<ApplicationServer>
+    [key: string]: any
+  }
 }
 
 declare module 'npm:date-fns@^3' {

@@ -64,8 +64,10 @@ export function isPushSupported(): boolean {
 export async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
   if (!('serviceWorker' in navigator)) return null
   try {
-    const registration = await navigator.serviceWorker.register('/sw.js', {
-      scope: '/',
+    const base = import.meta.env.BASE_URL || '/'
+    const swUrl = `${base.replace(/\/+$/, '')}/sw.js`
+    const registration = await navigator.serviceWorker.register(swUrl, {
+      scope: base,
     })
     return registration
   } catch (err) {
@@ -163,7 +165,8 @@ async function saveSubscriptionToBackend(
     return { success: false, error: 'Push subscription is missing required fields.' }
   }
 
-  const { error } = await supabase.functions.invoke('push-subscribe', {
+  // 1. Try Edge Function push-subscribe
+  const { error: fnError } = await supabase.functions.invoke('push-subscribe', {
     body: {
       endpoint,
       p256dh: keys.p256dh,
@@ -172,11 +175,35 @@ async function saveSubscriptionToBackend(
     },
   })
 
-  if (error) {
-    return { success: false, error: error.message }
+  if (!fnError) {
+    return { success: true }
   }
 
-  return { success: true }
+  // 2. Direct fallback via Supabase REST API if Edge Function is not yet deployed
+  try {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session?.user) {
+      const { error: dbError } = await (supabase.from('push_subscriptions') as any).upsert(
+        {
+          user_id: session.user.id,
+          endpoint,
+          p256dh: keys.p256dh,
+          auth: keys.auth,
+          device_label: deviceLabel ?? null,
+          revoked_at: null,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'endpoint' },
+      )
+      if (!dbError) {
+        return { success: true }
+      }
+    }
+  } catch {
+    // Fall through to report original error
+  }
+
+  return { success: false, error: fnError.message }
 }
 
 /**
@@ -185,7 +212,8 @@ async function saveSubscriptionToBackend(
 export async function getCurrentPushSubscription(): Promise<globalThis.PushSubscription | null> {
   if (!('serviceWorker' in navigator)) return null
   try {
-    const registration = await navigator.serviceWorker.getRegistration('/')
+    const base = import.meta.env.BASE_URL || '/'
+    const registration = await navigator.serviceWorker.getRegistration(base)
     if (!registration) return null
     return registration.pushManager.getSubscription()
   } catch {

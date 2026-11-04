@@ -1,3 +1,4 @@
+/// <reference path="../deno.d.ts" />
 /**
  * Edge Function: process-reminders
  *
@@ -165,7 +166,7 @@ Deno.serve(async (req: Request) => {
   const vapidPrivateKey = Deno.env.get('VAPID_PRIVATE_KEY')!
   const vapidSubject = Deno.env.get('VAPID_SUBJECT') ?? 'mailto:notifications@chroniq.app'
 
-  let appServer: ApplicationServer | null = null
+  let appServer: any = null
   if (vapidPublicKey && vapidPrivateKey) {
     try {
       appServer = await ApplicationServer.new({
