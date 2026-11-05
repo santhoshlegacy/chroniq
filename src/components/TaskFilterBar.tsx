@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import { Search, Filter, Calendar, Clock, AlertTriangle, CheckCircle2, ListFilter } from 'lucide-react'
 import { useTaskStore, type TaskFilter } from '@/store/useTaskStore'
 import { useSettingsStore } from '@/store/useSettingsStore'
 import { filterTodayTasks, filterOverdueTasks, filterCompletedToday, filterUpcoming } from '@/lib/taskUtils'
@@ -7,7 +6,7 @@ import type { TaskPriority } from '@/types'
 import { format } from 'date-fns'
 
 interface TaskFilterBarProps {
-  onOpenNewTask: () => void
+  onOpenNewTask?: () => void
 }
 
 export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
@@ -26,59 +25,69 @@ export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
     }
   }, [tasks, preferences.timezone])
 
-  const filterTabs: { id: TaskFilter; label: string; count: number; icon: React.ReactNode }[] = [
-    { id: 'today', label: 'Today', count: todayCount, icon: <Clock className="w-3.5 h-3.5" /> },
-    { id: 'upcoming', label: 'Upcoming', count: upcomingCount, icon: <Calendar className="w-3.5 h-3.5" /> },
-    { id: 'overdue', label: 'Overdue', count: overdueCount, icon: <AlertTriangle className="w-3.5 h-3.5 text-rose-400" /> },
-    { id: 'completed', label: 'Completed', count: completedCount, icon: <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> },
-    { id: 'all', label: 'All Tasks', count: allCount, icon: <ListFilter className="w-3.5 h-3.5" /> },
+  const filterTabs: { id: TaskFilter; label: string; count: number; isOverdue?: boolean }[] = [
+    { id: 'today', label: 'Active', count: todayCount },
+    { id: 'upcoming', label: 'Upcoming', count: upcomingCount },
+    { id: 'overdue', label: 'Overdue', count: overdueCount, isOverdue: true },
+    { id: 'completed', label: 'Completed', count: completedCount },
+    { id: 'all', label: 'All Folios', count: allCount },
   ]
 
   return (
-    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-4">
-      {/* Navigation Filter Tabs */}
-      <div className="flex items-center space-x-1 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-5">
+      {/* Editorial Filter Horizon (Pills) */}
+      <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
         {filterTabs.map((tab) => {
           const isActive = activeFilter === tab.id
           return (
             <button
               key={tab.id}
+              type="button"
               onClick={() => setFilter(tab.id)}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full text-xs uppercase tracking-wider font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                 isActive
-                  ? 'bg-[#182233] text-white border border-white/[0.1] shadow-xs'
-                  : 'text-[#94A3B8] hover:text-white hover:bg-white/[0.04]'
+                  ? 'bg-gradient-to-r from-[#D4AF37] to-[#F2CA50] text-[#141211] shadow-sm'
+                  : 'bg-[#1B1C1E] text-[#D0C5AF] hover:text-white hover:bg-[#292A2C] border border-[#DAC58F]/10'
               }`}
             >
-              <span className={isActive ? 'text-[#5EEAD4]' : 'text-[#64748B]'}>
-                {tab.icon}
-              </span>
               <span>{tab.label}</span>
-              <span
-                className={`tabular-nums font-mono text-[10px] px-1.5 py-0.2 rounded-md ${
-                  isActive
-                    ? 'bg-[#121826] text-white font-medium'
-                    : 'text-[#64748B]'
-                }`}
-              >
-                {tab.count}
-              </span>
+              {tab.isOverdue && tab.count > 0 ? (
+                <span
+                  className={`w-4 h-4 rounded-full flex items-center justify-center font-mono text-[9px] font-bold ${
+                    isActive
+                      ? 'bg-[#141211] text-[#F2CA50]'
+                      : 'bg-[#93000A] text-[#FFDAD6]'
+                  }`}
+                >
+                  {tab.count}
+                </span>
+              ) : (
+                <span
+                  className={`font-mono text-[10px] tabular-nums ${
+                    isActive ? 'text-[#141211] font-bold' : 'text-[#99907C]'
+                  }`}
+                >
+                  ({tab.count})
+                </span>
+              )}
             </button>
           )
         })}
       </div>
 
-      {/* Search & Priority Filter Controls */}
-      <div className="flex items-center space-x-2">
+      {/* Search & Priority Controls */}
+      <div className="flex items-center gap-2">
         {/* Search Input */}
         <div className="relative flex-1 sm:w-48">
-          <Search className="w-3.5 h-3.5 text-[#64748B] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <span className="material-symbols-outlined text-[16px] text-[#99907C] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+            search
+          </span>
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search tasks..."
-            className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-[#121826] border border-white/[0.06] text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-[#5EEAD4]/50 transition"
+            placeholder="Search mandates..."
+            className="w-full pl-8 pr-3 py-1.5 rounded-full bg-[#1B1C1E] border border-[#DAC58F]/15 text-xs text-white placeholder-[#99907C]/70 focus:outline-none focus:border-[#DAC58F]/50 transition"
           />
         </div>
 
@@ -87,15 +96,17 @@ export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value as TaskPriority | 'all')}
-            className="appearance-none px-3 py-1.5 pr-7 rounded-xl bg-[#121826] border border-white/[0.06] text-xs text-[#94A3B8] hover:text-white font-medium focus:outline-none focus:border-[#5EEAD4]/50 cursor-pointer transition"
+            className="appearance-none px-3 py-1.5 pr-7 rounded-full bg-[#1B1C1E] border border-[#DAC58F]/15 text-xs text-[#D0C5AF] hover:text-white font-medium focus:outline-none focus:border-[#DAC58F]/50 cursor-pointer transition"
           >
-            <option value="all">All Priorities</option>
-            <option value="urgent">Urgent</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
+            <option value="all">All Tiers</option>
+            <option value="urgent">Tier 1 Sovereign</option>
+            <option value="high">Amber Horizon</option>
+            <option value="medium">Champagne</option>
+            <option value="low">Sage Ritual</option>
           </select>
-          <Filter className="w-3 h-3 text-[#64748B] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <span className="material-symbols-outlined text-[15px] text-[#99907C] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
+            expand_more
+          </span>
         </div>
       </div>
     </div>

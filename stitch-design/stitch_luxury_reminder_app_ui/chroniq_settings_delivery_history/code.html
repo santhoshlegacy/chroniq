@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><title>Chroniq</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100%;margin:0;padding:0;background-color:#fcf9f2;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary-fixed": "#e7e1df", "surface": "#fcf9f2", "on-tertiary": "#ffffff", "tertiary-fixed": "#fbdeb6", "inverse-on-surface": "#f3f0e9", "primary": "#000000", "surface-container-highest": "#e5e2db", "primary-container": "#1d1b1a", "surface-dim": "#dcdad3", "on-tertiary-fixed": "#271902", "inverse-surface": "#31312c", "on-tertiary-fixed-variant": "#564426", "inverse-primary": "#cbc5c3", "surface-tint": "#615e5c", "on-error-container": "#93000a", "secondary-fixed-dim": "#e4c18c", "error-container": "#ffdad6", "on-tertiary-container": "#97805e", "on-primary-fixed-variant": "#494645", "surface-bright": "#fcf9f2", "on-secondary-fixed": "#281900", "surface-container": "#f1eee7", "outline": "#7f7570", "background": "#fcf9f2", "on-background": "#1c1c18", "outline-variant": "#d0c4be", "surface-variant": "#e5e2db", "on-primary-fixed": "#1d1b1a", "on-secondary": "#ffffff", "on-primary": "#ffffff", "secondary": "#745a2e", "primary-fixed-dim": "#cbc5c3", "surface-container-low": "#f6f3ec", "on-secondary-container": "#795e32", "on-secondary-fixed-variant": "#5a4319", "error": "#ba1a1a", "secondary-fixed": "#ffdeab", "on-error": "#ffffff", "on-surface": "#1c1c18", "tertiary-container": "#271902", "secondary-container": "#fedaa3", "surface-container-lowest": "#ffffff", "tertiary": "#000000", "surface-container-high": "#ebe8e1", "on-surface-variant": "#4d4541", "on-primary-container": "#878381", "tertiary-fixed-dim": "#ddc39c" }, borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, spacing: { "margin": "3rem", "gutter": "1.5rem", "space-xl": "3rem", "space-lg": "1.75rem", "space-sm": "0.5rem", "gutter-mobile": "0.75rem", "margin-mobile": "1.25rem", "space-md": "1rem", "space-xs": "0.25rem" }, fontFamily: { "display-xl-mobile": ["Playfair Display"], "headline-lg": ["Playfair Display"], "body-md": ["Inter"], "label-md": ["Inter"], "numeral-meta": ["Inter"], "display-lg-mobile": ["Playfair Display"], "numeral-display": ["Inter"], "body-lg": ["Inter"], "title-md": ["Inter"], "headline-md": ["Playfair Display"], "display-xl": ["Playfair Display"], "display-lg": ["Playfair Display"], "label-sm": ["Inter"], "body-sm": ["Inter"], "headline-sm": ["Playfair Display"] }, fontSize: { "display-xl-mobile": ["36px", { lineHeight: "44px", letterSpacing: "-0.01em", fontWeight: "400" }], "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "500" }], "body-md": ["14px", { lineHeight: "22px", fontWeight: "400" }], "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.06em", fontWeight: "500" }], "numeral-meta": ["13px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500" }], "display-lg-mobile": ["28px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "400" }], "numeral-display": ["32px", { lineHeight: "36px", letterSpacing: "-0.03em", fontWeight: "300" }], "body-lg": ["16px", { lineHeight: "26px", fontWeight: "400" }], "title-md": ["16px", { lineHeight: "24px", letterSpacing: "-0.01em", fontWeight: "600" }], "headline-md": ["24px", { lineHeight: "32px", fontWeight: "500" }], "display-xl": ["56px", { lineHeight: "64px", letterSpacing: "-0.02em", fontWeight: "400" }], "display-lg": ["40px", { lineHeight: "48px", letterSpacing: "-0.02em", fontWeight: "400" }], "label-sm": ["11px", { lineHeight: "14px", letterSpacing: "0.08em", fontWeight: "600" }], "body-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }], "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "600" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen flex flex-col antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_12px_rgba(45,41,38,0.03)]"><div class="h-20 px-margin-mobile flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Chroniq Brand Monogram Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgreD7tSDrsl0YVkVmsO4wP8jnBOjJFcdfAJua3rxHBPPlQxQqw5doLWUw5w2v2cUMtqkKNZyjLjINDWZl6oAiJ6-B0e_avc6SN79JCk7yfhTJui0U4ULouJMvIYsQPaibUKvn1UZ5xfAyJRZHuvVUGlhoydOidVZh3Lm5MMgdwfUNJyxU6Z8OjQmng_Xj5C7EwzdoFpLzty22muHrzbbWpvqOHpNO_phEbx59zRzV"/><div class="flex flex-col"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-headline-sm tracking-tight text-on-surface">Chroniq</span><span class="font-label-sm text-label-sm text-secondary uppercase">· Settings</span></div><div class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest text-[10px]">Synchronized &amp; Calm</span></div></div></div><div class="flex items-center gap-space-xs"><button aria-label="Quick Capture" class="w-11 h-11 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">ink_pen</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full pt-20 pb-28 bg-surface min-h-screen"><div class="flex flex-col w-full px-margin-mobile pb-12 gap-space-lg">
+<!-- Overview Header Capsule -->
+<section class="flex flex-col gap-space-xs pt-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary">Folio Configuration</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Archival Synk</span>
+</div>
+<h2 class="font-display-lg-mobile text-display-lg-mobile text-on-surface tracking-tight">Settings &amp; Delivery Preferences</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-sm">
+      Fine-tune acoustic cadences, horizon reminders, and inspect the ledger of recent intentional dispatches.
+    </p>
+</section>
+<!-- Editorial Atmospheric Banner with Subtle Visual -->
+<section class="relative w-full rounded-xl overflow-hidden bg-surface-container p-space-md shadow-sm">
+<div class="flex items-center justify-between gap-space-md">
+<div class="flex flex-col gap-1 min-w-0">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-secondary-container">Telemetry Mode</span>
+<span class="font-title-md text-title-md text-on-surface">Unobtrusive &amp; Resonant</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Alerts are shaped with harmonic acoustics to honor uninterrupted executive presence.</p>
+</div>
+<div class="w-16 h-16 rounded-lg overflow-hidden shrink-0 shadow-sm bg-surface-container-highest flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="Minimalist horology balance wheel and champagne gold precision mechanism resting on smooth warm travertine stone in soft diffused daylight, macro photography, warm alabaster tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBH5oSFZ-V-agqyBoF0s2wtRtHQevgbmVq6tYbspQhF-G2Eul4M3wsGYyVlPLTW9CzhwRxI1NuCLMzg1sMIzoBORETZZnaGKx-UNzjtYkoI8K7pEvcG14_XWTBd8UZYWF_RIlM3OneoFG5JiABFIPKI8jEmlW5kH9Zos46TjG35vWuwEBLoPfXKBHyetkNAeEJ7U0AtkJdW-jTcw-uUJWnRBwEnaSFWDYK44wmiMV8"/>
+</div>
+</div>
+</section>
+<!-- Section 1: Proactive Alert Preferences -->
+<section class="flex flex-col gap-space-md">
+<div class="flex items-baseline justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">notifications_active</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Proactive Alert Preferences</h3>
+</div>
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">3 Active Rules</span>
+</div>
+<!-- Container Card -->
+<div class="flex flex-col bg-surface-container-low rounded-xl p-space-md gap-space-md shadow-sm">
+<!-- Toggle 1: 10-Minute Advance Dispatch -->
+<div class="flex items-start justify-between gap-space-md">
+<div class="flex flex-col gap-0.5 min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-title-md text-title-md text-on-surface">10-Minute Advance Dispatch</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim"></span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Sends discrete notifications 10 minutes prior to scheduled milestones via push and haptic.
+          </p>
+</div>
+<button aria-checked="true" class="relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full bg-secondary-container transition-colors duration-200 ease-in-out focus:outline-none" data-toggle="dispatch-advance" onclick="const s = this.getAttribute('aria-checked') === 'true'; this.setAttribute('aria-checked', !s); this.classList.toggle('bg-secondary-container', !s); this.classList.toggle('bg-surface-dim', s); const dot = this.querySelector('span'); dot.classList.toggle('translate-x-5', !s); dot.classList.toggle('translate-x-1', s);" role="switch" type="button">
+<span class="sr-only">Toggle advance notification</span>
+<span class="translate-x-5 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-on-secondary-container shadow-md transition duration-200 ease-in-out my-1"></span>
+</button>
+</div>
+<!-- Deliberate Tonal Divider -->
+<div class="h-[1px] w-full bg-surface-container-highest"></div>
+<!-- Selector: Acoustic Harmonics -->
+<div class="flex flex-col gap-space-sm">
+<div class="flex justify-between items-baseline">
+<span class="font-title-md text-title-md text-on-surface">Acoustic Harmonics</span>
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider" id="selected-harmonic-label">528Hz Solfeggio</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Subtle frequency resonance sounded at each delivery threshold.
+        </p>
+<!-- Segmented Harmonic Chime Pills -->
+<div class="grid grid-cols-3 gap-2 pt-1" id="harmonic-pill-group">
+<button class="harmonic-btn flex flex-col items-center justify-center p-space-sm rounded-lg bg-secondary-container text-on-secondary-container shadow-sm transition-all text-center" data-harmonic="528Hz Solfeggio Chime" type="button">
+<span class="material-symbols-outlined text-[18px] mb-0.5">music_note</span>
+<span class="font-label-sm text-label-sm font-semibold">528Hz Solfeggio</span>
+<span class="font-label-sm text-label-sm text-[10px] opacity-75">Resonant</span>
+</button>
+<button class="harmonic-btn flex flex-col items-center justify-center p-space-sm rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface transition-all text-center" data-harmonic="Venetian Bell" type="button">
+<span class="material-symbols-outlined text-[18px] mb-0.5">notifications</span>
+<span class="font-label-sm text-label-sm font-semibold">Venetian Bell</span>
+<span class="font-label-sm text-label-sm text-[10px] opacity-75">Warm Patina</span>
+</button>
+<button class="harmonic-btn flex flex-col items-center justify-center p-space-sm rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface transition-all text-center" data-harmonic="Silent Ripple" type="button">
+<span class="material-symbols-outlined text-[18px] mb-0.5">vibration</span>
+<span class="font-label-sm text-label-sm font-semibold">Silent Ripple</span>
+<span class="font-label-sm text-label-sm text-[10px] opacity-75">Haptic Only</span>
+</button>
+</div>
+</div>
+<!-- Deliberate Tonal Divider -->
+<div class="h-[1px] w-full bg-surface-container-highest"></div>
+<!-- Toggle 2: Archival & Deletion -->
+<div class="flex items-start justify-between gap-space-md">
+<div class="flex flex-col gap-0.5 min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-title-md text-title-md text-on-surface">Automatic 30-Day Task Archival &amp; Deletion</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Purges non-essential completed tasks every 30 days to preserve clarity and database minimalism.
+          </p>
+</div>
+<button aria-checked="true" class="relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full bg-secondary-container transition-colors duration-200 ease-in-out focus:outline-none" data-toggle="archival" onclick="const s = this.getAttribute('aria-checked') === 'true'; this.setAttribute('aria-checked', !s); this.classList.toggle('bg-secondary-container', !s); this.classList.toggle('bg-surface-dim', s); const dot = this.querySelector('span'); dot.classList.toggle('translate-x-5', !s); dot.classList.toggle('translate-x-1', s);" role="switch" type="button">
+<span class="sr-only">Toggle 30-Day archival</span>
+<span class="translate-x-5 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-on-secondary-container shadow-md transition duration-200 ease-in-out my-1"></span>
+</button>
+</div>
+</div>
+</section>
+<!-- Section 2: Delivery History Log -->
+<section class="flex flex-col gap-space-md">
+<div class="flex items-baseline justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">history_toggle_off</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Delivery History Log</h3>
+</div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Recent Dispatches</span>
+</div>
+<div class="flex flex-col bg-surface-container-low rounded-xl p-space-md gap-space-md shadow-sm">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Notification Dispatches &amp; Transmissions</span>
+<!-- Dispatch Item 1 -->
+<div class="flex items-start gap-space-sm">
+<div class="mt-0.5 w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex items-baseline justify-between gap-2">
+<span class="font-title-md text-title-md text-on-surface truncate">10-Min Warning: Board of Trustees Deliberations</span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface-variant shrink-0">13:50</span>
+</div>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Dispatched via Push &amp; Haptic</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-label-sm text-label-sm text-secondary font-medium">Delivered &amp; Acknowledged</span>
+</div>
+</div>
+</div>
+<div class="h-[1px] w-full bg-surface-container-highest"></div>
+<!-- Dispatch Item 2 -->
+<div class="flex items-start gap-space-sm">
+<div class="mt-0.5 w-7 h-7 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[15px]">mark_email_read</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex items-baseline justify-between gap-2">
+<span class="font-title-md text-title-md text-on-surface truncate">Deadline Imminent: Notary Sign-off</span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface-variant shrink-0">Yest. 17:00</span>
+</div>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Dispatched via Push</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-label-sm text-label-sm text-on-surface font-medium">Opened</span>
+</div>
+</div>
+</div>
+<div class="h-[1px] w-full bg-surface-container-highest"></div>
+<!-- Dispatch Item 3 -->
+<div class="flex items-start gap-space-sm">
+<div class="mt-0.5 w-7 h-7 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[15px]">nights_stay</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex items-baseline justify-between gap-2">
+<span class="font-title-md text-title-md text-on-surface truncate">Focus Window Commencement</span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface-variant shrink-0">Yest. 09:00</span>
+</div>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Dispatched in Background</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Silent</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Visual Archival Showcase -->
+<section class="relative w-full rounded-xl bg-surface-container p-space-md flex flex-col gap-space-sm shadow-sm overflow-hidden">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">inventory_2</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Curated Archival</span>
+</div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary">Clean Horizon</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+      A calm vault ensures mental clarity. Routine completions transition into immutable records without sensory noise.
+    </p>
+<div class="relative w-full h-28 rounded-lg overflow-hidden mt-1 bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="Archival handbound Italian stationery folio bound in raw linen resting alongside a precision mechanical fountain pen on warm travertine stone under morning sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkW3Dl7jB_gj-ikj4wd74cPIQv5s2g5MpayzIevLN1jJIYd8Ar4Nd53X-o5Bn3-JXuSIU_uzNKG5WOyG_M4I7SK6_C9HzeQlbZOFQCMO2YJqDQCORx-NmPjDsGfZhdDCmWcI8sRzEzUNE-GP16jYcJT1_vVcLRm8RTQmJu7Fr9kJS3nF-CKwNZlWPTt0Dxt-usmpjse9SFg-rWv3WjHgtBnUNGBEHRjM23XzXcxjkM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/30 via-transparent to-transparent flex items-end p-2.5">
+<span class="font-label-sm text-label-sm text-surface font-medium tracking-wide">Folio Vault • 148 Inactive Entries Resting</span>
+</div>
+</div>
+</section>
+<!-- Section 4: Studio & Craft Provenance -->
+<section class="flex flex-col gap-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">architecture</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Chroniq Architecture</h3>
+</div>
+<!-- Editorial Dossier Card -->
+<div class="flex flex-col bg-surface-container-low rounded-xl p-space-md gap-space-md shadow-sm">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant">Studio Provenance</span>
+<span class="font-title-md text-title-md text-on-surface mt-0.5">A True Synk Product</span>
+</div>
+<div class="px-2.5 py-1 rounded bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm tracking-wider uppercase font-semibold">
+          Version 3.4.0 (Luxury Release)
+        </div>
+</div>
+<div class="h-[1px] w-full bg-surface-container-highest"></div>
+<!-- Security / Vault Detail -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary text-[18px]">verified_user</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-title-md text-title-md text-on-surface truncate">End-to-End Cryptographic Ledger &amp; Vault</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Zero-knowledge local key isolation enabled</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary shrink-0 font-medium">Secured</span>
+</div>
+<div class="h-[1px] w-full bg-surface-container-highest"></div>
+<!-- Quiet Editorial Note -->
+<div class="flex items-center justify-between pt-0.5">
+<span class="font-body-sm text-body-sm text-on-surface-variant italic">Refined in Switzerland • Synk Fine Horology OS</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">diamond</span>
+</div>
+</div>
+</section>
+</div>
+<script>
+  // Interactive Harmonic Chime Selector Micro-interaction
+  document.querySelectorAll('.harmonic-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const parent = document.getElementById('harmonic-pill-group');
+      parent.querySelectorAll('.harmonic-btn').forEach(btn => {
+        btn.classList.remove('bg-secondary-container', 'text-on-secondary-container', 'shadow-sm');
+        btn.classList.add('bg-surface-container', 'text-on-surface-variant');
+      });
+      button.classList.add('bg-secondary-container', 'text-on-secondary-container', 'shadow-sm');
+      button.classList.remove('bg-surface-container', 'text-on-surface-variant');
+
+      const label = document.getElementById('selected-harmonic-label');
+      if (label) {
+        label.textContent = button.getAttribute('data-harmonic');
+      }
+    });
+  });
+</script></main><div class="fixed bottom-24 right-margin-mobile z-50"><button aria-label="Chroniq Quick Add" class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container shadow-[0_8px_24px_rgba(116,90,46,0.22)] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform" type="button"><span class="material-symbols-outlined text-[22px]">add</span></button></div><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/85 backdrop-blur-xl shadow-[0_-4px_20px_rgba(45,41,38,0.03)]" data-active-classes="text-secondary font-semibold"><div class="flex justify-around items-center h-16 px-gutter-mobile"><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="tasks" href="#"><span class="material-symbols-outlined text-[22px]">checklist</span><span class="font-label-sm text-label-sm text-[10px] uppercase tracking-wider">Tasks</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="schedule" href="#"><span class="material-symbols-outlined text-[22px]">schedule</span><span class="font-label-sm text-label-sm text-[10px] uppercase tracking-wider">Schedule</span></a><a aria-current="page" class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] transition-colors text-secondary font-semibold" data-path="settings" href="#"><span class="material-symbols-outlined text-[22px]">tune</span><span class="font-label-sm text-label-sm text-[10px] uppercase tracking-wider">Settings</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="account" href="#"><span class="material-symbols-outlined text-[22px]">workspace_premium</span><span class="font-label-sm text-label-sm text-[10px] uppercase tracking-wider">Account</span></a></div></nav></body></html>

@@ -1,21 +1,7 @@
 import React, { useState } from 'react'
-import {
-  ShieldCheck,
-  Cloud,
-  CheckCircle2,
-  AlertTriangle,
-  ArrowRight,
-  LogOut,
-  Mail,
-  Lock,
-  Sparkles,
-  Bell,
-  HardDrive,
-  CloudUpload,
-} from 'lucide-react'
+import { ChroniqLogo } from './ChroniqLogo'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useTaskStore } from '@/store/useTaskStore'
-import logoImg from '@/assets/logo.png'
 
 interface AuthPageProps {
   onContinueOffline: () => void
@@ -54,12 +40,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
     if (mode === 'signin') {
       const res = await loginWithEmail(email, password)
       if (!res.error) {
-        setSuccessMessage('Welcome back! Syncing your tasks...')
+        setSuccessMessage('Welcome back! Synchronizing your mandates...')
       }
     } else {
       const res = await signUpWithEmail(email, password)
       if (!res.error) {
-        setSuccessMessage('Account created! Check your email to confirm if verification is enabled, or sign in.')
+        setSuccessMessage('Account created! Confirm your email if verification is required, or sign in.')
       }
     }
     setIsSubmitting(false)
@@ -67,7 +53,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
 
   const handleMigrate = async () => {
     const res = await importLocalTasksToCloud()
-    setImportStatus(`Successfully migrated ${res.imported} offline task${res.imported === 1 ? '' : 's'} to your cloud account!`)
+    setImportStatus(`Successfully migrated ${res.imported} offline mandate${res.imported === 1 ? '' : 's'} to your cloud vault!`)
     setTimeout(() => setImportStatus(null), 5000)
   }
 
@@ -79,94 +65,92 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
   if (user) {
     return (
       <div className="max-w-xl mx-auto py-8 sm:py-12 px-4 animate-in fade-in duration-200">
-        <div className="surface-panel rounded-2xl p-6 sm:p-8 space-y-6">
+        <div className="bg-[#1B1C1E] border border-[#DAC58F]/15 rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl">
           {/* User Header */}
-          <div className="flex items-center space-x-4 pb-6 border-b border-white/[0.08]">
+          <div className="flex items-center gap-4 pb-6 border-b border-[#DAC58F]/12">
             {userAvatar ? (
               <img
                 src={userAvatar}
                 alt={userDisplayName}
-                className="w-16 h-16 rounded-2xl object-cover border border-white/[0.12] shadow-md"
+                className="w-16 h-16 rounded-2xl object-cover border border-[#DAC58F]/30 shadow-md"
               />
             ) : (
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#1E2B40] to-[#121826] border border-[#5EEAD4]/30 text-[#5EEAD4] text-xl font-bold flex items-center justify-center shadow-md font-['Outfit']">
+              <div className="w-16 h-16 rounded-2xl bg-[#121315] border border-[#DAC58F]/30 text-[#F2CA50] text-xl font-bold flex items-center justify-center shadow-md font-serif">
                 {userDisplayName.charAt(0).toUpperCase()}
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center space-x-2">
-                <h2 className="text-lg font-bold text-white truncate font-['Outfit']">{userDisplayName}</h2>
-                <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-950/40 text-emerald-400 border border-emerald-500/30">
-                  <Cloud className="w-2.5 h-2.5" />
-                  <span>Cloud Active</span>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-bold text-white truncate font-serif">
+                  {userDisplayName}
+                </h2>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#56481E] text-[#DAC58F] border border-[#DAC58F]/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#DAC58F]" />
+                  <span>Synchronized</span>
                 </span>
               </div>
-              <p className="text-xs text-[#94A3B8] truncate mt-0.5">{user.email}</p>
-              <p className="text-[11px] text-[#64748B] mt-1 font-mono">
-                Member since {new Date(user.created_at).toLocaleDateString()}
+              <p className="text-xs text-[#99907C] truncate mt-0.5 font-mono">{user.email}</p>
+              <p className="text-[11px] text-[#DAC58F] mt-1 font-mono uppercase tracking-wider">
+                Horological Series IX • Private Suite
               </p>
             </div>
           </div>
 
-          {/* Sync & Security Badges */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="p-3.5 rounded-xl bg-[#161F2E] border border-white/[0.04] space-y-1">
-              <div className="flex items-center space-x-2 text-xs font-semibold text-white">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>Row-Level Security</span>
-              </div>
-              <p className="text-[11px] text-[#94A3B8] leading-relaxed">
-                Your tasks are encrypted and strictly isolated to your user ID.
-              </p>
+          {/* Sync Status Card */}
+          <div className="p-4 rounded-xl bg-[#121315] border border-[#DAC58F]/10 space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-[#99907C]">Storage Architecture</span>
+              <span className="text-white font-medium flex items-center gap-1 font-mono">
+                <span className="material-symbols-outlined text-sm text-[#DAC58F]">cloud_done</span>
+                Supabase Cloud Vault
+              </span>
             </div>
-            <div className="p-3.5 rounded-xl bg-[#161F2E] border border-white/[0.04] space-y-1">
-              <div className="flex items-center space-x-2 text-xs font-semibold text-white">
-                <Bell className="w-4 h-4 text-[#5EEAD4]" />
-                <span>Web Push Delivery</span>
-              </div>
-              <p className="text-[11px] text-[#94A3B8] leading-relaxed">
-                VAPID reminders deliver automated check-ins directly to this device.
-              </p>
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-[#99907C]">Row-Level Security</span>
+              <span className="text-white font-medium flex items-center gap-1 font-mono">
+                <span className="material-symbols-outlined text-sm text-emerald-400">lock</span>
+                Strict User Isolation
+              </span>
             </div>
           </div>
 
-          {/* Migration Banner if offline tasks exist */}
+          {/* Local Migration Banner if applicable */}
           {unmigratedLocalCount > 0 && (
-            <div className="p-4 rounded-xl bg-[#161F2E] border border-[#5EEAD4]/30 space-y-2.5">
+            <div className="p-4 rounded-xl bg-[#56481E]/30 border border-[#DAC58F]/30 space-y-3">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 text-xs text-white font-medium">
-                  <CloudUpload className="w-4 h-4 text-[#5EEAD4]" />
-                  <span>{unmigratedLocalCount} Offline Tasks Available</span>
+                <div>
+                  <span className="text-xs font-semibold text-white block">
+                    Offline Mandates Awaiting Migration
+                  </span>
+                  <span className="text-[11px] text-[#D0C5AF]">
+                    You have <strong className="text-[#F2CA50]">{unmigratedLocalCount} offline tasks</strong> saved locally on this browser.
+                  </span>
                 </div>
-                <button
-                  onClick={handleMigrate}
-                  className="px-3 py-1 rounded-lg btn-primary text-xs font-semibold cursor-pointer"
-                >
-                  Migrate to Cloud
-                </button>
               </div>
-              <p className="text-[11px] text-[#94A3B8]">
-                Tasks created while in guest mode can be uploaded to your cloud account to sync across all devices.
-              </p>
-              {importStatus && (
-                <p className="text-xs text-emerald-400 font-medium">{importStatus}</p>
-              )}
+              <button
+                onClick={handleMigrate}
+                className="w-full py-2 rounded-lg bg-gradient-to-tr from-[#D4AF37] to-[#F2CA50] text-[#141211] font-semibold text-xs uppercase tracking-wider transition cursor-pointer"
+              >
+                Migrate to Cloud Vault
+              </button>
+              {importStatus && <p className="text-xs text-emerald-400 text-center">{importStatus}</p>}
             </div>
           )}
 
-          {/* Sign Out Button */}
-          <div className="pt-2 flex items-center justify-between">
+          {/* Sign Out Action */}
+          <div className="pt-2 flex justify-between items-center">
             <button
               onClick={onContinueOffline}
-              className="text-xs text-[#94A3B8] hover:text-white transition cursor-pointer"
+              className="text-xs text-[#99907C] hover:text-white transition cursor-pointer"
             >
-              Return to Tasks →
+              Back to Ledger
             </button>
             <button
-              onClick={logout}
-              className="px-4 py-2 rounded-xl bg-[#161F2E] hover:bg-rose-950/40 border border-white/[0.08] hover:border-rose-500/30 text-xs font-semibold text-rose-400 transition flex items-center space-x-2 cursor-pointer"
+              onClick={() => logout()}
+              disabled={isLoading}
+              className="px-4 py-2 rounded-lg bg-[#292A2C] hover:bg-[#343537] text-white text-xs font-medium border border-[#DAC58F]/15 flex items-center gap-1.5 transition cursor-pointer"
             >
-              <LogOut className="w-3.5 h-3.5" />
+              <span className="material-symbols-outlined text-sm">logout</span>
               <span>Sign Out</span>
             </button>
           </div>
@@ -175,29 +159,30 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
     )
   }
 
-  // ──────── Unauthenticated Login / Signup View ────────
+  // ──────── Guest / Sign In View ────────
   return (
     <div className="max-w-md mx-auto py-8 sm:py-12 px-4 animate-in fade-in duration-200">
-      <div className="surface-panel rounded-2xl p-6 sm:p-8 space-y-6">
+      <div className="bg-[#1B1C1E] border border-[#DAC58F]/20 rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+        {/* Subtle Ambient Backlight */}
+        <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-[#DAC58F]/10 blur-3xl pointer-events-none" />
+
         {/* Brand Header */}
         <div className="text-center space-y-2">
-          <div className="w-14 h-14 mx-auto rounded-2xl overflow-hidden border border-white/[0.12] bg-[#121826] flex items-center justify-center shadow-xl">
-            <img
-              src={logoImg}
-              alt="Chroniq"
-              className="w-full h-full object-cover scale-[2.2] translate-y-[22%]"
-            />
+          <div className="w-14 h-14 mx-auto rounded-2xl border border-[#DAC58F]/30 bg-[#0D0E10] flex items-center justify-center shadow-lg p-2">
+            <ChroniqLogo className="w-full h-full object-contain" />
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white font-['Outfit']">
-            {mode === 'signin' ? 'Welcome back to Chroniq' : 'Create your Chroniq account'}
+          <h1 className="text-2xl font-bold text-white tracking-tight font-serif pt-1">
+            {mode === 'signin' ? 'Enter Executive Suite' : 'Create Sovereign Account'}
           </h1>
-          <p className="text-xs text-[#94A3B8] max-w-xs mx-auto">
-            Own your time. Finish what matters. Precision cadence & background reminders.
+          <p className="text-xs text-[#99907C] max-w-xs mx-auto leading-relaxed">
+            {mode === 'signin'
+              ? 'Access synchronized reminders, multi-device web push, and encrypted mandate history.'
+              : 'Join the horological cadence of precision personal productivity.'}
           </p>
         </div>
 
-        {/* Tab Selector: Sign In / Create Account */}
-        <div className="flex items-center p-1 rounded-xl bg-[#161F2E] border border-white/[0.06]">
+        {/* Mode Switcher */}
+        <div className="flex p-1 rounded-xl bg-[#121315] border border-[#DAC58F]/15">
           <button
             type="button"
             onClick={() => {
@@ -205,10 +190,10 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
               clearAuthError()
               setSuccessMessage(null)
             }}
-            className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
+            className={`flex-1 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
               mode === 'signin'
-                ? 'bg-[#1E2B40] text-white font-semibold shadow-xs'
-                : 'text-[#94A3B8] hover:text-white'
+                ? 'bg-gradient-to-r from-[#D4AF37] to-[#F2CA50] text-[#141211] shadow-sm'
+                : 'text-[#99907C] hover:text-[#E3E2E5]'
             }`}
           >
             Sign In
@@ -220,37 +205,37 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
               clearAuthError()
               setSuccessMessage(null)
             }}
-            className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
+            className={`flex-1 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
               mode === 'signup'
-                ? 'bg-[#1E2B40] text-white font-semibold shadow-xs'
-                : 'text-[#94A3B8] hover:text-white'
+                ? 'bg-gradient-to-r from-[#D4AF37] to-[#F2CA50] text-[#141211] shadow-sm'
+                : 'text-[#99907C] hover:text-[#E3E2E5]'
             }`}
           >
             Create Account
           </button>
         </div>
 
-        {/* Feedback Banners */}
+        {/* Error / Success Messages */}
         {authError && (
-          <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-500/30 text-xs text-rose-300 flex items-start space-x-2">
-            <AlertTriangle className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
-            <span className="flex-1">{authError}</span>
+          <div className="p-3 rounded-xl bg-[#93000A]/30 border border-[#FFB4AB]/20 text-[#FFDAD6] text-xs flex items-center gap-2">
+            <span className="material-symbols-outlined text-sm">error</span>
+            <span>{authError}</span>
           </div>
         )}
 
         {successMessage && (
-          <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-300 flex items-start space-x-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-            <span className="flex-1">{successMessage}</span>
+          <div className="p-3 rounded-xl bg-[#56481E]/40 border border-[#DAC58F]/30 text-[#DAC58F] text-xs flex items-center gap-2">
+            <span className="material-symbols-outlined text-sm">check_circle</span>
+            <span>{successMessage}</span>
           </div>
         )}
 
-        {/* Google OAuth Button */}
+        {/* 1-Click Google OAuth Button */}
         <button
           type="button"
-          onClick={loginWithGoogle}
+          onClick={() => loginWithGoogle()}
           disabled={isLoading}
-          className="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-100 text-[#0A0E17] font-semibold text-xs transition flex items-center justify-center space-x-2.5 shadow-md cursor-pointer disabled:opacity-50"
+          className="w-full py-2.5 px-4 rounded-xl bg-[#121315] hover:bg-[#24262A] border border-[#DAC58F]/20 text-white font-medium text-xs flex items-center justify-center gap-2.5 transition shadow-sm cursor-pointer"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24">
             <path
@@ -273,89 +258,73 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
           <span>Continue with Google</span>
         </button>
 
-        {/* Divider */}
-        <div className="flex items-center space-x-3">
-          <div className="h-px bg-white/[0.08] flex-1" />
-          <span className="text-[11px] text-[#64748B] uppercase tracking-wider">or with email</span>
-          <div className="h-px bg-white/[0.08] flex-1" />
+        <div className="relative flex py-1 items-center">
+          <div className="flex-grow border-t border-[#DAC58F]/10"></div>
+          <span className="flex-shrink mx-3 text-[10px] uppercase font-mono tracking-widest text-[#99907C]">
+            Or with email
+          </span>
+          <div className="flex-grow border-t border-[#DAC58F]/10"></div>
         </div>
 
-        {/* Email & Password Form */}
+        {/* Email / Password Form */}
         <form onSubmit={handleSubmit} className="space-y-3.5">
           <div>
-            <label className="block text-[11px] font-medium text-[#94A3B8] mb-1">
+            <label className="text-[11px] font-medium text-[#D0C5AF] block mb-1 font-mono uppercase tracking-wider">
               Email Address
             </label>
-            <div className="relative">
-              <Mail className="w-3.5 h-3.5 text-[#64748B] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@example.com"
-                className="w-full pl-9 pr-3.5 py-2 rounded-xl bg-[#161F2E] border border-white/[0.06] text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-[#5EEAD4]/50 transition"
-              />
-            </div>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="executive@chroniq.io"
+              className="w-full px-3.5 py-2 rounded-xl bg-[#121315] border border-[#DAC58F]/20 text-xs text-white placeholder-[#99907C]/60 focus:outline-none focus:border-[#DAC58F] transition"
+            />
           </div>
 
           <div>
-            <label className="block text-[11px] font-medium text-[#94A3B8] mb-1">
+            <label className="text-[11px] font-medium text-[#D0C5AF] block mb-1 font-mono uppercase tracking-wider">
               Password
             </label>
-            <div className="relative">
-              <Lock className="w-3.5 h-3.5 text-[#64748B] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="password"
-                required
-                minLength={6}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full pl-9 pr-3.5 py-2 rounded-xl bg-[#161F2E] border border-white/[0.06] text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-[#5EEAD4]/50 transition"
-              />
-            </div>
+            <input
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••••••"
+              className="w-full px-3.5 py-2 rounded-xl bg-[#121315] border border-[#DAC58F]/20 text-xs text-white placeholder-[#99907C]/60 focus:outline-none focus:border-[#DAC58F] transition"
+            />
           </div>
 
           <button
             type="submit"
-            disabled={isSubmitting || isLoading}
-            className="w-full py-2.5 rounded-xl btn-primary text-xs font-semibold flex items-center justify-center space-x-1.5 cursor-pointer disabled:opacity-50"
+            disabled={isSubmitting}
+            className="w-full py-2.5 rounded-xl bg-gradient-to-tr from-[#D4AF37] to-[#F2CA50] text-[#141211] font-semibold text-xs uppercase tracking-wider hover:opacity-90 active:scale-[0.98] transition-all shadow-md cursor-pointer disabled:opacity-50"
           >
-            <span>{mode === 'signin' ? 'Sign In to Chroniq' : 'Create Account'}</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            {isSubmitting
+              ? 'Calibrating...'
+              : mode === 'signin'
+              ? 'Sign In to Suite'
+              : 'Create Account'}
           </button>
         </form>
 
-        {/* Offline Guest Mode Button */}
-        <div className="pt-2 border-t border-white/[0.06] text-center">
+        {/* Continue in Local Vault (Guest Mode) */}
+        <div className="pt-2 border-t border-[#DAC58F]/10 flex flex-col items-center gap-2">
           <button
             type="button"
             onClick={onContinueOffline}
-            className="text-xs text-[#94A3B8] hover:text-[#5EEAD4] transition flex items-center justify-center space-x-1.5 mx-auto cursor-pointer"
+            className="text-xs text-[#99907C] hover:text-[#DAC58F] transition cursor-pointer flex items-center gap-1.5"
           >
-            <HardDrive className="w-3.5 h-3.5 text-[#64748B]" />
-            <span>Continue in Offline Guest Mode</span>
+            <span>Continue in Local Vault (Guest Mode)</span>
+            <span className="material-symbols-outlined text-sm">arrow_forward</span>
           </button>
-        </div>
-
-        {/* Feature Highlights */}
-        <div className="pt-2 grid grid-cols-3 gap-2 text-center text-[10px] text-[#64748B]">
-          <div className="p-2 rounded-lg bg-[#161F2E]/60 border border-white/[0.03]">
-            <Sparkles className="w-3.5 h-3.5 text-[#5EEAD4] mx-auto mb-1" />
-            <span>10m Warnings</span>
-          </div>
-          <div className="p-2 rounded-lg bg-[#161F2E]/60 border border-white/[0.03]">
-            <Cloud className="w-3.5 h-3.5 text-[#C4B5FD] mx-auto mb-1" />
-            <span>Cross-Device</span>
-          </div>
-          <div className="p-2 rounded-lg bg-[#161F2E]/60 border border-white/[0.03]">
-            <Bell className="w-3.5 h-3.5 text-amber-400 mx-auto mb-1" />
-            <span>Web Push</span>
-          </div>
+          <span className="text-[10px] text-[#99907C]/60 uppercase font-mono">
+            Local data preserved on device
+          </span>
         </div>
       </div>
     </div>
   )
 }
-

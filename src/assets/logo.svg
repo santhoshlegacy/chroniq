@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#221F1C"/>
+      <stop offset="100%" stop-color="#141211"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E5CA9E"/>
+      <stop offset="35%" stop-color="#C5A46E"/>
+      <stop offset="70%" stop-color="#D9BE8D"/>
+      <stop offset="100%" stop-color="#9C7944"/>
+    </linearGradient>
+    <linearGradient id="ringGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C5A46E" stop-opacity="0.2"/>
+      <stop offset="50%" stop-color="#E5CA9E" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#C5A46E" stop-opacity="0.2"/>
+    </linearGradient>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#bgGlow)"/>
+  <rect width="508" height="508" x="2" y="2" rx="126" fill="none" stroke="url(#goldGrad)" stroke-width="1.5" stroke-opacity="0.4"/>
+  <circle cx="256" cy="256" r="172" fill="none" stroke="url(#ringGrad)" stroke-width="1.5" stroke-dasharray="2 10"/>
+  <circle cx="256" cy="256" r="144" fill="none" stroke="#FFFFFF" stroke-opacity="0.06" stroke-width="1"/>
+  <path d="M 256 124 C 328.9 124 388 183.1 388 256 C 388 328.9 328.9 388 256 388 C 183.1 388 124 328.9 124 256 C 124 205.8 152 162.2 193 140" fill="none" stroke="url(#goldGrad)" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="256" cy="256" r="14" fill="#141211" stroke="url(#goldGrad)" stroke-width="4"/>
+  <circle cx="256" cy="256" r="5" fill="#E5CA9E"/>
+  <line x1="256" y1="242" x2="256" y2="170" stroke="url(#goldGrad)" stroke-width="6" stroke-linecap="round"/>
+  <line x1="256" y1="256" x2="318" y2="280" stroke="url(#goldGrad)" stroke-width="4.5" stroke-linecap="round"/>
+  <polygon points="256,104 259,112 256,120 253,112" fill="#E5CA9E"/>
+  <polygon points="408,256 400,259 392,256 400,253" fill="#E5CA9E" opacity="0.7"/>
+  <polygon points="256,408 259,400 256,392 253,400" fill="#E5CA9E" opacity="0.7"/>
+  <polygon points="104,256 112,259 120,256 112,253" fill="#E5CA9E" opacity="0.7"/>
+</svg>
+

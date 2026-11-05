@@ -12,21 +12,31 @@ import { SettingsModal } from './components/SettingsModal'
 import { SettingsView } from './components/SettingsView'
 import { AuthPage } from './components/AuthPage'
 import { InstallModal } from './components/InstallModal'
+import { SplashScreen } from './components/SplashScreen'
+import { InAppToast } from './components/InAppToast'
+import { ChroniqLogo } from './components/ChroniqLogo'
 import { useTaskStore } from './store/useTaskStore'
 import { useSettingsStore } from './store/useSettingsStore'
 import { useAuthStore } from './store/useAuthStore'
 import type { Task } from './types'
-import { Download, X, ShieldCheck, WifiOff, AlertTriangle, CloudUpload, CheckCircle2 } from 'lucide-react'
-import logoImg from './assets/logo.png'
+import { Download, X, WifiOff, AlertTriangle, CloudUpload, CheckCircle2 } from 'lucide-react'
 import './App.css'
 
 export function App() {
   const { tasks, syncWithSupabase, errorMessage, clearError, unmigratedLocalCount, importLocalTasksToCloud } = useTaskStore()
-  const { permission, refreshPermission, syncSettingsWithSupabase } = useSettingsStore()
+  const { refreshPermission, syncSettingsWithSupabase } = useSettingsStore()
   const { initializeAuth, user, authError, clearAuthError } = useAuthStore()
 
   // Navigation tab state
   const [activeTab, setActiveTab] = useState<NavTab>('tasks')
+
+  // TrueSynk Cinematic Splash Screen
+  const [showSplash, setShowSplash] = useState(() => {
+    return sessionStorage.getItem('chroniq_splash_seen') !== 'true'
+  })
+
+  // In-App Toast Notification
+  const [activeToast, setActiveToast] = useState<{ task: Task; type: '10m' | 'due' } | null>(null)
 
   // Modals
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false)
@@ -103,8 +113,6 @@ export function App() {
 
   // ── Client-side In-App Deadline Monitor (10m Before & Exact Deadline) ──
   useEffect(() => {
-    if (permission !== 'granted') return
-
     const notifiedKeys = new Set<string>()
 
     const checkDeadlines = () => {
@@ -125,6 +133,7 @@ export function App() {
           const key10m = `client:10m:${t.id}:${dueTime}`
           if (!notifiedKeys.has(key10m)) {
             notifiedKeys.add(key10m)
+            setActiveToast({ task: t, type: '10m' })
             try {
               if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
                 void navigator.serviceWorker.ready.then((reg) => {
@@ -146,6 +155,7 @@ export function App() {
           const keyDue = `client:due:${t.id}:${dueTime}`
           if (!notifiedKeys.has(keyDue)) {
             notifiedKeys.add(keyDue)
+            setActiveToast({ task: t, type: 'due' })
             try {
               if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
                 void navigator.serviceWorker.ready.then((reg) => {
@@ -167,7 +177,7 @@ export function App() {
     checkDeadlines()
     const timer = setInterval(checkDeadlines, 30000)
     return () => clearInterval(timer)
-  }, [tasks, permission])
+  }, [tasks])
 
   const handleDismissBanner = () => {
     localStorage.setItem('chroniq_install_banner_dismissed', 'true')
@@ -198,13 +208,24 @@ export function App() {
 
   const handleImportLocalTasks = async () => {
     const res = await importLocalTasksToCloud()
-    setImportStatus(`Successfully migrated ${res.imported} task${res.imported === 1 ? '' : 's'} to your cloud account!`)
+    setImportStatus(`Successfully migrated ${res.imported} mandate${res.imported === 1 ? '' : 's'} to your cloud vault!`)
     setTimeout(() => setImportStatus(null), 5000)
   }
 
+  const handleCompleteSplash = () => {
+    sessionStorage.setItem('chroniq_splash_seen', 'true')
+    setShowSplash(false)
+  }
+
   return (
-    <div className="min-h-screen bg-[#0A0E17] text-[#F3F4F8] relative selection:bg-[#5EEAD4]/20 selection:text-[#5EEAD4] flex flex-col justify-between">
-      <div>
+    <div className="min-h-screen bg-[#121315] text-[#E3E2E5] relative selection:bg-[#D4AF37]/25 selection:text-[#F2CA50] flex flex-col justify-between">
+      {/* Horological Guilloche Overlay */}
+      <div className="pointer-events-none fixed inset-0 z-0 opacity-40 bg-[radial-gradient(#d4af37_1px,transparent_1px)] [background-size:24px_24px]" />
+
+      {/* TrueSynk Cinematic Splash Screen */}
+      {showSplash && <SplashScreen onEnter={handleCompleteSplash} />}
+
+      <div className="relative z-10">
         {/* Navigation Header with Desktop Tabs */}
         <Navbar
           activeTab={activeTab}
@@ -217,11 +238,11 @@ export function App() {
 
         {/* Offline Status Warning Banner */}
         {!isOnline && (
-          <div className="bg-[#182233] border-b border-amber-500/20 py-2 px-4 text-xs text-amber-200">
+          <div className="bg-[#1B1C1E] border-b border-[#D4AF37]/30 py-2 px-4 text-xs text-[#DAC58F]">
             <div className="max-w-6xl mx-auto flex items-center space-x-2">
-              <WifiOff className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+              <WifiOff className="w-3.5 h-3.5 text-[#F2CA50] flex-shrink-0" />
               <span>
-                Offline mode active. Your local tasks remain saved on this device. Cloud sync and scheduler triggers will resume once connection is restored.
+                Offline vault active. Your mandates remain saved securely on this device. Cloud sync and scheduler triggers will resume once connection is restored.
               </span>
             </div>
           </div>
@@ -229,15 +250,15 @@ export function App() {
 
         {/* Auth Error Banner */}
         {authError && (
-          <div className="bg-rose-950/40 border-b border-rose-500/20 py-2 px-4 text-xs text-rose-200">
+          <div className="bg-[#93000A]/40 border-b border-[#FFB4AB]/20 py-2 px-4 text-xs text-[#FFDAD6]">
             <div className="max-w-6xl mx-auto flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <AlertTriangle className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
+                <AlertTriangle className="w-3.5 h-3.5 text-[#FFB4AB] flex-shrink-0" />
                 <span>{authError}</span>
               </div>
               <button
                 onClick={clearAuthError}
-                className="text-rose-400 hover:text-white p-1 cursor-pointer"
+                className="text-[#FFB4AB] hover:text-white p-1 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -247,15 +268,15 @@ export function App() {
 
         {/* Database/Network Error Banner */}
         {errorMessage && (
-          <div className="bg-rose-950/40 border-b border-rose-500/20 py-2 px-4 text-xs text-rose-200">
+          <div className="bg-[#93000A]/40 border-b border-[#FFB4AB]/20 py-2 px-4 text-xs text-[#FFDAD6]">
             <div className="max-w-6xl mx-auto flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <AlertTriangle className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
+                <AlertTriangle className="w-3.5 h-3.5 text-[#FFB4AB] flex-shrink-0" />
                 <span>{errorMessage}</span>
               </div>
               <button
                 onClick={clearError}
-                className="text-rose-400 hover:text-white p-1 cursor-pointer"
+                className="text-[#FFB4AB] hover:text-white p-1 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -265,18 +286,18 @@ export function App() {
 
         {/* Local Offline Tasks Migration Banner */}
         {user && unmigratedLocalCount > 0 && !importStatus && (
-          <div className="bg-[#121826] border-b border-[#5EEAD4]/20 py-2.5 px-4 text-xs text-[#F3F4F8]">
+          <div className="bg-[#1B1C1E] border-b border-[#DAC58F]/25 py-2.5 px-4 text-xs text-[#E3E2E5]">
             <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
               <div className="flex items-center space-x-2">
-                <CloudUpload className="w-4 h-4 text-[#5EEAD4] flex-shrink-0" />
+                <CloudUpload className="w-4 h-4 text-[#F2CA50] flex-shrink-0" />
                 <span>
-                  You have <strong className="text-white font-medium">{unmigratedLocalCount} offline tasks</strong> saved on this device. Migrate them into your authenticated cloud account?
+                  You have <strong className="text-white font-medium">{unmigratedLocalCount} offline mandates</strong> saved on this device. Migrate them into your authenticated cloud vault?
                 </span>
               </div>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={handleImportLocalTasks}
-                  className="px-3 py-1 rounded-lg btn-primary font-semibold transition cursor-pointer text-[11px]"
+                  className="px-3 py-1 rounded-lg bg-gradient-to-tr from-[#D4AF37] to-[#F2CA50] text-[#141211] font-semibold text-[11px] transition cursor-pointer"
                 >
                   Import to Cloud
                 </button>
@@ -296,12 +317,12 @@ export function App() {
 
         {/* PWA Installation Callout Banner */}
         {!isStandalone && !isBannerDismissed && (
-          <div className="bg-[#121826] border-b border-white/[0.06] py-2 px-4 text-xs">
+          <div className="bg-[#1B1C1E] border-b border-[#DAC58F]/15 py-2 px-4 text-xs">
             <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
-              <div className="flex items-center space-x-2 text-[#94A3B8]">
-                <Download className="w-3.5 h-3.5 text-[#5EEAD4] flex-shrink-0" />
+              <div className="flex items-center space-x-2 text-[#99907C]">
+                <Download className="w-3.5 h-3.5 text-[#F2CA50] flex-shrink-0" />
                 <span>
-                  Install Chroniq as a Progressive Web App directly for offline access and native home screen integration.
+                  Install Chroniq as a Progressive Web App for offline horological access and native home screen integration.
                 </span>
               </div>
               <div className="flex items-center space-x-2 flex-shrink-0">
@@ -313,13 +334,13 @@ export function App() {
                       setIsInstallOpen(true)
                     }
                   }}
-                  className="px-2.5 py-1 rounded-lg bg-[#182233] hover:bg-[#1E2B40] text-[#5EEAD4] font-medium border border-white/[0.08] transition cursor-pointer text-[11px]"
+                  className="px-2.5 py-1 rounded-lg bg-[#292A2C] hover:bg-[#343537] text-[#DAC58F] font-medium border border-[#DAC58F]/20 transition cursor-pointer text-[11px]"
                 >
                   {deferredPrompt ? 'Install Now' : 'Install Guide'}
                 </button>
                 <button
                   onClick={handleDismissBanner}
-                  className="p-1 rounded-md text-[#64748B] hover:text-[#94A3B8] transition cursor-pointer"
+                  className="p-1 rounded-md text-[#99907C] hover:text-[#DAC58F] transition cursor-pointer"
                   title="Dismiss banner"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -330,29 +351,53 @@ export function App() {
         )}
 
         {/* ──────── TABBED VIEWS ROUTER ──────── */}
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 sm:pb-20">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 sm:pb-24">
+          {/* Active In-App Toast Notification Stack */}
+          {activeToast && (
+            <div className="mb-6">
+              <InAppToast
+                task={activeToast.task}
+                type={activeToast.type}
+                onAcknowledge={() => setActiveToast(null)}
+                onSnooze={() => {
+                  setActiveToast(null)
+                  setTimeout(() => {
+                    setActiveToast({ task: activeToast.task, type: activeToast.type })
+                  }, 5 * 60 * 1000)
+                }}
+                onDismiss={() => setActiveToast(null)}
+              />
+            </div>
+          )}
+
           {/* VIEW 1: TASKS / FOCUS */}
           {activeTab === 'tasks' && (
             <div className="animate-in fade-in duration-200">
-              {/* Top Greeting */}
-              <div className="mb-6 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+              {/* Studio Provenance Sub-bar */}
+              <div className="mb-6 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-[#DAC58F]/10 pb-4">
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight font-['Outfit']">
-                    Focus on what matters.
+                  <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[#DAC58F] mb-1 font-semibold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#DAC58F]" />
+                    <span>A True Synk Product</span>
+                    <span className="text-[#99907C]">•</span>
+                    <span className="text-[#99907C]">Horological Series IX</span>
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl font-serif text-white tracking-tight">
+                    Focus on What Matters.
                   </h1>
-                  <p className="text-xs sm:text-sm text-[#94A3B8] mt-1">
-                    Your daily focus window. Click any task to inspect details or update progress.
+                  <p className="text-xs sm:text-sm text-[#99907C] mt-0.5">
+                    Your daily focus window. Click any dossier card to inspect confidential instructions or honor completion.
                   </p>
                 </div>
               </div>
 
-              {/* Quick Add Task Input */}
+              {/* Frictionless Inscription Quick Add Bar */}
               <QuickAddTask />
 
-              {/* Task Navigation & Filters */}
+              {/* Editorial Filter Horizon Bar */}
               <TaskFilterBar onOpenNewTask={handleOpenNewTask} />
 
-              {/* Primary Work Focus: Task List */}
+              {/* Master Ledger Task List */}
               <TaskList
                 onEditTask={handleEditTask}
                 onOpenNewTask={handleOpenNewTask}
@@ -388,8 +433,12 @@ export function App() {
         </main>
       </div>
 
-      {/* Floating Bottom Navigation Bar */}
-      <BottomNav activeTab={activeTab} onSelectTab={setActiveTab} />
+      {/* Floating Bottom Navigation Bar with Quick-Add */}
+      <BottomNav
+        activeTab={activeTab}
+        onSelectTab={setActiveTab}
+        onQuickAdd={handleOpenNewTask}
+      />
 
       {/* Modals */}
       {/* 1. Floating Task Detail Modal (Bottom Sheet / Dialog) */}
@@ -410,7 +459,7 @@ export function App() {
         taskToEdit={taskToEdit}
       />
 
-      {/* 3. Quick Settings Modal (if opened via quick shortcuts) */}
+      {/* 3. Quick Settings Modal */}
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
@@ -425,33 +474,36 @@ export function App() {
         isStandalone={isStandalone}
       />
 
-      {/* Understated, Refined Luxury Footer */}
-      <footer className="border-t border-white/[0.06] py-6 text-xs text-[#64748B] bg-[#0A0E17] mb-16 sm:mb-0">
+      {/* Editorial Horological Footer */}
+      <footer className="relative z-10 border-t border-[#DAC58F]/10 py-6 text-xs text-[#99907C] bg-[#0D0E10] mb-16 sm:mb-0">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center space-x-2.5">
-            <div className="w-5 h-5 rounded-md overflow-hidden border border-white/[0.1] bg-[#121826] flex-shrink-0 flex items-center justify-center">
-              <img
-                src={logoImg}
-                alt="Chroniq"
-                className="w-full h-full object-cover scale-[2.2] translate-y-[22%]"
-              />
+            <div className="w-5 h-5 rounded-md overflow-hidden border border-[#DAC58F]/25 bg-[#121315] flex-shrink-0 flex items-center justify-center p-0.5 shadow-sm">
+              <ChroniqLogo className="w-full h-full object-contain" />
             </div>
-            <span className="font-semibold text-white/90 font-['Outfit']">Chroniq</span>
+            <span className="font-semibold text-white font-serif">Chroniq</span>
             <span>—</span>
-            <span>Own your time. Finish what matters.</span>
+            <span>The Architecture of Time &amp; Precision Productivity</span>
           </div>
 
-          <div className="flex items-center space-x-4 text-[11px] text-[#64748B]">
+          <div className="flex items-center space-x-4 text-[11px] font-mono text-[#99907C]">
             <span className="flex items-center space-x-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Multi-User RLS • 10m Smart Reminders</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#DAC58F]" />
+              <span>Multi-User RLS • 10m Push Dispatch</span>
             </span>
             <span>•</span>
             <button
-              onClick={() => setIsInstallOpen(true)}
-              className="hover:text-[#94A3B8] transition cursor-pointer"
+              onClick={() => setShowSplash(true)}
+              className="hover:text-[#F2CA50] transition cursor-pointer"
             >
-              Install App (PWA)
+              Replay Cinematic Entry
+            </button>
+            <span>•</span>
+            <button
+              onClick={() => setIsInstallOpen(true)}
+              className="hover:text-[#F2CA50] transition cursor-pointer"
+            >
+              Install App
             </button>
           </div>
         </div>

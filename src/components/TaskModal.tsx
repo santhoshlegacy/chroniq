@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { X, Calendar, Clock, Tag } from 'lucide-react'
 import type { Task, TaskPriority } from '@/types'
 import { useTaskStore } from '@/store/useTaskStore'
 import { format } from 'date-fns'
@@ -93,28 +92,33 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
     onClose()
   }
 
-  const priorityConfigs: Record<TaskPriority, { label: string; dot: string }> = {
-    urgent: { label: 'Urgent', dot: 'bg-rose-400' },
-    high: { label: 'High', dot: 'bg-amber-400' },
-    medium: { label: 'Medium', dot: 'bg-[#5EEAD4]' },
-    low: { label: 'Low', dot: 'bg-slate-400' },
+  const priorityConfigs: Record<TaskPriority, { label: string; dot: string; border: string; bg: string }> = {
+    urgent: { label: 'Tier 1 Sovereign', dot: 'bg-[#BA1A1A]', border: 'border-[#BA1A1A]/40', bg: 'bg-[#93000A]/30 text-[#FFDAD6]' },
+    high: { label: 'Amber Horizon', dot: 'bg-[#D4AF37]', border: 'border-[#D4AF37]/40', bg: 'bg-[#56481E]/40 text-[#F2CA50]' },
+    medium: { label: 'Champagne', dot: 'bg-[#DAC58F]', border: 'border-[#DAC58F]/40', bg: 'bg-[#1F2022] text-[#DAC58F]' },
+    low: { label: 'Sage Ritual', dot: 'bg-[#7F7570]', border: 'border-[#7F7570]/40', bg: 'bg-[#292A2C] text-[#D0C5AF]' },
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#0A0E17]/85 backdrop-blur-md animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#0D0E10]/85 backdrop-blur-md animate-in fade-in duration-150">
       <div className="fixed inset-0" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-[#121826] border border-white/[0.08] rounded-2xl p-6 sm:p-7 shadow-2xl z-10 animate-in zoom-in-95 duration-150 text-[#F3F4F8]">
+      <div className="relative w-full max-w-lg bg-[#1B1C1E] border border-[#DAC58F]/20 rounded-2xl p-6 sm:p-7 shadow-2xl z-10 animate-in zoom-in-95 duration-150 text-[#E3E2E5]">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3.5 border-b border-white/[0.06]">
-          <h2 className="text-base font-semibold text-white tracking-tight font-['Outfit']">
-            {taskToEdit ? 'Edit Task' : 'Create New Task'}
-          </h2>
+        <div className="flex items-center justify-between pb-3.5 border-b border-[#DAC58F]/10">
+          <div>
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[#DAC58F]">
+              Mandate Inscription
+            </span>
+            <h2 className="text-base font-semibold text-white tracking-tight font-serif mt-0.5">
+              {taskToEdit ? 'Modify Mandate Dossier' : 'Inscribe New Mandate'}
+            </h2>
+          </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-md text-[#94A3B8] hover:text-white hover:bg-white/[0.06] transition cursor-pointer"
+            className="p-1 rounded-md text-[#99907C] hover:text-white transition cursor-pointer"
             aria-label="Close"
           >
-            <X className="w-4 h-4" />
+            <span className="material-symbols-outlined text-lg">close</span>
           </button>
         </div>
 
@@ -122,8 +126,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           {/* Title */}
           <div>
-            <label className="block text-xs font-medium text-[#94A3B8] mb-1">
-              Task Title <span className="text-[#5EEAD4]">*</span>
+            <label className="block text-xs font-mono uppercase tracking-wider text-[#DAC58F] mb-1 font-semibold">
+              Mandate Title <span className="text-[#F2CA50]">*</span>
             </label>
             <input
               type="text"
@@ -131,15 +135,15 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
               maxLength={255}
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              placeholder="e.g., Finalize architecture review"
-              className="w-full px-3 py-2 rounded-xl bg-[#182233] border border-white/[0.06] text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-[#5EEAD4]/50 transition"
+              placeholder="e.g., Fiduciary Trust Agreement Execution"
+              className="w-full px-3.5 py-2 rounded-xl bg-[#121315] border border-[#DAC58F]/20 text-xs text-white placeholder-[#99907C]/60 focus:outline-none focus:border-[#DAC58F] transition"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-medium text-[#94A3B8] mb-1">
-              Description (Optional)
+            <label className="block text-xs font-mono uppercase tracking-wider text-[#DAC58F] mb-1 font-semibold">
+              Confidential Instructions (Optional)
             </label>
             <textarea
               rows={2}
@@ -147,31 +151,32 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               placeholder="Key notes, context, or deliverables..."
-              className="w-full px-3 py-2 rounded-xl bg-[#182233] border border-white/[0.06] text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-[#5EEAD4]/50 transition resize-none"
+              className="w-full px-3.5 py-2 rounded-xl bg-[#121315] border border-[#DAC58F]/20 text-xs text-white placeholder-[#99907C]/60 focus:outline-none focus:border-[#DAC58F] transition resize-none"
             />
           </div>
 
           {/* Priority Selector */}
           <div>
-            <label className="block text-xs font-medium text-[#94A3B8] mb-1.5">
-              Priority Level
+            <label className="block text-xs font-mono uppercase tracking-wider text-[#DAC58F] mb-1.5 font-semibold">
+              Urgency Tier
             </label>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {(['urgent', 'high', 'medium', 'low'] as TaskPriority[]).map((p) => {
                 const isSelected = form.priority === p
+                const cfg = priorityConfigs[p]
                 return (
                   <button
                     key={p}
                     type="button"
                     onClick={() => setForm({ ...form, priority: p })}
-                    className={`py-1.5 px-2 rounded-lg text-xs font-medium capitalize flex items-center justify-center space-x-1.5 border transition cursor-pointer ${
+                    className={`py-2 px-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 border transition cursor-pointer ${
                       isSelected
-                        ? 'bg-[#1E2B40] border-[#5EEAD4]/40 text-white shadow-xs'
-                        : 'bg-[#182233] border-white/[0.04] text-[#94A3B8] hover:text-white'
+                        ? `${cfg.bg} ${cfg.border} ring-1 ring-[#DAC58F]/30 shadow-xs font-semibold`
+                        : 'bg-[#121315] border-[#DAC58F]/10 text-[#99907C] hover:text-white'
                     }`}
                   >
-                    <span className={`w-1.5 h-1.5 rounded-full ${priorityConfigs[p].dot}`} />
-                    <span>{priorityConfigs[p].label}</span>
+                    <span className={`w-2 h-2 rounded-full ${cfg.dot}`} />
+                    <span className="truncate">{cfg.label}</span>
                   </button>
                 )
               })}
@@ -181,28 +186,26 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
           {/* Dates & Duration Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-[#94A3B8] mb-1 flex items-center space-x-1">
-                <Calendar className="w-3 h-3 text-[#64748B]" />
-                <span>Scheduled Date</span>
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#99907C] mb-1">
+                Scheduled Date
               </label>
               <input
                 type="date"
                 value={form.scheduledDate}
                 onChange={(e) => setForm({ ...form, scheduledDate: e.target.value })}
-                className="w-full px-3 py-1.5 rounded-xl bg-[#182233] border border-white/[0.06] text-xs text-white focus:outline-none focus:border-[#5EEAD4]/50"
+                className="w-full px-3 py-1.5 rounded-xl bg-[#121315] border border-[#DAC58F]/20 text-xs text-white focus:outline-none focus:border-[#DAC58F]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#94A3B8] mb-1 flex items-center space-x-1">
-                <Clock className="w-3 h-3 text-[#64748B]" />
-                <span>Deadline (Optional)</span>
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#99907C] mb-1">
+                Deadline (Optional)
               </label>
               <input
                 type="datetime-local"
                 value={form.dueAt}
                 onChange={(e) => setForm({ ...form, dueAt: e.target.value })}
-                className="w-full px-3 py-1.5 rounded-xl bg-[#182233] border border-white/[0.06] text-xs text-white focus:outline-none focus:border-[#5EEAD4]/50"
+                className="w-full px-3 py-1.5 rounded-xl bg-[#121315] border border-[#DAC58F]/20 text-xs text-white focus:outline-none focus:border-[#DAC58F]"
               />
             </div>
           </div>
@@ -210,14 +213,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
           {/* Category & Duration */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-[#94A3B8] mb-1 flex items-center space-x-1">
-                <Tag className="w-3 h-3 text-[#64748B]" />
-                <span>Category</span>
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#99907C] mb-1">
+                Category
               </label>
               <select
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="w-full px-3 py-1.5 rounded-xl bg-[#182233] border border-white/[0.06] text-xs text-white focus:outline-none focus:border-[#5EEAD4]/50"
+                className="w-full px-3 py-1.5 rounded-xl bg-[#121315] border border-[#DAC58F]/20 text-xs text-white focus:outline-none focus:border-[#DAC58F]"
               >
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
@@ -228,9 +230,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#94A3B8] mb-1 flex items-center space-x-1">
-                <Clock className="w-3 h-3 text-[#64748B]" />
-                <span>Est. Minutes</span>
+              <label className="block text-xs font-mono uppercase tracking-wider text-[#99907C] mb-1">
+                Estimated Duration (Minutes)
               </label>
               <input
                 type="number"
@@ -239,26 +240,26 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
                 step="5"
                 value={form.duration}
                 onChange={(e) => setForm({ ...form, duration: e.target.value })}
-                className="w-full px-3 py-1.5 rounded-xl bg-[#182233] border border-white/[0.06] text-xs text-white focus:outline-none focus:border-[#5EEAD4]/50 tabular-nums font-mono"
+                className="w-full px-3 py-1.5 rounded-xl bg-[#121315] border border-[#DAC58F]/20 text-xs text-white focus:outline-none focus:border-[#DAC58F] tabular-nums font-mono"
               />
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="pt-2 flex items-center justify-end space-x-2">
+          <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#DAC58F]/10">
             <button
               type="button"
               onClick={onClose}
-              className="px-3.5 py-1.5 rounded-lg text-xs font-medium text-[#94A3B8] hover:text-white transition cursor-pointer"
+              className="px-3.5 py-1.5 rounded-lg text-xs font-medium text-[#99907C] hover:text-white transition cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !form.title.trim()}
-              className="btn-primary px-4 py-1.5 text-xs font-semibold disabled:opacity-40 cursor-pointer"
+              className="px-4 py-1.5 rounded-lg bg-gradient-to-tr from-[#D4AF37] to-[#F2CA50] text-[#141211] font-semibold text-xs uppercase tracking-wider disabled:opacity-40 cursor-pointer shadow-md hover:opacity-90 active:scale-95 transition-all"
             >
-              {taskToEdit ? 'Save Changes' : 'Create Task'}
+              {taskToEdit ? 'Save Dossier' : 'Inscribe Mandate'}
             </button>
           </div>
         </form>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><title>Chroniq</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100%;margin:0;padding:0;background-color:#fcf9f2;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary-fixed": "#e7e1df", "surface": "#fcf9f2", "on-tertiary": "#ffffff", "tertiary-fixed": "#fbdeb6", "inverse-on-surface": "#f3f0e9", "primary": "#000000", "surface-container-highest": "#e5e2db", "primary-container": "#1d1b1a", "surface-dim": "#dcdad3", "on-tertiary-fixed": "#271902", "inverse-surface": "#31312c", "on-tertiary-fixed-variant": "#564426", "inverse-primary": "#cbc5c3", "surface-tint": "#615e5c", "on-error-container": "#93000a", "secondary-fixed-dim": "#e4c18c", "error-container": "#ffdad6", "on-tertiary-container": "#97805e", "on-primary-fixed-variant": "#494645", "surface-bright": "#fcf9f2", "on-secondary-fixed": "#281900", "surface-container": "#f1eee7", "outline": "#7f7570", "background": "#fcf9f2", "on-background": "#1c1c18", "outline-variant": "#d0c4be", "surface-variant": "#e5e2db", "on-primary-fixed": "#1d1b1a", "on-secondary": "#ffffff", "on-primary": "#ffffff", "secondary": "#745a2e", "primary-fixed-dim": "#cbc5c3", "surface-container-low": "#f6f3ec", "on-secondary-container": "#795e32", "on-secondary-fixed-variant": "#5a4319", "error": "#ba1a1a", "secondary-fixed": "#ffdeab", "on-error": "#ffffff", "on-surface": "#1c1c18", "tertiary-container": "#271902", "secondary-container": "#fedaa3", "surface-container-lowest": "#ffffff", "tertiary": "#000000", "surface-container-high": "#ebe8e1", "on-surface-variant": "#4d4541", "on-primary-container": "#878381", "tertiary-fixed-dim": "#ddc39c" }, borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, spacing: { "margin": "3rem", "gutter": "1.5rem", "space-xl": "3rem", "space-lg": "1.75rem", "space-sm": "0.5rem", "gutter-mobile": "0.75rem", "margin-mobile": "1.25rem", "space-md": "1rem", "space-xs": "0.25rem" }, fontFamily: { "display-xl-mobile": ["Playfair Display"], "headline-lg": ["Playfair Display"], "body-md": ["Inter"], "label-md": ["Inter"], "numeral-meta": ["Inter"], "display-lg-mobile": ["Playfair Display"], "numeral-display": ["Inter"], "body-lg": ["Inter"], "title-md": ["Inter"], "headline-md": ["Playfair Display"], "display-xl": ["Playfair Display"], "display-lg": ["Playfair Display"], "label-sm": ["Inter"], "body-sm": ["Inter"], "headline-sm": ["Playfair Display"] }, fontSize: { "display-xl-mobile": ["36px", { lineHeight: "44px", letterSpacing: "-0.01em", fontWeight: "400" }], "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "500" }], "body-md": ["14px", { lineHeight: "22px", fontWeight: "400" }], "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.06em", fontWeight: "500" }], "numeral-meta": ["13px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500" }], "display-lg-mobile": ["28px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "400" }], "numeral-display": ["32px", { lineHeight: "36px", letterSpacing: "-0.03em", fontWeight: "300" }], "body-lg": ["16px", { lineHeight: "26px", fontWeight: "400" }], "title-md": ["16px", { lineHeight: "24px", letterSpacing: "-0.01em", fontWeight: "600" }], "headline-md": ["24px", { lineHeight: "32px", fontWeight: "500" }], "display-xl": ["56px", { lineHeight: "64px", letterSpacing: "-0.02em", fontWeight: "400" }], "display-lg": ["40px", { lineHeight: "48px", letterSpacing: "-0.02em", fontWeight: "400" }], "label-sm": ["11px", { lineHeight: "14px", letterSpacing: "0.08em", fontWeight: "600" }], "body-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }], "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "600" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen flex flex-col antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_12px_rgba(45,41,38,0.03)]"><div class="h-20 px-margin-mobile flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Chroniq Brand Monogram Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJ1WG28wTQ-SlukyionRi6E7vUTMIWrKh2jCOKJKvvSe_5Gfb854gdUNDLWxqT4PfL21jGp-oOKvU42IW7uP82L2nWoqsSMPw5BRywJE2rCnjjMDI03qppl_T77m1witpeg12pTVigT2-OuTgFX5yf5lVmLOtr3kvoiag-U-YQNOnRIUF7yJHjLsZ60hLnsBKcj-VUQjKansUX5ejSWo795UKbkY6XmPgvdqnXg-qy"/><div class="flex flex-col"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-headline-sm tracking-tight text-on-surface">Chroniq</span><span class="font-label-sm text-label-sm text-secondary uppercase">· Schedule</span></div><div class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest text-[10px]">Synchronized &amp; Calm</span></div></div></div><div class="flex items-center gap-space-xs"><button aria-label="Quick Capture" class="w-11 h-11 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">ink_pen</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full pt-20 pb-28 bg-surface min-h-screen"><div class="flex flex-col w-full px-margin-mobile gap-space-md">
+<!-- Date Horizon Carousel Header -->
+<section class="flex flex-col gap-space-sm pt-space-xs">
+<div class="flex items-baseline justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest">Temporal Architecture</span>
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-on-surface">Today’s Schedule</h1>
+</div>
+<div class="flex items-center gap-1.5 bg-surface-container px-2.5 py-1 rounded-full text-on-surface-variant shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-[10px]">GMT +1 Paris</span>
+</div>
+</div>
+<!-- Date Strip Scrollable Carousel -->
+<div class="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none -mx-margin-mobile px-margin-mobile">
+<button class="flex flex-col items-center justify-center min-w-[48px] py-2 rounded-xl bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors" type="button">
+<span class="font-label-sm text-label-sm text-[10px] uppercase">Mon</span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface font-semibold mt-0.5">21</span>
+</button>
+<button class="flex flex-col items-center justify-center min-w-[48px] py-2 rounded-xl bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors" type="button">
+<span class="font-label-sm text-label-sm text-[10px] uppercase">Tue</span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface font-semibold mt-0.5">22</span>
+</button>
+<button class="flex flex-col items-center justify-center min-w-[48px] py-2 rounded-xl bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors" type="button">
+<span class="font-label-sm text-label-sm text-[10px] uppercase">Wed</span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface font-semibold mt-0.5">23</span>
+</button>
+<!-- Active / Today Highlighted in Champagne & Deep Tones -->
+<button class="flex flex-col items-center justify-center min-w-[54px] py-2.5 rounded-xl bg-secondary-container text-on-secondary-container shadow-sm ring-1 ring-secondary/30 relative" type="button">
+<span class="font-label-sm text-label-sm text-[10px] uppercase font-bold text-secondary">Thu</span>
+<span class="font-numeral-display text-[18px] leading-tight font-semibold text-on-surface mt-0.5">24</span>
+<span class="w-1 h-1 rounded-full bg-secondary absolute bottom-1.5"></span>
+</button>
+<button class="flex flex-col items-center justify-center min-w-[48px] py-2 rounded-xl bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors" type="button">
+<span class="font-label-sm text-label-sm text-[10px] uppercase">Fri</span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface font-semibold mt-0.5">25</span>
+</button>
+<button class="flex flex-col items-center justify-center min-w-[48px] py-2 rounded-xl bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors" type="button">
+<span class="font-label-sm text-label-sm text-[10px] uppercase">Sat</span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface font-semibold mt-0.5">26</span>
+</button>
+<button class="flex flex-col items-center justify-center min-w-[48px] py-2 rounded-xl bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors" type="button">
+<span class="font-label-sm text-label-sm text-[10px] uppercase">Sun</span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface font-semibold mt-0.5">27</span>
+</button>
+</div>
+</section>
+<!-- Serenity & Cadence Summary Card with Tactile Materiality -->
+<section class="bg-surface-container-low rounded-xl p-space-md shadow-sm relative overflow-hidden">
+<div class="absolute -right-10 -bottom-10 w-36 h-36 rounded-full bg-secondary-container/25 blur-2xl pointer-events-none"></div>
+<div class="flex items-center justify-between gap-space-sm relative z-10">
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">hourglass_top</span>
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest">Composure Architecture</span>
+</div>
+<h2 class="font-title-md text-title-md text-on-surface leading-tight">Focus Horizon: 4.5h Deep Work Booked</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">2 Open windows preserved for cognitive drift &amp; sovereign decompression.</p>
+</div>
+<!-- Micro Composure Index Dial -->
+<div class="flex flex-col items-center justify-center flex-shrink-0 bg-surface-container rounded-xl p-2.5 min-w-[76px] shadow-sm">
+<div class="relative w-12 h-12 flex items-center justify-center">
+<svg class="w-12 h-12 -rotate-90 transform" viewbox="0 0 48 48">
+<circle class="text-surface-variant" cx="24" cy="24" fill="transparent" r="20" stroke="currentColor" stroke-width="3"></circle>
+<circle class="text-secondary" cx="24" cy="24" fill="transparent" r="20" stroke="currentColor" stroke-dasharray="125.6" stroke-dashoffset="27.6" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<span class="absolute font-numeral-meta text-numeral-meta font-semibold text-on-surface">78%</span>
+</div>
+<span class="font-label-sm text-label-sm text-[9px] uppercase tracking-wider text-on-surface-variant mt-1">Calm Index</span>
+</div>
+</div>
+</section>
+<!-- System Lock Screen Push Notification Preview -->
+<section class="bg-surface-container rounded-xl p-3.5 shadow-md relative overflow-hidden transition-all duration-300">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-1.5">
+<div class="w-4 h-4 rounded-full bg-secondary flex items-center justify-center text-on-secondary">
+<span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1;">notifications_active</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-[10px]">Chroniq Push Notification • 10m Warning</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary text-[10px] font-medium">System Preview</span>
+</div>
+<div class="bg-surface-container-lowest/80 rounded-lg p-3 backdrop-blur-md flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[16px]">lock_clock</span>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="font-title-md text-title-md text-on-surface text-[14px]">Villa Bellagio Acquisition Review</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-[12px] leading-relaxed">Commencing in 10 minutes. Materials pre-cached in vault. Focus shields armed.</p>
+</div>
+<button aria-label="Acknowledge alert" class="p-1 rounded-full text-on-surface-variant hover:text-on-surface" type="button">
+<span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+</section>
+<!-- Chronological Daily Timeline & Focus Windows -->
+<section class="flex flex-col gap-space-sm mt-space-xs">
+<div class="flex items-center justify-between">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Chronological Horizon</h3>
+<span class="font-label-sm text-label-sm text-secondary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+        Now 10:50 AM
+      </span>
+</div>
+<!-- Timeline Container with Continuous Bronzed Hairline Axis -->
+<div class="relative flex flex-col gap-space-md pl-6">
+<!-- Hairline Axis -->
+<div class="absolute left-2.5 top-3 bottom-3 w-[1px] bg-secondary-fixed-dim/60"></div>
+<!-- Item 1: Completed Morning Mindfulness -->
+<div class="relative flex flex-col gap-1 group">
+<!-- Pin Node -->
+<div class="absolute -left-6 top-1.5 w-3.5 h-3.5 rounded-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-[11px] text-secondary" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">08:30 AM – 09:30 AM</span>
+<span class="bg-surface-container px-2 py-0.5 rounded text-[10px] font-label-sm text-secondary tracking-wider uppercase font-semibold">Completed ✓</span>
+</div>
+<div class="bg-surface-container-lowest/60 rounded-xl p-space-sm opacity-80 transition-all hover:opacity-100 shadow-sm">
+<h4 class="font-body-lg text-body-lg text-on-surface font-medium line-through decoration-on-surface-variant/40">Morning Mindfulness &amp; Strategic Grounding</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Tea ceremonial, journaling, macro market briefing scanned.</p>
+</div>
+</div>
+<!-- Live Horizon Marker (10:50 AM) -->
+<div class="relative flex items-center -ml-6 py-0.5 z-20">
+<div class="w-2.5 h-2.5 rounded-full bg-secondary ring-4 ring-secondary-fixed/50"></div>
+<div class="flex-1 h-[1.5px] bg-secondary/70"></div>
+<span class="bg-secondary text-on-secondary px-2 py-0.5 rounded-full font-label-sm text-label-sm text-[9px] uppercase tracking-widest shadow-sm ml-2">Horizon Pulse</span>
+</div>
+<!-- Item 2: Active Focus Window -->
+<div class="relative flex flex-col gap-1.5">
+<!-- Active Pin Node -->
+<div class="absolute -left-6 top-2 w-3.5 h-3.5 rounded-full bg-secondary ring-2 ring-surface flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-on-secondary"></span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-secondary font-semibold">11:00 AM – 12:30 PM</span>
+<span class="bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded text-[10px] font-label-sm uppercase font-bold tracking-wider">Active Focus Window</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-secondary animate-pulse" title="Do Not Disturb Active">do_not_disturb_on</span>
+</div>
+<div class="bg-surface-container rounded-xl p-space-md shadow-sm relative overflow-hidden ring-1 ring-secondary/25">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest text-[10px]">Do Not Disturb Active</span>
+</div>
+<h4 class="font-title-md text-title-md text-on-surface">Focus Window: Villa Bellagio Acquisition Review</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Due diligence dossiers compiled. 90-minute sustained unilateral focus block.</p>
+</div>
+<div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-on-surface flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">villa</span>
+</div>
+</div>
+<!-- Progress Micro-bar for active window -->
+<div class="mt-3 pt-3 flex flex-col gap-1.5">
+<div class="flex justify-between items-center font-label-sm text-label-sm text-[10px] text-on-surface-variant">
+<span>Commences in 10 mins</span>
+<span class="font-semibold text-secondary">Shields Engaged</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="w-1/12 h-full bg-secondary rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 3: Upcoming Executive Luncheon -->
+<div class="relative flex flex-col gap-1">
+<!-- Pin Node -->
+<div class="absolute -left-6 top-2 w-3.5 h-3.5 rounded-full bg-surface-container-highest"></div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">01:30 PM – 02:45 PM</span>
+<span class="bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-label-sm uppercase tracking-wider">Upcoming</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary text-[10px]">10m Alert Armed</span>
+</div>
+<div class="bg-surface-container-low rounded-xl p-space-sm shadow-sm flex items-center justify-between gap-space-sm">
+<div class="flex flex-col min-w-0">
+<h4 class="font-body-lg text-body-lg text-on-surface font-medium truncate">Executive Luncheon at Hôtel de Crillon</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-secondary">location_on</span>
+              10 Place de la Concorde, Salon des Aigles
+            </p>
+</div>
+<div class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant flex-shrink-0">
+<span class="material-symbols-outlined text-[18px]">restaurant</span>
+</div>
+</div>
+</div>
+<!-- Item 4: Solitude & Sovereign Capital Allocation -->
+<div class="relative flex flex-col gap-1">
+<!-- Pin Node -->
+<div class="absolute -left-6 top-2 w-3.5 h-3.5 rounded-full bg-surface-container-highest"></div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">04:00 PM – 05:30 PM</span>
+<span class="bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-label-sm uppercase tracking-wider">Focus Window</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary text-[10px] flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">graphic_eq</span>
+            432Hz Soundscape
+          </span>
+</div>
+<div class="bg-surface-container-low rounded-xl p-space-sm shadow-sm flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<h4 class="font-body-lg text-body-lg text-on-surface font-medium">Deep Solitude &amp; Sovereign Capital Allocation</h4>
+<span class="material-symbols-outlined text-[18px] text-secondary">headphones</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Macro rebalancing, seed endowment evaluation. Binaural sound dampening calibrated.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Proactive Maintenance Badge -->
+<section class="bg-surface-container-high/60 rounded-xl p-3.5 flex items-start gap-3 mt-space-xs shadow-sm">
+<div class="w-7 h-7 rounded-full bg-surface-container-highest flex items-center justify-center text-secondary flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[16px]">inventory_2</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider text-[11px] font-semibold">Automatic 30-Day Cleanup Active</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-[12px] leading-relaxed mt-0.5">
+        Completed focus blocks older than 30 days are gracefully moved to long-term vault storage, keeping your daily horizon crisp and unburdened.
+      </p>
+</div>
+</section>
+<!-- Micro Visual Cue / Archival Inscription -->
+<div class="flex items-center justify-center gap-2 py-space-sm opacity-60">
+<span class="h-[1px] w-8 bg-outline-variant"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-[9px] text-on-surface-variant">Curated Horizon • Folio N° 1024</span>
+<span class="h-[1px] w-8 bg-outline-variant"></span>
+</div>
+</div>
+<script>
+  // Dynamic interaction for subtle date switching micro-animation
+  document.querySelectorAll('section button').forEach(button => {
+    button.addEventListener('click', function() {
+      if (this.classList.contains('min-w-[48px]') || this.classList.contains('min-w-[54px]')) {
+        // Simple subtle haptic-like scale effect on tap
+        this.classList.add('scale-95');
+        setTimeout(() => this.classList.remove('scale-95'), 140);
+      }
+    });
+  });
+</script></main><div class="fixed bottom-24 right-margin-mobile z-50"><button aria-label="Chroniq Quick Add" class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container shadow-[0_8px_24px_rgba(116,90,46,0.22)] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform" type="button"><span class="material-symbols-outlined text-[22px]">add</span></button></div><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/85 backdrop-blur-xl shadow-[0_-4px_20px_rgba(45,41,38,0.03)]" data-active-classes="text-secondary font-semibold"><div class="flex justify-around items-center h-16 px-gutter-mobile"><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="tasks" href="#"><span class="material-symbols-outlined text-[22px]">checklist</span><span class="font-label-sm text-label-sm text-[10px] uppercase tracking-wider">Tasks</span></a><a aria-current="page" class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] transition-colors text-secondary font-semibold" data-path="schedule" href="#"><span class="material-symbols-outlined text-[22px]">schedule</span><span class="font-label-sm text-label-sm text-[10px] uppercase tracking-wider">Schedule</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="settings" href="#"><span class="material-symbols-outlined text-[22px]">tune</span><span class="font-label-sm text-label-sm text-[10px] uppercase tracking-wider">Settings</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="account" href="#"><span class="material-symbols-outlined text-[22px]">workspace_premium</span><span class="font-label-sm text-label-sm text-[10px] uppercase tracking-wider">Account</span></a></div></nav></body></html>

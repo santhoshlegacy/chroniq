@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_blank" name="shell-type"/><title>Chroniq</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100%;margin:0;padding:0;background-color:#fcf9f2;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary-fixed": "#e7e1df", "surface": "#fcf9f2", "on-tertiary": "#ffffff", "tertiary-fixed": "#fbdeb6", "inverse-on-surface": "#f3f0e9", "primary": "#000000", "surface-container-highest": "#e5e2db", "primary-container": "#1d1b1a", "surface-dim": "#dcdad3", "on-tertiary-fixed": "#271902", "inverse-surface": "#31312c", "on-tertiary-fixed-variant": "#564426", "inverse-primary": "#cbc5c3", "surface-tint": "#615e5c", "on-error-container": "#93000a", "secondary-fixed-dim": "#e4c18c", "error-container": "#ffdad6", "on-tertiary-container": "#97805e", "on-primary-fixed-variant": "#494645", "surface-bright": "#fcf9f2", "on-secondary-fixed": "#281900", "surface-container": "#f1eee7", "outline": "#7f7570", "background": "#fcf9f2", "on-background": "#1c1c18", "outline-variant": "#d0c4be", "surface-variant": "#e5e2db", "on-primary-fixed": "#1d1b1a", "on-secondary": "#ffffff", "on-primary": "#ffffff", "secondary": "#745a2e", "primary-fixed-dim": "#cbc5c3", "surface-container-low": "#f6f3ec", "on-secondary-container": "#795e32", "on-secondary-fixed-variant": "#5a4319", "error": "#ba1a1a", "secondary-fixed": "#ffdeab", "on-error": "#ffffff", "on-surface": "#1c1c18", "tertiary-container": "#271902", "secondary-container": "#fedaa3", "surface-container-lowest": "#ffffff", "tertiary": "#000000", "surface-container-high": "#ebe8e1", "on-surface-variant": "#4d4541", "on-primary-container": "#878381", "tertiary-fixed-dim": "#ddc39c" }, borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, spacing: { "margin": "3rem", "gutter": "1.5rem", "space-xl": "3rem", "space-lg": "1.75rem", "space-sm": "0.5rem", "gutter-mobile": "0.75rem", "margin-mobile": "1.25rem", "space-md": "1rem", "space-xs": "0.25rem" }, fontFamily: { "display-xl-mobile": ["Playfair Display"], "headline-lg": ["Playfair Display"], "body-md": ["Inter"], "label-md": ["Inter"], "numeral-meta": ["Inter"], "display-lg-mobile": ["Playfair Display"], "numeral-display": ["Inter"], "body-lg": ["Inter"], "title-md": ["Inter"], "headline-md": ["Playfair Display"], "display-xl": ["Playfair Display"], "display-lg": ["Playfair Display"], "label-sm": ["Inter"], "body-sm": ["Inter"], "headline-sm": ["Playfair Display"] }, fontSize: { "display-xl-mobile": ["36px", { lineHeight: "44px", letterSpacing: "-0.01em", fontWeight: "400" }], "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "500" }], "body-md": ["14px", { lineHeight: "22px", fontWeight: "400" }], "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.06em", fontWeight: "500" }], "numeral-meta": ["13px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500" }], "display-lg-mobile": ["28px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "400" }], "numeral-display": ["32px", { lineHeight: "36px", letterSpacing: "-0.03em", fontWeight: "300" }], "body-lg": ["16px", { lineHeight: "26px", fontWeight: "400" }], "title-md": ["16px", { lineHeight: "24px", letterSpacing: "-0.01em", fontWeight: "600" }], "headline-md": ["24px", { lineHeight: "32px", fontWeight: "500" }], "display-xl": ["56px", { lineHeight: "64px", letterSpacing: "-0.02em", fontWeight: "400" }], "display-lg": ["40px", { lineHeight: "48px", letterSpacing: "-0.02em", fontWeight: "400" }], "label-sm": ["11px", { lineHeight: "14px", letterSpacing: "0.08em", fontWeight: "600" }], "body-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }], "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "600" }] } } } };</script></head><body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen flex flex-col antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><main class="flex-1 flex flex-col relative w-full pt-safe pb-safe bg-surface min-h-screen"><div class="flex flex-col w-full px-margin-mobile pb-space-xl justify-between items-center text-center select-none overflow-hidden relative">
+<!-- Ambient Golden Ray Backlight (Architectural Lighting) -->
+<div class="absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-80 rounded-full bg-secondary-fixed/30 blur-3xl pointer-events-none opacity-60"></div>
+<div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-secondary-container/20 blur-3xl pointer-events-none opacity-40"></div>
+<!-- Top Brand Origin Statement -->
+<header class="w-full flex flex-col items-center pt-space-md z-10">
+<div class="inline-flex items-center gap-space-xs px-3 py-1.5 rounded-full bg-surface-container-low shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<p class="font-label-sm text-label-sm uppercase text-secondary tracking-widest">
+        A True Synk Product
+      </p>
+</div>
+<div class="mt-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant/70">
+        Horological Series IX • Folio Edition
+      </span>
+</div>
+</header>
+<!-- Central Emblem & Horological Calibration Dial -->
+<section class="w-full flex flex-col items-center my-space-lg relative z-10">
+<!-- Concentric Calibration Rings -->
+<div class="relative w-64 h-64 flex items-center justify-center">
+<!-- Outer Precision Dial Ring with Subtle Pulsing Halo -->
+<div class="absolute inset-0 rounded-full bg-surface-container-high/40 transition-transform duration-1000 ease-out flex items-center justify-center" id="dial-outer">
+<!-- Radial tick markers via SVG -->
+<svg class="w-full h-full text-secondary/30 animate-[spin_60s_linear_infinite]" viewbox="0 0 200 200">
+<circle cx="100" cy="100" fill="none" r="94" stroke="currentColor" stroke-dasharray="2 6" stroke-width="1"></circle>
+<circle cx="100" cy="100" fill="none" opacity="0.6" r="86" stroke="currentColor" stroke-dasharray="4 14" stroke-width="0.75"></circle>
+</svg>
+</div>
+<!-- Mid Recessed Well Ring -->
+<div class="absolute inset-4 rounded-full bg-surface-container-low shadow-inner flex items-center justify-center">
+<svg class="w-full h-full text-secondary/40 animate-[spin_35s_linear_infinite_reverse]" viewbox="0 0 160 160">
+<circle cx="80" cy="80" fill="none" r="74" stroke="currentColor" stroke-dasharray="1 8" stroke-width="0.75"></circle>
+<!-- 4 Cardinal Quadrant Pips -->
+<circle cx="80" cy="6" fill="currentColor" r="2"></circle>
+<circle cx="154" cy="80" fill="currentColor" r="2"></circle>
+<circle cx="80" cy="154" fill="currentColor" r="2"></circle>
+<circle cx="6" cy="80" fill="currentColor" r="2"></circle>
+</svg>
+</div>
+<!-- Core Radiant Aura -->
+<div class="absolute inset-10 rounded-full bg-gradient-to-tr from-secondary-fixed/40 via-surface-container to-secondary-container/50 blur-md opacity-80"></div>
+<!-- Emblem Artwork Container -->
+<div class="relative w-36 h-36 rounded-full bg-surface-container-lowest shadow-xl flex items-center justify-center p-3 z-20 group">
+<img alt="Chroniq Brand Monogram Logo" class="w-full h-full object-contain filter drop-shadow-sm transition-transform duration-700 ease-out hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1XbbTV0UN5GA2MRiVlUr3Zr2DddZ4I8CzV1jO29leqbLkmJyf1-7LZUSk-ulwU603fRh5tfOXxH43ZRqjtsAOq-oNE7f9uSGseYKVIq5cygW__HJ-RxUU9sUuZnlFy6ETqVROzn9-xBHQCGnUmGaVW5ywVGQw9n6HEJwBDm0l2sLNc3ME5qJ5lB0gDBzqIDhlVZjxSKw6hnOgpLF7GL7DfXbXSENUJm0pFKisNcceySFQ"/>
+<!-- Center Horizon Bead -->
+<div class="absolute -bottom-1 w-2.5 h-2.5 rounded-full bg-secondary shadow-md ring-0 ring-surface-container-lowest"></div>
+</div>
+</div>
+<!-- Brand Typography Header -->
+<div class="mt-space-md flex flex-col items-center">
+<h1 class="font-display-xl-mobile text-display-xl-mobile text-primary tracking-tight">
+        Chroniq
+      </h1>
+<p class="font-label-md text-label-md uppercase tracking-wider text-secondary mt-1">
+        The Architecture of Time &amp; Precision Productivity
+      </p>
+</div>
+<!-- Editorial Architectural Quotation -->
+<div class="mt-space-md max-w-xs px-space-xs">
+<p class="font-headline-sm text-headline-sm italic text-on-surface-variant font-normal leading-relaxed">
+        “Time is the rarest luxury; master its cadence.”
+      </p>
+</div>
+</section>
+<!-- Interactive Biometric Key & Calibration Module -->
+<section class="w-full flex flex-col items-center z-10 max-w-sm mt-space-xs">
+<!-- Calibration Status Strip & Progress Line -->
+<div class="w-full bg-surface-container-low rounded-xl p-space-md shadow-sm mb-space-md flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface" id="calibration-text">
+            Calibrating Celestial Cadence...
+          </span>
+</div>
+<span class="font-numeral-meta text-numeral-meta text-secondary font-semibold" id="calibration-percent">
+          98.4%
+        </span>
+</div>
+<!-- Precision Fluid Spring Loading Bar -->
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden relative">
+<div class="h-full bg-secondary rounded-full transition-all duration-1000 ease-out" id="spring-progress" style="width: 86%;"></div>
+</div>
+<div class="flex items-center justify-between pt-0.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant/70">
+          GENEVA ATOMIC MERIDIAN
+        </span>
+<span class="font-label-sm text-label-sm text-secondary font-medium tracking-wide">
+          SYNCHRONIZED
+        </span>
+</div>
+</div>
+<!-- Biometric Authentication Touch Area -->
+<button aria-label="Touch ID / Face ID Authentication - Enter Executive Suite" class="w-full group bg-primary active:scale-[0.98] text-on-primary rounded-xl p-space-md flex items-center justify-between shadow-xl transition-all duration-300 hover:shadow-2xl" id="auth-trigger-btn" type="button">
+<div class="flex items-center gap-3">
+<!-- Biometric Holographic Pip -->
+<div class="w-11 h-11 rounded-lg bg-surface-container-highest/20 flex items-center justify-center text-secondary-fixed transition-colors group-hover:bg-secondary/30">
+<span class="material-symbols-outlined text-2xl transition-transform duration-300 group-hover:scale-110">
+            fingerprint
+          </span>
+</div>
+<div class="text-left">
+<div class="font-title-md text-title-md text-on-primary flex items-center gap-1.5">
+            Enter Executive Suite
+            <span class="material-symbols-outlined text-sm text-secondary-fixed-dim">
+              verified_user
+            </span>
+</div>
+<div class="font-label-sm text-label-sm text-on-primary-container tracking-wider uppercase">
+            Touch ID / Face ID Authenticated
+          </div>
+</div>
+</div>
+<!-- Forward Arrow Signifier -->
+<div class="w-8 h-8 rounded-full bg-surface-container-highest/10 flex items-center justify-center text-secondary-fixed group-hover:translate-x-1 transition-transform">
+<span class="material-symbols-outlined text-lg">
+          arrow_forward
+        </span>
+</div>
+</button>
+<!-- Subtle Fallback Manual Keycode Anchor -->
+<div class="mt-space-md flex items-center gap-4">
+<button class="font-label-sm text-label-sm tracking-wider uppercase text-on-surface-variant/80 hover:text-primary transition-colors flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-sm">key</span>
+        Manual Security Seal
+      </button>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<button class="font-label-sm text-label-sm tracking-wider uppercase text-on-surface-variant/80 hover:text-primary transition-colors" type="button">
+        Node Diagnostic
+      </button>
+</div>
+</section>
+<!-- Editorial Footnote -->
+<footer class="mt-space-lg text-center z-10">
+<p class="font-label-sm text-label-sm tracking-widest uppercase text-on-surface-variant/50">
+      Archival Edition • Chroniq OS 4.1.0 • Private Suite
+    </p>
+</footer>
+</div>
+<script>
+  (function initChroniqEntry() {
+    const progressBar = document.getElementById('spring-progress');
+    const percentEl = document.getElementById('calibration-percent');
+    const statusTextEl = document.getElementById('calibration-text');
+    const authBtn = document.getElementById('auth-trigger-btn');
+
+    let currentVal = 86;
+    let synchronized = false;
+
+    // Organic micro-stepping of horological calibration
+    const interval = setInterval(() => {
+      if (currentVal < 100) {
+        currentVal += Math.random() * 2.8;
+        if (currentVal > 100) currentVal = 100;
+        
+        if (progressBar) progressBar.style.width = currentVal + '%';
+        if (percentEl) percentEl.textContent = currentVal.toFixed(1) + '%';
+
+        if (currentVal >= 100 && !synchronized) {
+          synchronized = true;
+          clearInterval(interval);
+          if (statusTextEl) {
+            statusTextEl.textContent = 'Harmonic Cadence Synchronized';
+            statusTextEl.classList.add('text-secondary');
+          }
+          if (percentEl) {
+            percentEl.textContent = '100%';
+          }
+        }
+      }
+    }, 180);
+
+    // Subtle tactile feedback on biometric tap
+    if (authBtn) {
+      authBtn.addEventListener('click', function() {
+        const icon = authBtn.querySelector('.material-symbols-outlined');
+        if (icon) {
+          icon.textContent = 'lock_open';
+          setTimeout(() => {
+            icon.textContent = 'fingerprint';
+          }, 1400);
+        }
+      });
+    }
+  })();
+</script></main></body></html>

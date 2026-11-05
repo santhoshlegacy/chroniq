@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><title>Chroniq</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100%;margin:0;padding:0;background-color:#fcf9f2;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary-fixed": "#e7e1df", "surface": "#fcf9f2", "on-tertiary": "#ffffff", "tertiary-fixed": "#fbdeb6", "inverse-on-surface": "#f3f0e9", "primary": "#000000", "surface-container-highest": "#e5e2db", "primary-container": "#1d1b1a", "surface-dim": "#dcdad3", "on-tertiary-fixed": "#271902", "inverse-surface": "#31312c", "on-tertiary-fixed-variant": "#564426", "inverse-primary": "#cbc5c3", "surface-tint": "#615e5c", "on-error-container": "#93000a", "secondary-fixed-dim": "#e4c18c", "error-container": "#ffdad6", "on-tertiary-container": "#97805e", "on-primary-fixed-variant": "#494645", "surface-bright": "#fcf9f2", "on-secondary-fixed": "#281900", "surface-container": "#f1eee7", "outline": "#7f7570", "background": "#fcf9f2", "on-background": "#1c1c18", "outline-variant": "#d0c4be", "surface-variant": "#e5e2db", "on-primary-fixed": "#1d1b1a", "on-secondary": "#ffffff", "on-primary": "#ffffff", "secondary": "#745a2e", "primary-fixed-dim": "#cbc5c3", "surface-container-low": "#f6f3ec", "on-secondary-container": "#795e32", "on-secondary-fixed-variant": "#5a4319", "error": "#ba1a1a", "secondary-fixed": "#ffdeab", "on-error": "#ffffff", "on-surface": "#1c1c18", "tertiary-container": "#271902", "secondary-container": "#fedaa3", "surface-container-lowest": "#ffffff", "tertiary": "#000000", "surface-container-high": "#ebe8e1", "on-surface-variant": "#4d4541", "on-primary-container": "#878381", "tertiary-fixed-dim": "#ddc39c" }, borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, spacing: { "margin": "3rem", "gutter": "1.5rem", "space-xl": "3rem", "space-lg": "1.75rem", "space-sm": "0.5rem", "gutter-mobile": "0.75rem", "margin-mobile": "1.25rem", "space-md": "1rem", "space-xs": "0.25rem" }, fontFamily: { "display-xl-mobile": ["Playfair Display"], "headline-lg": ["Playfair Display"], "body-md": ["Inter"], "label-md": ["Inter"], "numeral-meta": ["Inter"], "display-lg-mobile": ["Playfair Display"], "numeral-display": ["Inter"], "body-lg": ["Inter"], "title-md": ["Inter"], "headline-md": ["Playfair Display"], "display-xl": ["Playfair Display"], "display-lg": ["Playfair Display"], "label-sm": ["Inter"], "body-sm": ["Inter"], "headline-sm": ["Playfair Display"] }, fontSize: { "display-xl-mobile": ["36px", { lineHeight: "44px", letterSpacing: "-0.01em", fontWeight: "400" }], "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "500" }], "body-md": ["14px", { lineHeight: "22px", fontWeight: "400" }], "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.06em", fontWeight: "500" }], "numeral-meta": ["13px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "500" }], "display-lg-mobile": ["28px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "400" }], "numeral-display": ["32px", { lineHeight: "36px", letterSpacing: "-0.03em", fontWeight: "300" }], "body-lg": ["16px", { lineHeight: "26px", fontWeight: "400" }], "title-md": ["16px", { lineHeight: "24px", letterSpacing: "-0.01em", fontWeight: "600" }], "headline-md": ["24px", { lineHeight: "32px", fontWeight: "500" }], "display-xl": ["56px", { lineHeight: "64px", letterSpacing: "-0.02em", fontWeight: "400" }], "display-lg": ["40px", { lineHeight: "48px", letterSpacing: "-0.02em", fontWeight: "400" }], "label-sm": ["11px", { lineHeight: "14px", letterSpacing: "0.08em", fontWeight: "600" }], "body-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }], "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "600" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen flex flex-col antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_12px_rgba(45,41,38,0.03)]"><div class="h-20 px-margin-mobile flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Chroniq Brand Monogram Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOJsC_juEBv9HdfmjWulL23UozZw5A9829WP4ME5UyhpObqRtF9v43JGsjrpZ3wQc5Z3ZFhVgLIuSSa2_LTbaOTC27KhyKv5qO5wECyRLeHFnSoO5vxykVsuzzpKBu8KUA5wwQDjYx3TOSLEx1ohiMCcrjXbNijfLaQ0pTuIk8fxHw9D1rXn8xHm9tLJw1ABcDYGk0rKMFxOJXgH5OaAM-jLL6Hf-4CyDKx-bnJV-F"/><div class="flex flex-col"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-headline-sm tracking-tight text-on-surface">Chroniq</span><span class="font-label-sm text-label-sm text-secondary uppercase">· Tasks</span></div><div class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest text-[10px]">Synchronized &amp; Calm</span></div></div></div><div class="flex items-center gap-space-xs"><button aria-label="Quick Capture" class="w-11 h-11 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">ink_pen</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full pt-20 pb-28 bg-surface min-h-screen"><div class="flex flex-col w-full px-margin-mobile gap-space-md">
+<!-- Ambient Proactive Glassmorphic Alert Stack -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container/90 backdrop-blur-xl shadow-md p-space-md transition-all duration-300" id="toast-wrapper">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-secondary/15 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary text-[18px]">notifications_active</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-secondary uppercase">Impending Horizon</span>
+<span class="w-1 h-1 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">10m Warning</span>
+</div>
+<p class="font-title-md text-title-md text-on-surface mt-0.5">Sovereign Board Review in Salon Privé</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Scheduled for 14:00 • Geneva Chamber</p>
+</div>
+</div>
+<button aria-label="Dismiss Alert" class="w-7 h-7 rounded-full bg-surface flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors" onclick="document.getElementById('toast-wrapper').style.display='none'" type="button">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+<!-- Actions & Automation Policy Callout -->
+<div class="mt-space-sm pt-space-xs flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="material-symbols-outlined text-[15px] text-secondary">verified_user</span>
+<span class="font-label-sm text-label-sm text-[10px] text-on-surface-variant uppercase tracking-wider">Early push &amp; 30-day archival active</span>
+</div>
+<button class="px-2.5 py-1 rounded bg-secondary-container text-on-secondary-container font-label-sm text-label-sm hover:opacity-90 active:scale-95 transition-all" type="button">
+          Snooze 5m
+        </button>
+</div>
+</div>
+</div>
+<!-- Editorial Section Horizon Header -->
+<div class="flex items-end justify-between pt-1">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest">Master Ledger</span>
+<h1 class="font-headline-md text-headline-md text-on-surface">Curated Mandates</h1>
+</div>
+<div class="flex items-center gap-1 bg-surface-container px-2.5 py-1 rounded-full text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface">11 Total</span>
+</div>
+</div>
+<!-- Editorial Filter Horizon (Pills) -->
+<div class="flex items-center gap-2 overflow-x-auto pb-1 -mx-margin-mobile px-margin-mobile">
+<button class="filter-btn active-filter px-3.5 py-1.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm uppercase tracking-wider whitespace-nowrap shadow-sm" type="button">
+      Active (4)
+    </button>
+<button class="filter-btn px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider whitespace-nowrap hover:text-on-surface hover:bg-surface-variant transition-colors" type="button">
+      Upcoming (6)
+    </button>
+<button class="filter-btn px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider whitespace-nowrap hover:text-on-surface hover:bg-surface-variant transition-colors flex items-center gap-1.5" type="button">
+<span>Overdue</span>
+<span class="w-4 h-4 rounded-full bg-error-container text-on-error-container flex items-center justify-center font-numeral-meta text-[10px]">1</span>
+</button>
+<button class="filter-btn px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider whitespace-nowrap hover:text-on-surface hover:bg-surface-variant transition-colors" type="button">
+      Archived
+    </button>
+</div>
+<!-- Frictionless Inscription Bar -->
+<div class="bg-surface-container-low rounded-xl shadow-sm p-space-md flex flex-col gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-[20px]">edit_note</span>
+<input class="bg-transparent flex-1 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none" id="quick-mandate-input" placeholder="Inscribe new mandate or focus block..." type="text"/>
+<button class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" title="Voice Dictation" type="button">
+<span class="material-symbols-outlined text-[18px]">mic</span>
+</button>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase text-[10px]">Urgency</span>
+<div class="flex items-center gap-2">
+<button class="w-3.5 h-3.5 rounded-full bg-error ring-offset-2 hover:scale-125 transition-transform" title="Crimson Sovereign / VIP" type="button"></button>
+<button class="w-3.5 h-3.5 rounded-full bg-secondary-fixed-dim hover:scale-125 transition-transform" title="Amber Horizon" type="button"></button>
+<button class="w-3.5 h-3.5 rounded-full bg-outline-variant hover:scale-125 transition-transform" title="Sage Ritual" type="button"></button>
+</div>
+</div>
+<button class="px-4 py-1.5 rounded bg-secondary text-on-secondary font-label-sm text-label-sm uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all shadow-sm" type="button">
+        Inscribe
+      </button>
+</div>
+</div>
+<!-- Architectural Task Dossiers -->
+<div class="flex flex-col gap-space-sm">
+<!-- Card 1: Active High Priority -->
+<div class="group relative rounded-xl bg-surface-container-low p-space-md shadow-sm hover:shadow-md transition-all flex flex-col gap-2">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<button aria-label="Toggle Complete" class="mt-0.5 w-5 h-5 rounded-[3px] bg-surface flex items-center justify-center text-transparent hover:text-secondary-fixed-dim transition-colors shrink-0 shadow-sm" onclick="toggleTask(this)" type="button">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</button>
+<div class="flex flex-col">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm">Crimson VIP</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Geneva Vault</span>
+</div>
+<h2 class="font-title-md text-title-md text-on-surface mt-1 group-hover:text-secondary transition-colors">Fiduciary Trust Agreement Execution</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Due today, 15:30 • Swiss banking closure window</p>
+</div>
+</div>
+<button aria-label="Open mandate dossier" class="p-1 rounded bg-surface text-on-surface-variant hover:text-on-surface transition-colors" onclick="openDrawer()" type="button">
+<span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</button>
+</div>
+<!-- Dossier Visual Framing Strip -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-variant flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of an executive Swiss fiduciary notary in bespoke tailored dark wool, minimalist warm architectural interior." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuKZPwZG13QSvXKqkr_MWg2KFf5J5_G4unFcL5uz1Ng7eN3wwgOHxqd94P2j6dgNoclBuiMaffIxDHo9glz0GrwBS4Njm_lHksaql86m8u8S1BLj68qRDHLGVKu5HsAnRPeIz8P73Ezv6tzbylHT5QrTa7IrGrkK5LG37r3gLY-Zz79P_RpprUEz5AOcW_sK5tNR2GLR04bCwVznZpqBFCELGYOvJpfmd25jHz3UQW"/>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Maître Dupont</span>
+</div>
+<div class="flex items-center gap-1.5 text-secondary">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+<span class="font-label-sm text-label-sm text-[10px] uppercase tracking-wider">Confidential Level 4</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Upcoming Acquisition Dossier -->
+<div class="group relative rounded-xl bg-surface-container-low p-space-md shadow-sm hover:shadow-md transition-all flex flex-col gap-2">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<button aria-label="Toggle Complete" class="mt-0.5 w-5 h-5 rounded-[3px] bg-surface flex items-center justify-center text-transparent hover:text-secondary-fixed-dim transition-colors shrink-0 shadow-sm" onclick="toggleTask(this)" type="button">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</button>
+<div class="flex flex-col">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Legal Escrow</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Real Estate</span>
+</div>
+<h2 class="font-title-md text-title-md text-on-surface mt-1 group-hover:text-secondary transition-colors">Acquisition Dossier Review: Villa Bellagio</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Tomorrow, 10:00 • Escrow Deposit verification</p>
+</div>
+</div>
+<button aria-label="Mandate options" class="p-1 rounded bg-surface text-on-surface-variant hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">calendar_month</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Pending notary countersign</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">attach_file</span>
+<span class="font-numeral-meta text-numeral-meta">3 Folios</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Overdue / High Attention -->
+<div class="group relative rounded-xl bg-surface-container-low p-space-md shadow-sm hover:shadow-md transition-all flex flex-col gap-2">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm">
+<button aria-label="Toggle Complete" class="mt-0.5 w-5 h-5 rounded-[3px] bg-surface flex items-center justify-center text-transparent hover:text-secondary-fixed-dim transition-colors shrink-0 shadow-sm" onclick="toggleTask(this)" type="button">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</button>
+<div class="flex flex-col">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                Past due 2h
+              </span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Curatorial</span>
+</div>
+<h2 class="font-title-md text-title-md text-on-surface mt-1 group-hover:text-secondary transition-colors">Christie's Impressionist Catalog Sign-off</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Auction lot #412 provenance certification</p>
+</div>
+</div>
+<button aria-label="Options" class="p-1 rounded bg-surface text-on-surface-variant hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-2 text-secondary">
+<span class="material-symbols-outlined text-[16px]">support_agent</span>
+<span class="font-body-sm text-body-sm">Concierge assigned: Julian M.</span>
+</div>
+<button class="px-2.5 py-1 rounded bg-surface text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm transition-colors" type="button">
+          Relay to Desk
+        </button>
+</div>
+</div>
+</div>
+<!-- Horizon Archival Cadence Meta Card -->
+<div class="rounded-xl bg-surface-container p-space-md flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-surface flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">hourglass_top</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface">Cadence Purge</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Archived records disintegrate in 14 days</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">chevron_right</span>
+</div>
+<!-- Detail Bottom Sheet Preview (Sovereign Mandate Vault #884) -->
+<div class="relative rounded-xl bg-surface-container-high p-space-md shadow-xl flex flex-col gap-space-md mt-2 transition-all" id="mandate-bottom-sheet">
+<!-- Grab bar & Header -->
+<div class="flex flex-col items-center gap-1">
+<div class="w-10 h-1 rounded-full bg-outline-variant/60"></div>
+</div>
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm uppercase tracking-wider">Tier 1 Sovereign</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Encrypted Vault #884</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-1.5">Fiduciary Trust Agreement Execution</h3>
+</div>
+<button aria-label="Close dossier" class="w-8 h-8 rounded-full bg-surface flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" onclick="closeDrawer()" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<!-- Full Untruncated Mandate Memo -->
+<div class="bg-surface rounded-lg p-space-md">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest block mb-1">Confidential Instructions</span>
+<p class="font-body-md text-body-md text-on-surface leading-relaxed">
+        Review final notary amendments, private bank wire authorization, and courier dispatch with Maître Dupont before the Swiss banking window closes.
+      </p>
+</div>
+<!-- Metadata Details Grid -->
+<div class="grid grid-cols-2 gap-2">
+<div class="bg-surface rounded p-2.5 flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase text-[10px]">Horizon Window</span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface mt-0.5">Today • 15:30 CET</span>
+</div>
+<div class="bg-surface rounded p-2.5 flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase text-[10px]">Location Node</span>
+<span class="font-body-sm text-body-sm text-on-surface mt-0.5">Geneva Chamber B</span>
+</div>
+</div>
+<!-- Dossier Direct Actions -->
+<div class="flex flex-col gap-2 pt-1">
+<button class="w-full py-3 rounded bg-primary text-on-primary font-title-md text-title-md flex items-center justify-center gap-2 hover:bg-primary-container active:scale-98 transition-all shadow-sm" onclick="completeMandate()" type="button">
+<span class="material-symbols-outlined text-[20px] text-secondary-fixed">check_circle</span>
+<span>Mark Honored &amp; Complete</span>
+</button>
+<div class="flex items-center gap-2">
+<button class="flex-1 py-2.5 rounded bg-surface text-on-surface font-label-sm text-label-sm uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-secondary">concierge</span>
+<span>Reschedule with Concierge</span>
+</button>
+<button class="px-4 py-2.5 rounded bg-surface text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm uppercase tracking-wider transition-colors" onclick="closeDrawer()" type="button">
+          Close Sheet
+        </button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  function toggleTask(btn) {
+    const isDone = btn.classList.contains('bg-primary');
+    if (isDone) {
+      btn.classList.remove('bg-primary', 'text-on-primary');
+      btn.classList.add('bg-surface', 'text-transparent');
+    } else {
+      btn.classList.add('bg-primary', 'text-on-primary');
+      btn.classList.remove('bg-surface', 'text-transparent');
+    }
+  }
+
+  function openDrawer() {
+    const sheet = document.getElementById('mandate-bottom-sheet');
+    if (sheet) {
+      sheet.scrollIntoView({ behavior: 'smooth' });
+      sheet.classList.add('ring-2', 'ring-secondary');
+      setTimeout(() => sheet.classList.remove('ring-2', 'ring-secondary'), 1200);
+    }
+  }
+
+  function closeDrawer() {
+    const sheet = document.getElementById('mandate-bottom-sheet');
+    if (sheet) {
+      sheet.style.display = 'none';
+    }
+  }
+
+  function completeMandate() {
+    const sheet = document.getElementById('mandate-bottom-sheet');
+    if (sheet) {
+      sheet.innerHTML = `
+        <div class="py-8 flex flex-col items-center justify-center text-center gap-2">
+          <div class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+            <span class="material-symbols-outlined text-[28px]">verified</span>
+          </div>
+          <span class="font-headline-sm text-headline-sm text-on-surface">Mandate Honored</span>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">Archived securely into vault history ledger.</p>
+        </div>
+      `;
+      setTimeout(() => {
+        sheet.style.display = 'none';
+      }, 1800);
+    }
+  }
+</script></main><div class="fixed bottom-24 right-margin-mobile z-50"><button aria-label="Chroniq Quick Add" class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container shadow-[0_8px_24px_rgba(116,90,46,0.22)] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform" type="button"><span class="material-symbols-outlined text-[22px]">add</span></button></div><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/85 backdrop-blur-xl shadow-[0_-4px_20px_rgba(45,41,38,0.03)]" data-active-classes="text-secondary font-semibold"><div class="flex justify-around items-center h-16 px-gutter-mobile"><a aria-current="page" class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] transition-colors text-secondary font-semibold" data-path="tasks" href="#"><span class="material-symbols-outlined text-[22px]">checklist</span><span class="font-label-sm text-label-sm text-[10px] uppercase tracking-wider">Tasks</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="schedule" href="#"><span class="material-symbols-outlined text-[22px]">schedule</span><span class="font-label-sm text-label-sm text-[10px] uppercase tracking-wider">Schedule</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="settings" href="#"><span class="material-symbols-outlined text-[22px]">tune</span><span class="font-label-sm text-label-sm text-[10px] uppercase tracking-wider">Settings</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="account" href="#"><span class="material-symbols-outlined text-[22px]">workspace_premium</span><span class="font-label-sm text-label-sm text-[10px] uppercase tracking-wider">Account</span></a></div></nav></body></html>

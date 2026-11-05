@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react'
-import { Check, Clock, Calendar, MoreVertical, Edit2, Trash2, Archive, AlertCircle, Tag } from 'lucide-react'
 import type { Task, TaskPriority } from '@/types'
 import { useTaskStore } from '@/store/useTaskStore'
 import { isTaskOverdue } from '@/lib/taskUtils'
@@ -11,26 +10,33 @@ interface TaskCardProps {
   onSelect?: (task: Task) => void
 }
 
-const priorityBadges: Record<TaskPriority, { label: string; dot: string; text: string }> = {
+const priorityBadges: Record<
+  TaskPriority,
+  { label: string; text: string; bg: string; dot: string }
+> = {
   urgent: {
-    label: 'Urgent',
-    dot: 'bg-rose-400',
-    text: 'text-rose-400',
+    label: 'Crimson VIP',
+    text: 'text-[#FFB4AB]',
+    bg: 'bg-[#93000A]/40 border-[#FFB4AB]/30',
+    dot: 'bg-[#BA1A1A]',
   },
   high: {
-    label: 'High',
-    dot: 'bg-amber-400',
-    text: 'text-amber-400',
+    label: 'Amber Horizon',
+    text: 'text-[#F2CA50]',
+    bg: 'bg-[#56481E]/40 border-[#DAC58F]/30',
+    dot: 'bg-[#D4AF37]',
   },
   medium: {
-    label: 'Medium',
-    dot: 'bg-[#5EEAD4]',
-    text: 'text-[#5EEAD4]',
+    label: 'Champagne',
+    text: 'text-[#DAC58F]',
+    bg: 'bg-[#1F2022] border-[#DAC58F]/20',
+    dot: 'bg-[#DAC58F]',
   },
   low: {
-    label: 'Low',
-    dot: 'bg-slate-400',
-    text: 'text-slate-400',
+    label: 'Sage Ritual',
+    text: 'text-[#D0C5AF]',
+    bg: 'bg-[#292A2C] border-[#99907C]/20',
+    dot: 'bg-[#99907C]',
   },
 }
 
@@ -48,64 +54,63 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) =>
   return (
     <div
       onClick={() => onSelect?.(task)}
-      className={`rounded-xl p-4 border transition-all duration-180 cursor-pointer ${
+      className={`group relative rounded-xl p-4 border transition-all duration-200 cursor-pointer flex flex-col gap-2 ${
         isCompleted
-          ? 'bg-[#0E1420]/70 border-white/[0.03] opacity-60'
+          ? 'bg-[#121315]/70 border-[#DAC58F]/8 opacity-65'
           : isOverdue
-          ? 'bg-[#171E2D] border-rose-500/25 hover:border-rose-500/40 hover:bg-[#1B2436]'
-          : 'bg-[#131A27] border-white/[0.06] hover:border-white/[0.14] hover:bg-[#172132] shadow-xs'
+          ? 'bg-[#1B1C1E] border-[#BA1A1A]/35 hover:border-[#BA1A1A]/60 shadow-md'
+          : 'bg-[#1B1C1E] border-[#DAC58F]/12 hover:border-[#DAC58F]/30 hover:bg-[#222428] shadow-sm hover:shadow-md'
       }`}
     >
-      <div className="flex items-start justify-between gap-3.5">
-        {/* Left: Custom Checkbox */}
+      <div className="flex items-start justify-between gap-3">
+        {/* Left: Tactile Horological Checkbox */}
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation()
             toggleTaskComplete(task.id)
           }}
-          className={`flex-shrink-0 w-5 h-5 mt-0.5 rounded-md border flex items-center justify-center transition cursor-pointer ${
+          className={`flex-shrink-0 w-5 h-5 mt-0.5 rounded-[4px] border flex items-center justify-center transition-all cursor-pointer ${
             isCompleted
-              ? 'bg-[#182233] border-[#5EEAD4]/60 text-[#5EEAD4]'
-              : 'border-white/20 bg-[#182233] hover:border-[#5EEAD4]/60'
+              ? 'bg-[#D4AF37] border-[#D4AF37] text-[#141211] shadow-[0_0_8px_rgba(212,175,55,0.4)]'
+              : 'border-[#DAC58F]/30 bg-[#121315] hover:border-[#DAC58F] text-transparent hover:text-[#DAC58F]'
           }`}
-          aria-label={isCompleted ? 'Mark as incomplete' : 'Mark as complete'}
+          aria-label={isCompleted ? 'Mark incomplete' : 'Mark complete'}
         >
-          {isCompleted && <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
+          <span className="material-symbols-outlined text-[15px] font-bold">check</span>
         </button>
 
-        {/* Center: Title & Description & Metadata */}
+        {/* Center: Title & Description & Priority Badges */}
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2 mb-1">
             {/* Priority Indicator */}
-            <span className={`inline-flex items-center space-x-1.5 text-[11px] font-medium ${pBadge.text}`}>
+            <span
+              className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider border ${pBadge.bg} ${pBadge.text}`}
+            >
               <span className={`w-1.5 h-1.5 rounded-full ${pBadge.dot}`} />
               <span>{pBadge.label}</span>
             </span>
 
             {/* Category */}
             {task.category && (
-              <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] text-[#94A3B8] bg-[#182233] border border-white/[0.04]">
-                <Tag className="w-2.5 h-2.5 text-[#64748B]" />
-                <span>{task.category}</span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono text-[#D0C5AF] bg-[#292A2C] border border-[#DAC58F]/10">
+                {task.category}
               </span>
             )}
 
             {/* Overdue Alert */}
             {isOverdue && !isCompleted && (
-              <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-rose-950/40 text-rose-400 border border-rose-500/30">
-                <AlertCircle className="w-2.5 h-2.5" />
-                <span>Overdue</span>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-[#93000A]/40 text-[#FFB4AB] border border-[#FFB4AB]/30">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#BA1A1A] animate-pulse" />
+                <span>Past Due</span>
               </span>
             )}
           </div>
 
           {/* Task Title */}
           <h3
-            className={`text-sm font-medium leading-snug transition ${
-              isCompleted
-                ? 'line-through text-[#64748B]'
-                : 'text-[#F3F4F8]'
+            className={`text-sm sm:text-base font-semibold leading-snug transition-colors group-hover:text-[#F2CA50] ${
+              isCompleted ? 'line-through text-[#99907C]' : 'text-white'
             }`}
           >
             {task.title}
@@ -113,88 +118,115 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) =>
 
           {/* Task Description Snippet */}
           {task.description && (
-            <p className={`mt-1 text-xs leading-relaxed line-clamp-2 ${isCompleted ? 'text-[#64748B]' : 'text-[#94A3B8]'}`}>
+            <p
+              className={`mt-1 text-xs leading-relaxed line-clamp-2 ${
+                isCompleted ? 'text-[#99907C]' : 'text-[#D0C5AF]'
+              }`}
+            >
               {task.description}
             </p>
           )}
+        </div>
 
-          {/* Timing Metadata */}
-          <div className="mt-2.5 flex flex-wrap items-center gap-3 text-[11px] text-[#64748B]">
-            {formattedScheduled && (
-              <span className="flex items-center space-x-1">
-                <Calendar className="w-3 h-3 text-[#64748B]" />
-                <span className="tabular-nums font-mono">{formattedScheduled}</span>
-              </span>
-            )}
-            {formattedDue && (
-              <span className={`flex items-center space-x-1 ${isOverdue && !isCompleted ? 'text-rose-400 font-medium' : ''}`}>
-                <Clock className="w-3 h-3 text-[#64748B]" />
-                <span className="tabular-nums font-mono">Due {formattedDue}</span>
-              </span>
-            )}
-            {task.estimated_duration_minutes && (
-              <span className="tabular-nums font-mono text-[10px] px-1.5 py-0.2 rounded bg-[#182233] text-[#94A3B8]">
-                {task.estimated_duration_minutes}m
-              </span>
+        {/* Right: Quick Detail Expand & Options */}
+        <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+          <button
+            type="button"
+            onClick={() => onSelect?.(task)}
+            className="p-1 rounded bg-[#292A2C]/60 text-[#D0C5AF] hover:text-[#F2CA50] hover:bg-[#343537] transition-colors cursor-pointer"
+            title="Inspect dossier"
+          >
+            <span className="material-symbols-outlined text-[17px]">open_in_new</span>
+          </button>
+
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowMenu(!showMenu)}
+              className="p-1 rounded bg-[#292A2C]/60 text-[#D0C5AF] hover:text-white hover:bg-[#343537] transition-colors cursor-pointer"
+              aria-label="Options"
+            >
+              <span className="material-symbols-outlined text-[17px]">more_horiz</span>
+            </button>
+
+            {showMenu && (
+              <>
+                <div
+                  className="fixed inset-0 z-20"
+                  onClick={() => setShowMenu(false)}
+                />
+                <div className="absolute right-0 mt-1 w-36 bg-[#1F2022] border border-[#DAC58F]/20 rounded-xl py-1 z-30 shadow-2xl">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowMenu(false)
+                      onEdit(task)
+                    }}
+                    className="w-full px-3 py-1.5 text-left text-xs text-[#D0C5AF] hover:text-white hover:bg-[#292A2C] flex items-center gap-2 cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-sm text-[#DAC58F]">edit</span>
+                    <span>Edit Task</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowMenu(false)
+                      archiveTask(task.id)
+                    }}
+                    className="w-full px-3 py-1.5 text-left text-xs text-[#D0C5AF] hover:text-white hover:bg-[#292A2C] flex items-center gap-2 cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-sm text-[#D0C5AF]">inventory_2</span>
+                    <span>Archive</span>
+                  </button>
+                  <div className="h-px bg-[#DAC58F]/10 my-1" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowMenu(false)
+                      deleteTask(task.id)
+                    }}
+                    className="w-full px-3 py-1.5 text-left text-xs text-[#FFB4AB] hover:bg-[#93000A]/20 flex items-center gap-2 cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-sm">delete</span>
+                    <span>Delete</span>
+                  </button>
+                </div>
+              </>
             )}
           </div>
         </div>
+      </div>
 
-        {/* Right: Actions Menu */}
-        <div className="relative" onClick={(e) => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={() => setShowMenu(!showMenu)}
-            className="p-1 rounded-md text-[#64748B] hover:text-white hover:bg-white/[0.04] transition cursor-pointer"
-            aria-label="Task options"
-          >
-            <MoreVertical className="w-4 h-4" />
-          </button>
-
-          {showMenu && (
-            <>
-              <div
-                className="fixed inset-0 z-20"
-                onClick={() => setShowMenu(false)}
-              />
-              <div className="absolute right-0 mt-1 w-36 bg-[#182233] border border-white/[0.08] rounded-xl py-1 z-30 shadow-2xl">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowMenu(false)
-                    onEdit(task)
-                  }}
-                  className="w-full px-3 py-1.5 text-left text-xs text-[#94A3B8] hover:text-white hover:bg-white/[0.04] flex items-center space-x-2 cursor-pointer"
-                >
-                  <Edit2 className="w-3.5 h-3.5 text-[#5EEAD4]" />
-                  <span>Edit Task</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowMenu(false)
-                    archiveTask(task.id)
-                  }}
-                  className="w-full px-3 py-1.5 text-left text-xs text-[#94A3B8] hover:text-white hover:bg-white/[0.04] flex items-center space-x-2 cursor-pointer"
-                >
-                  <Archive className="w-3.5 h-3.5 text-[#C4B5FD]" />
-                  <span>Archive</span>
-                </button>
-                <div className="h-px bg-white/[0.06] my-1" />
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowMenu(false)
-                    deleteTask(task.id)
-                  }}
-                  className="w-full px-3 py-1.5 text-left text-xs text-rose-400 hover:bg-rose-500/10 flex items-center space-x-2 cursor-pointer"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  <span>Delete</span>
-                </button>
-              </div>
-            </>
+      {/* Dossier Bottom Framing Strip */}
+      <div className="flex items-center justify-between pt-1.5 mt-1 border-t border-[#DAC58F]/8 text-[11px] text-[#99907C]">
+        <div className="flex items-center gap-3">
+          {formattedDue ? (
+            <span className={`flex items-center gap-1 font-mono ${isOverdue && !isCompleted ? 'text-[#FFB4AB] font-semibold' : ''}`}>
+              <span className="material-symbols-outlined text-[13px]">schedule</span>
+              <span>Due {formattedDue}</span>
+            </span>
+          ) : formattedScheduled ? (
+            <span className="flex items-center gap-1 font-mono">
+              <span className="material-symbols-outlined text-[13px]">calendar_month</span>
+              <span>{formattedScheduled}</span>
+            </span>
+          ) : (
+            <span className="flex items-center gap-1 font-mono">
+              <span className="material-symbols-outlined text-[13px]">hourglass_empty</span>
+              <span>Continuous Cadence</span>
+            </span>
           )}
+
+          {task.estimated_duration_minutes && (
+            <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-[#292A2C] text-[#DAC58F]">
+              {task.estimated_duration_minutes}m deep focus
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-1 text-[#DAC58F] text-[10px] uppercase font-mono tracking-wider">
+          <span className="material-symbols-outlined text-[12px]">lock</span>
+          <span className="hidden sm:inline">Vault Protected</span>
         </div>
       </div>
     </div>

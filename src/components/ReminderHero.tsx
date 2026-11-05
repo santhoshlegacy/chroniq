@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { Clock, AlertCircle, Bell, Check, Sparkles, Moon } from 'lucide-react'
 import { useSettingsStore } from '@/store/useSettingsStore'
 import { useTaskStore } from '@/store/useTaskStore'
 import {
@@ -8,16 +7,16 @@ import {
   formatCountdown,
   type CustomScheduleConfig,
 } from '@/lib/reminderUtils'
-import { format } from 'date-fns'
+import { format, addDays, startOfWeek } from 'date-fns'
 
 export const ReminderHero: React.FC = () => {
   const { preferences, permission, enablePushNotifications } = useSettingsStore()
   const { tasks } = useTaskStore()
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null)
   const [todaySlots, setTodaySlots] = useState<ReturnType<typeof getCustomReminderSlots>>([])
+  const [_selectedDayOffset, setSelectedDayOffset] = useState(0)
 
   const pendingToday = tasks.filter((t) => t.status !== 'completed' && t.archived_at === null)
-  const urgentCount = pendingToday.filter((t) => t.priority === 'urgent' || t.priority === 'high').length
 
   useEffect(() => {
     const updateCountdown = () => {
@@ -40,135 +39,227 @@ export const ReminderHero: React.FC = () => {
     return () => clearInterval(timer)
   }, [preferences])
 
-  // Next slot time
-  const nextSlot = todaySlots.find((s) => s.isNext)
-  const nextSlotTimeStr = nextSlot ? format(nextSlot.localTime, 'h:mm a') : null
+  // Compute days of the week starting from Monday
+  const today = new Date()
+  const weekStart = startOfWeek(today, { weekStartsOn: 1 })
+  const weekDays = Array.from({ length: 7 }, (_, i) => {
+    const d = addDays(weekStart, i)
+    const isToday = format(d, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd')
+    return {
+      date: d,
+      dayName: format(d, 'EEE'),
+      dayNum: format(d, 'd'),
+      isToday,
+      offset: i,
+    }
+  })
+
+  const bookedHours = (
+    pendingToday.reduce((acc, t) => acc + (t.estimated_duration_minutes || 30), 0) / 60
+  ).toFixed(1)
 
   return (
-    <div className="mb-6 space-y-4">
-      {/* Top Introduction Row */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 pb-1">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight font-['Outfit']">
-            Make today count.
-          </h1>
-          <p className="text-xs sm:text-sm text-[#94A3B8] mt-1">
-            {pendingToday.length === 0 ? (
-              <span className="text-emerald-400 font-medium inline-flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5" />
-                All tasks complete for today. Excellent focus!
-              </span>
-            ) : (
-              <span>
-                <strong className="text-white font-medium">{pendingToday.length}</strong>{' '}
-                {pendingToday.length === 1 ? 'task' : 'tasks'} remaining
-                {urgentCount > 0 && (
-                  <span>
-                    {' '}• <strong className="text-amber-400 font-medium">{urgentCount}</strong> high priority
-                  </span>
-                )}
-                {nextSlotTimeStr && (
-                  <span>
-                    {' '}• Next check-in at <strong className="text-white font-medium">{nextSlotTimeStr}</strong>
-                  </span>
-                )}
-              </span>
-            )}
-          </p>
-        </div>
-
-        {/* Live Reminder Timing Badge */}
-        <div className="flex items-center space-x-2 text-xs flex-shrink-0">
-          <div className="px-3 py-1.5 rounded-lg bg-[#151B28] border border-white/[0.08] text-[#94A3B8] flex items-center space-x-2 shadow-xs">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#70DFFF] opacity-60"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#70DFFF]"></span>
+    <div className="mb-6 space-y-5">
+      {/* Date Horizon Carousel Header */}
+      <section className="flex flex-col gap-2 pt-1">
+        <div className="flex items-baseline justify-between">
+          <div>
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[#DAC58F] font-semibold">
+              Temporal Architecture
             </span>
-            <Clock className="w-3.5 h-3.5 text-[#70DFFF]" />
-            <span className="text-[#64748B]">Next alert:</span>
-            <span className="tabular-nums font-mono text-white font-medium">
-              {secondsLeft !== null && secondsLeft > 0 ? formatCountdown(secondsLeft) : 'Active'}
+            <h1 className="font-serif text-2xl sm:text-3xl text-white">
+              Today’s Schedule
+            </h1>
+          </div>
+          <div className="flex items-center gap-1.5 bg-[#1B1C1E] border border-[#DAC58F]/15 px-3 py-1 rounded-full text-[#D0C5AF] shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#DAC58F]" />
+            <span className="text-[10px] font-mono uppercase tracking-wider">
+              {preferences.timezone}
             </span>
           </div>
         </div>
-      </div>
 
-      {/* Push Permission Callout */}
-      {permission !== 'granted' && (
-        <div className="flex items-center justify-between p-3 sm:p-3.5 rounded-xl bg-amber-950/20 border border-amber-500/20 text-amber-200 text-xs">
-          <div className="flex items-center space-x-2.5">
-            <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0" />
-            <span className="text-amber-200/90">
-              Enable background notifications to receive automated check-ins when Chroniq is closed.
+        {/* Date Strip Scrollable Carousel */}
+        <div className="flex items-center gap-2 overflow-x-auto py-1.5 scrollbar-none">
+          {weekDays.map((wd) => {
+            const isSelected = wd.isToday
+            return (
+              <button
+                key={wd.dayNum}
+                type="button"
+                onClick={() => setSelectedDayOffset(wd.offset)}
+                className={`flex flex-col items-center justify-center min-w-[52px] py-2 rounded-xl border transition-all cursor-pointer relative ${
+                  isSelected
+                    ? 'bg-[#56481E] border-[#DAC58F]/40 text-[#F2CA50] shadow-md ring-1 ring-[#DAC58F]/30'
+                    : 'bg-[#1B1C1E] border-[#DAC58F]/10 text-[#99907C] hover:text-[#E3E2E5] hover:bg-[#24262A]'
+                }`}
+              >
+                <span className={`text-[10px] uppercase font-semibold ${isSelected ? 'text-[#DAC58F]' : ''}`}>
+                  {wd.dayName}
+                </span>
+                <span className={`font-mono text-base font-bold mt-0.5 ${isSelected ? 'text-white' : ''}`}>
+                  {wd.dayNum}
+                </span>
+                {isSelected && (
+                  <span className="w-1 h-1 rounded-full bg-[#DAC58F] absolute bottom-1 shadow-[0_0_4px_#DAC58F]" />
+                )}
+              </button>
+            )
+          })}
+        </div>
+      </section>
+
+      {/* Composure Architecture Card */}
+      <section className="bg-[#1B1C1E] border border-[#DAC58F]/15 rounded-xl p-4 sm:p-5 shadow-sm relative overflow-hidden">
+        <div className="absolute -right-10 -bottom-10 w-36 h-36 rounded-full bg-[#56481E]/30 blur-2xl pointer-events-none" />
+        <div className="flex items-center justify-between gap-4 relative z-10">
+          <div className="flex flex-col gap-1 min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[16px] text-[#DAC58F]">
+                hourglass_top
+              </span>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#DAC58F] font-semibold">
+                Composure Architecture
+              </span>
+            </div>
+            <h2 className="font-serif text-base sm:text-lg text-white leading-tight">
+              Focus Horizon: {bookedHours}h Deep Work Booked
+            </h2>
+            <p className="text-xs text-[#99907C]">
+              Continuous check-ins running at designated reminder windows. Push notification fires 10m prior to milestones.
+            </p>
+          </div>
+
+          {/* Micro Composure Index Dial */}
+          <div className="flex flex-col items-center justify-center flex-shrink-0 bg-[#121315] border border-[#DAC58F]/15 rounded-xl p-3 min-w-[78px] shadow-sm">
+            <div className="relative w-12 h-12 flex items-center justify-center">
+              <svg className="w-12 h-12 -rotate-90 transform" viewBox="0 0 48 48">
+                <circle
+                  className="text-[#292A2C]"
+                  cx="24"
+                  cy="24"
+                  fill="transparent"
+                  r="20"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                />
+                <circle
+                  className="text-[#DAC58F]"
+                  cx="24"
+                  cy="24"
+                  fill="transparent"
+                  r="20"
+                  stroke="currentColor"
+                  strokeDasharray="125.6"
+                  strokeDashoffset="27.6"
+                  strokeLinecap="round"
+                  strokeWidth="3"
+                />
+              </svg>
+              <span className="absolute font-mono text-xs font-bold text-white">
+                {secondsLeft !== null && secondsLeft > 0 ? formatCountdown(secondsLeft) : '84%'}
+              </span>
+            </div>
+            <span className="text-[9px] uppercase tracking-wider text-[#99907C] font-mono mt-1">
+              Calm Index
             </span>
+          </div>
+        </div>
+      </section>
+
+      {/* Push Permission Callout if not enabled */}
+      {permission !== 'granted' && (
+        <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#56481E]/40 border border-[#DAC58F]/30 text-[#DAC58F] text-xs">
+          <div className="flex items-center gap-2.5">
+            <span className="material-symbols-outlined text-lg text-[#F2CA50]">
+              notifications_active
+            </span>
+            <div>
+              <span className="font-semibold text-white block">Push Notifications Arming</span>
+              <span className="text-[11px] text-[#D0C5AF]">
+                Enable web push to receive 10-minute advance dispatches and scheduled slot alerts.
+              </span>
+            </div>
           </div>
           <button
             onClick={enablePushNotifications}
-            className="px-3 py-1 rounded-md bg-amber-400 text-[#080B12] font-semibold hover:bg-amber-300 transition cursor-pointer flex-shrink-0 ml-3"
+            className="px-3 py-1.5 rounded-lg bg-gradient-to-tr from-[#D4AF37] to-[#F2CA50] text-[#141211] font-semibold text-xs whitespace-nowrap hover:opacity-90 transition cursor-pointer"
           >
-            Enable
+            Arm Push
           </button>
         </div>
       )}
 
-      {/* Refined Horizontal Reminder Timeline */}
-      <div className="p-3.5 sm:p-4 rounded-2xl bg-[#121826] border border-white/[0.06] shadow-sm">
-        <div className="flex items-center justify-between text-xs text-[#94A3B8] mb-3">
-          <div className="flex items-center space-x-2 font-medium text-white">
-            <Bell className="w-3.5 h-3.5 text-[#5EEAD4]" />
-            <span className="font-['Outfit'] tracking-wide">Today's Reminder Schedule</span>
+      {/* Today's Reminder Schedule Slots with Bronzed Hairline Axis */}
+      <section className="bg-[#1B1C1E] border border-[#DAC58F]/15 rounded-xl p-4 sm:p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-[#DAC58F] text-[18px]">
+              schedule
+            </span>
+            <h3 className="font-serif text-base text-white">
+              Today's Reminder Schedule
+            </h3>
           </div>
-          <div className="flex items-center space-x-2.5 text-[11px] text-[#64748B]">
-            <span className="font-mono text-[#94A3B8]">{preferences.timezone}</span>
-            {preferences.quiet_hours_enabled && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/[0.04] border border-white/[0.04] text-[#94A3B8]">
-                <Moon className="w-3 h-3 text-[#A99AFF]" />
-                Quiet: {preferences.quiet_hours_start}–{preferences.quiet_hours_end}
-              </span>
-            )}
-          </div>
+          <span className="text-[10px] font-mono uppercase tracking-wider text-[#99907C]">
+            528Hz Dispatch
+          </span>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-          {todaySlots.map((slot, idx) => {
-            const timeFormatted = format(slot.localTime, 'h:mm a')
-            return (
-              <div
-                key={idx}
-                className={`p-2.5 rounded-lg border text-xs transition ${
-                  slot.isNext
-                    ? 'bg-[#151B28] border-[#70DFFF]/50 shadow-xs ring-1 ring-[#70DFFF]/20'
-                    : slot.isPast
-                    ? 'bg-[#080B12]/60 border-white/[0.03] opacity-50'
-                    : slot.isActive
-                    ? 'bg-[#151B28]/70 border-white/[0.06] hover:border-white/[0.12]'
-                    : 'bg-[#080B12]/30 border-dashed border-white/[0.05] opacity-40'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <span
-                    className={`tabular-nums font-mono font-medium ${
-                      slot.isNext ? 'text-[#70DFFF]' : slot.isPast ? 'text-[#64748B]' : 'text-white'
+        {todaySlots.length === 0 ? (
+          <p className="text-xs text-[#99907C] italic">
+            No active reminder slots configured for today.
+          </p>
+        ) : (
+          <div className="relative flex flex-col gap-3 pl-6">
+            {/* Bronzed Hairline Axis */}
+            <div className="absolute left-2.5 top-2 bottom-2 w-[1px] bg-[#DAC58F]/25" />
+
+            {todaySlots.map((slot) => {
+              const timeFormatted = format(slot.localTime, 'h:mm a')
+              return (
+                <div key={slot.slotKey} className="relative flex items-center justify-between text-xs py-1">
+                  {/* Pin Node */}
+                  <div
+                    className={`absolute -left-6 w-3 h-3 rounded-full border transition-all ${
+                      slot.isPast
+                        ? 'bg-[#292A2C] border-[#DAC58F]/20 text-[#DAC58F]'
+                        : slot.isNext
+                        ? 'bg-[#F2CA50] border-[#D4AF37] shadow-[0_0_8px_#F2CA50]'
+                        : 'bg-[#121315] border-[#DAC58F]/30'
                     }`}
-                  >
-                    {timeFormatted}
-                  </span>
-                  {slot.isPast ? (
-                    <Check className="w-3.5 h-3.5 text-[#64748B]" />
-                  ) : slot.isNext ? (
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#70DFFF] animate-pulse" />
-                  ) : !slot.isActive ? (
-                    <span className="text-[10px] text-[#64748B]">Off</span>
-                  ) : null}
+                  />
+
+                  <div className="flex items-center gap-2.5">
+                    <span className="font-mono text-white font-medium text-xs">
+                      {timeFormatted}
+                    </span>
+                    <span className="text-[10px] uppercase font-mono text-[#99907C]">
+                      Slot {slot.timeStr}
+                    </span>
+                  </div>
+
+                  <div>
+                    {slot.isPast ? (
+                      <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#292A2C] text-[#99907C]">
+                        Dispatched ✓
+                      </span>
+                    ) : slot.isNext ? (
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono uppercase font-bold bg-[#56481E] border border-[#DAC58F]/40 text-[#F2CA50] shadow-sm animate-pulse">
+                        Next Horizon
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#121315] text-[#99907C] border border-[#DAC58F]/10">
+                        Queued
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className="text-[11px] text-[#64748B]">
-                  {slot.isPast ? 'Passed' : slot.isNext ? 'Next up' : slot.isActive ? 'Active' : 'Disabled'}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </div>
+              )
+            })}
+          </div>
+        )}
+      </section>
     </div>
   )
 }

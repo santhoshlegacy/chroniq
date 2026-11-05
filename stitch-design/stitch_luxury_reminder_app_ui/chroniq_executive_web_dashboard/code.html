@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-tertiary-fixed":"#271902","secondary-container":"#fedaa3","surface":"#fcf9f2","surface-tint":"#615e5c","on-secondary-fixed":"#281900","surface-container-high":"#ebe8e1","primary-container":"#1d1b1a","on-primary-fixed":"#1d1b1a","primary":"#000000","error-container":"#ffdad6","surface-container-lowest":"#ffffff","inverse-surface":"#31312c","error":"#ba1a1a","on-error-container":"#93000a","on-primary-container":"#878381","background":"#fcf9f2","on-tertiary":"#ffffff","secondary":"#745a2e","outline":"#7f7570","on-secondary-container":"#795e32","inverse-primary":"#cbc5c3","tertiary":"#000000","secondary-fixed":"#ffdeab","on-surface":"#1c1c18","inverse-on-surface":"#f3f0e9","on-secondary-fixed-variant":"#5a4319","outline-variant":"#d0c4be","on-primary":"#ffffff","on-error":"#ffffff","tertiary-fixed":"#fbdeb6","on-secondary":"#ffffff","primary-fixed-dim":"#cbc5c3","on-tertiary-fixed-variant":"#564426","on-surface-variant":"#4d4541","on-background":"#1c1c18","tertiary-fixed-dim":"#ddc39c","surface-container-low":"#f6f3ec","primary-fixed":"#e7e1df","surface-container":"#f1eee7","surface-dim":"#dcdad3","on-primary-fixed-variant":"#494645","secondary-fixed-dim":"#e4c18c","tertiary-container":"#271902","surface-container-highest":"#e5e2db","surface-variant":"#e5e2db","on-tertiary-container":"#97805e","surface-bright":"#fcf9f2"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"gutter-mobile":"0.75rem","space-sm":"0.5rem","margin":"3rem","space-md":"1rem","margin-mobile":"1.25rem","space-xl":"3rem","gutter":"1.5rem","space-lg":"1.75rem","space-xs":"0.25rem"},"fontFamily":{"body-md":["Inter"],"display-xl-mobile":["Playfair Display"],"title-md":["Inter"],"headline-lg":["Playfair Display"],"label-sm":["Inter"],"headline-sm":["Playfair Display"],"display-lg":["Playfair Display"],"headline-md":["Playfair Display"],"display-lg-mobile":["Playfair Display"],"numeral-meta":["Inter"],"label-md":["Inter"],"body-lg":["Inter"],"display-xl":["Playfair Display"],"numeral-display":["Inter"],"body-sm":["Inter"]},"fontSize":{"body-md":["14px",{"lineHeight":"22px","fontWeight":"400"}],"display-xl-mobile":["36px",{"lineHeight":"44px","letterSpacing":"-0.01em","fontWeight":"400"}],"title-md":["16px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"600"}],"headline-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.01em","fontWeight":"500"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.08em","fontWeight":"600"}],"headline-sm":["20px",{"lineHeight":"28px","fontWeight":"600"}],"display-lg":["40px",{"lineHeight":"48px","letterSpacing":"-0.02em","fontWeight":"400"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"500"}],"display-lg-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"400"}],"numeral-meta":["13px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"500"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.06em","fontWeight":"500"}],"body-lg":["16px",{"lineHeight":"26px","fontWeight":"400"}],"display-xl":["56px",{"lineHeight":"64px","letterSpacing":"-0.02em","fontWeight":"400"}],"numeral-display":["32px",{"lineHeight":"36px","letterSpacing":"-0.03em","fontWeight":"300"}],"body-sm":["13px",{"lineHeight":"18px","fontWeight":"400"}]}}}};</script></head><body class="bg-surface font-body-md text-body-md text-on-surface"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low z-50 flex flex-col justify-between py-space-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col gap-space-lg"><div class="px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Chroniq minimalist luxury monogram logo representing precision horological time and synchronized productivity with golden ratio geometry.. Brand logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UY0LJ73ju3BlPLcYRO1FmgSu1mXT3j3R6QvnoYm4r-rY_oXM5yPkHbExbqjxq949p_yayMxvc8Ikkd7658kuQOs77KU6oVPBrPMt0H-8y-tM9EWAe7XYpn9TtnnZKIYIv932T9rP4j78QunAzsT8AR2dV4sMJ-KTxQDaTmsIYRj2PgyiQFPm3AX6Lo2ZRwGzvcfpRTi_SptM3Vnq8DEMt4s9eLfCCzFIpUP0nqzHPqew"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm tracking-tight text-primary leading-none">Chroniq</span><span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">A True Synk Product</span></div></div></div><div class="px-space-lg"><div class="flex items-center justify-between px-space-md py-space-sm rounded bg-surface-container"><div class="flex items-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span><span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Status</span></div><span class="font-numeral-meta text-numeral-meta text-on-surface">Synchronized &amp; Calm</span></div></div><div class="px-space-md flex flex-col gap-space-xs"><span class="px-space-md font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Executive Folio</span><nav class="flex flex-col gap-space-xs" data-active-classes="bg-surface-container-high text-on-surface font-bold"><a aria-current="page" class="flex items-center gap-space-md px-space-md py-space-sm rounded transition-colors bg-surface-container-high text-on-surface font-bold" data-path="ledger" href="#"><span class="material-symbols-outlined text-[20px]">splitscreen</span><span class="font-body-md text-body-md">Ledger</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="timeline" href="#"><span class="material-symbols-outlined text-[20px]">schedule</span><span class="font-body-md text-body-md">Timeline</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="focus-windows" href="#"><span class="material-symbols-outlined text-[20px]">hourglass_empty</span><span class="font-body-md text-body-md">Focus Windows</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="archival" href="#"><span class="material-symbols-outlined text-[20px]">inventory_2</span><span class="font-body-md text-body-md">Archival</span></a></nav></div></div><div class="px-space-md flex flex-col gap-space-sm"><div class="h-[1px] w-full bg-surface-container-high"></div><nav class="flex flex-col" data-active-classes="bg-surface-container-high text-on-surface font-bold"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="settings" href="#"><span class="material-symbols-outlined text-[20px]">tune</span><span class="font-body-md text-body-md">Settings &amp; Calibration</span></a></nav><div class="flex items-center justify-between px-space-md py-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase"><span>Calibre 4130</span><span>v2.4.0</span></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-gutter"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">public</span><span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Horological Cadence:</span></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs"><span class="font-label-sm text-label-sm uppercase text-on-surface-variant">GVA</span><span class="font-numeral-meta text-numeral-meta text-on-surface">14:42</span></div><span class="text-on-surface-variant">·</span><div class="flex items-center gap-space-xs"><span class="font-label-sm text-label-sm uppercase text-on-surface-variant">LON</span><span class="font-numeral-meta text-numeral-meta text-on-surface">13:42</span></div><span class="text-on-surface-variant">·</span><div class="flex items-center gap-space-xs"><span class="font-label-sm text-label-sm uppercase text-on-surface-variant">NYC</span><span class="font-numeral-meta text-numeral-meta text-on-surface">08:42</span></div></div></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm px-space-md py-space-xs rounded bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer"><span class="material-symbols-outlined text-[18px]">search</span><span class="font-body-sm text-body-sm">Capture command...</span><span class="font-label-sm text-label-sm uppercase px-1 py-0.5 rounded bg-surface-container-high text-on-surface-variant">⌘K</span></div><div class="relative flex items-center justify-center w-8 h-8 rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors cursor-pointer"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-secondary"></span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="w-full pt-16 bg-surface"><div class="flex flex-col w-full">
+<!-- Subtle ambient top ornament line -->
+<div class="h-1 w-full bg-gradient-to-r from-transparent via-secondary/30 to-transparent"></div>
+<!-- Studio Provenance & Edition Sub-bar -->
+<div class="px-margin pt-space-md pb-space-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-md flex-wrap">
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>A True Synk Product</span>
+<span class="text-outline-variant">/</span>
+<span class="text-on-surface">Horological Series IX</span>
+<span class="text-outline-variant">/</span>
+<span>Executive Suite Calibre</span>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high text-secondary font-label-sm text-label-sm uppercase">Synchronized Epoch</span>
+</div>
+<div class="flex items-center gap-space-lg text-on-surface-variant font-label-sm text-label-sm uppercase">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified_user</span>
+<span>Cryptographic Vault #884</span>
+</div>
+<span class="text-outline-variant">•</span>
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">tune</span>
+<span>528Hz Harmonic Dispatch</span>
+</div>
+<span class="text-outline-variant">•</span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface">24 Oct • Geneva</span>
+</div>
+</div>
+<!-- Primary Workspace Canvas -->
+<div class="px-margin py-space-md flex flex-col gap-space-lg">
+<!-- TOP TELEMETRY & CADENCE METRICS (4 Distinct Horological Stat Modules) -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Metric 1: Intended Cadence -->
+<div class="bg-surface-container-low p-space-lg rounded-xl shadow-sm flex flex-col justify-between relative overflow-hidden group hover:shadow-md transition-shadow">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase text-secondary tracking-wider">Intended Cadence</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Cognitive reserve index</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[18px]">timelapse</span>
+</div>
+</div>
+<div class="flex items-baseline justify-between mt-space-md">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-numeral-display text-numeral-display text-on-surface font-light">5.5</span>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant font-normal">hrs</span>
+</div>
+<!-- Tactile Mini Circular Dial / Gauge -->
+<div class="relative w-12 h-12 flex items-center justify-center">
+<svg class="w-12 h-12 -rotate-90" viewbox="0 0 48 48">
+<circle class="text-surface-container-high" cx="24" cy="24" fill="none" r="19" stroke="currentColor" stroke-width="3"></circle>
+<circle class="text-secondary" cx="24" cy="24" fill="none" r="19" stroke="currentColor" stroke-dasharray="119.38" stroke-dashoffset="19.1" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<span class="absolute font-numeral-meta text-numeral-meta text-secondary font-semibold">84%</span>
+</div>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span>Target: 6.0h Deep</span>
+<span class="text-secondary flex items-center gap-0.5"><span class="material-symbols-outlined text-[12px]">spa</span> Calm Steady</span>
+</div>
+</div>
+<!-- Metric 2: Impending Milestone (Next Proactive Event) -->
+<div class="bg-surface-container-low p-space-lg rounded-xl shadow-sm flex flex-col justify-between group hover:shadow-md transition-shadow">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase text-secondary tracking-wider">Impending Milestone</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Prioritized executive session</span>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-secondary-container text-on-secondary-fixed font-label-sm text-label-sm uppercase tracking-wider">Armed</span>
+</div>
+<div class="mt-space-md flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface leading-tight truncate">Board Review</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Salon Privé • Chamber A</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span class="flex items-center gap-1 text-on-surface font-semibold font-numeral-meta text-numeral-meta">
+<span class="material-symbols-outlined text-[14px] text-secondary">notifications_active</span>
+            14:00 CET
+          </span>
+<span class="text-secondary">T-minus 18m</span>
+</div>
+</div>
+<!-- Metric 3: Proactive Telemetry & Haptics -->
+<div class="bg-surface-container-low p-space-lg rounded-xl shadow-sm flex flex-col justify-between group hover:shadow-md transition-shadow">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase text-secondary tracking-wider">Proactive Telemetry</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Synchronized dispatch engine</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[18px]">sensors</span>
+</div>
+</div>
+<div class="mt-space-md flex flex-col">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-numeral-display text-numeral-display text-on-surface font-light">10</span>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant font-normal">min</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant ml-space-xs">Advance Dispatch</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary truncate">528Hz Solfeggio soundscape on</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Multi-device Sync</span>
+<span class="text-on-surface font-numeral-meta text-numeral-meta">Latency 4ms</span>
+</div>
+</div>
+<!-- Metric 4: Cadence Purge & Archival -->
+<div class="bg-surface-container-low p-space-lg rounded-xl shadow-sm flex flex-col justify-between group hover:shadow-md transition-shadow">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase text-secondary tracking-wider">Cadence Purge</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Autonomous clutter governance</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">auto_delete</span>
+</div>
+</div>
+<div class="mt-space-md flex items-baseline justify-between">
+<div class="flex flex-col">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-numeral-display text-numeral-display text-on-surface font-light">14</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">archived</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">30-day purge rule enforced</span>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Active</span>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Next scheduled sweep</span>
+<span class="text-on-surface font-numeral-meta text-numeral-meta">Midnight CET</span>
+</div>
+</div>
+</section>
+<!-- PROACTIVE HAPTIC / NOTIFICATION SYSTEM BANNER (10-Minute Advance Alert) -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container p-space-md md:p-space-lg shadow-md transition-all" id="advanceAlertBanner">
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+<div class="flex items-start md:items-center gap-space-md min-w-0">
+<div class="relative w-12 h-12 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-sm text-on-primary">
+<span class="material-symbols-outlined text-[24px]">notifications_active</span>
+<span class="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-secondary-container border-2 border-surface"></span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="px-space-xs py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm uppercase tracking-wider font-semibold">10-Minute Proactive Call</span>
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider font-medium">Haptic &amp; Solfeggio 528Hz Deployed</span>
+<span class="text-outline-variant hidden sm:inline">•</span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface-variant">Dispatch ID: #SYN-9921</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-primary mt-0.5 truncate">
+              Sovereign Board of Trustees Review in Salon Privé
+            </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">
+              Commences at 14:00 CET • Geneva Chamber A • Quorum verified (7/7 Sovereign Delegates present).
+            </p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0 self-end md:self-center">
+<button class="px-space-md py-space-sm rounded bg-surface-container-high text-on-surface hover:bg-surface-container-highest transition-colors font-label-sm text-label-sm uppercase tracking-wider" onclick="document.getElementById('advanceAlertBanner').classList.add('opacity-40')">
+            Snooze 5m
+          </button>
+<button class="px-space-lg py-space-sm rounded bg-primary text-on-primary hover:bg-primary-container transition-colors shadow-sm font-label-sm text-label-sm uppercase tracking-wider flex items-center gap-space-xs" onclick="document.getElementById('advanceAlertBanner').style.display='none'">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+            Acknowledge
+          </button>
+</div>
+</div>
+</div>
+<!-- MAIN TWO-COLUMN STRATEGIC GRID -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- LEFT 7 COLUMNS: MANDATES & TASK LEDGER + FOCUS SHIELDS -->
+<div class="lg:col-span-7 flex flex-col gap-space-lg min-w-0">
+<!-- Frictionless Natural Language Quick-Add Card -->
+<div class="bg-surface-container-low p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-secondary">draw</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Natural Language Inscription</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Chroniq Calibre Parser v2.4</span>
+</div>
+<div class="relative flex items-center">
+<input class="w-full bg-surface-container px-space-md py-space-md rounded-lg font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/60 focus:outline-none focus:ring-1 focus:ring-secondary/40 transition-all pr-28" id="quickTaskInput" placeholder='e.g., "Review private banking agreement with Zurich counsel at 15:30 VIP"' type="text"/>
+<button class="absolute right-2 px-space-md py-space-xs bg-primary text-on-primary rounded hover:bg-primary-container font-label-sm text-label-sm uppercase tracking-wider transition-colors flex items-center gap-1 shadow-sm" onclick="inscribeTask()">
+<span>Inscribe</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-space-sm pt-space-xs">
+<!-- Priority selector pill dots -->
+<div class="flex items-center gap-space-md">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">Priority:</span>
+<div class="flex items-center gap-space-sm">
+<button class="flex items-center gap-1 px-space-xs py-0.5 rounded bg-surface-container hover:bg-surface-container-high transition-colors font-label-sm text-label-sm text-on-surface" title="Sovereign VIP">
+<span class="w-2 h-2 rounded-full bg-error"></span> VIP
+                </button>
+<button class="flex items-center gap-1 px-space-xs py-0.5 rounded bg-surface-container hover:bg-surface-container-high transition-colors font-label-sm text-label-sm text-on-surface" title="Strategic Cadence">
+<span class="w-2 h-2 rounded-full bg-secondary"></span> Standard
+                </button>
+<button class="flex items-center gap-1 px-space-xs py-0.5 rounded bg-surface-container hover:bg-surface-container-high transition-colors font-label-sm text-label-sm text-on-surface-variant" title="Reflective Archival">
+<span class="w-2 h-2 rounded-full bg-outline"></span> Low
+                </button>
+</div>
+</div>
+<!-- Proactive lead time selection -->
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px] text-secondary">alarm</span>
+<span>Proactive notice:</span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface font-semibold bg-surface-container px-1.5 py-0.5 rounded">10 min advance</span>
+</div>
+</div>
+</div>
+<!-- Curated Task Ledger Navigation Tabs & Filter Bar -->
+<div class="bg-surface-container-low p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface font-medium">Curated Mandates</h3>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-highest font-numeral-meta text-numeral-meta text-on-surface">7 Active</span>
+</div>
+<!-- Filter tabs with counter pills -->
+<div class="flex items-center gap-1 bg-surface-container p-1 rounded-lg">
+<button class="px-space-sm py-1 rounded bg-surface-container-lowest text-on-surface shadow-xs font-label-sm text-label-sm uppercase font-semibold">
+                Active (4)
+              </button>
+<button class="px-space-sm py-1 rounded text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm uppercase">
+                Upcoming (6)
+              </button>
+<button class="px-space-sm py-1 rounded text-error hover:text-error-container font-label-sm text-label-sm uppercase">
+                Overdue (1)
+              </button>
+</div>
+</div>
+<!-- Interactive Mandate Cards List -->
+<div class="flex flex-col gap-space-sm mt-space-xs" id="taskLedgerList">
+<!-- Mandate 1: Fiduciary Trust (Selected State matching Right Inspector) -->
+<div class="cursor-pointer bg-surface-container-lowest p-space-md rounded-lg shadow-sm hover:shadow-md transition-all flex flex-col gap-space-xs group" onclick="selectTask(this, 'fiduciary')">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-5 h-5 rounded flex items-center justify-center bg-secondary/10 group-hover:bg-secondary/20 transition-colors">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+</div>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-fixed font-label-sm text-label-sm uppercase tracking-wider font-semibold">Tier 1 Sovereign</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-label-sm text-label-sm uppercase text-on-surface-variant">Legal Escrow</span>
+</div>
+<div class="flex items-center gap-space-xs text-secondary font-label-sm text-label-sm uppercase font-medium">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+<span>10m Alert Armed</span>
+</div>
+</div>
+<div class="flex items-start justify-between gap-space-md mt-1">
+<div class="flex flex-col min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface group-hover:text-secondary transition-colors font-semibold truncate">
+                    Fiduciary Trust Agreement Execution
+                  </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">
+                    Execute countersignature on the multi-currency asset transfer ledger for Banque Privée Edmond de Rothschild.
+                  </p>
+</div>
+<div class="text-right shrink-0">
+<span class="font-numeral-meta text-numeral-meta text-on-surface font-semibold block">Today, 15:30</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Geneva Chamber B</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-xs mt-space-xs">
+<div class="flex items-center gap-space-md text-on-surface-variant font-label-sm text-label-sm">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">lock</span> Encrypted #884</span>
+<span>Assignee: Master Notary</span>
+</div>
+<div class="flex items-center gap-space-xs opacity-80 group-hover:opacity-100 transition-opacity">
+<span class="font-label-sm text-label-sm uppercase text-secondary">Inspector Synced</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- Mandate 2: Villa Bellagio Archival Review -->
+<div class="cursor-pointer bg-surface-container p-space-md rounded-lg hover:shadow-sm transition-all flex flex-col gap-space-xs group" onclick="selectTask(this, 'bellagio')">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-5 h-5 rounded flex items-center justify-center bg-surface-container-high">
+<span class="w-2.5 h-2.5 rounded-full bg-outline"></span>
+</div>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">Real Estate Portfolio</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-numeral-meta">Completed Milestone</span>
+</div>
+<div class="flex items-start justify-between gap-space-md mt-1">
+<div class="flex flex-col min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface font-semibold truncate">
+                    Villa Bellagio Acquisition Deed Audit
+                  </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">
+                    Historical land registries and Lake Como maritime frontage easements verified with Lombardy notary.
+                  </p>
+</div>
+<div class="text-right shrink-0">
+<span class="font-numeral-meta text-numeral-meta text-on-surface-variant line-through block">11:00 CET</span>
+<span class="font-label-sm text-label-sm text-secondary">Honored</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-xs mt-space-xs">
+<div class="flex items-center gap-space-md text-on-surface-variant font-label-sm text-label-sm">
+<span>Archival Retention: 30-Day Purge Queue</span>
+</div>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">check_circle</span>
+</div>
+</div>
+<!-- Mandate 3: Sovereign Board Agenda Review -->
+<div class="cursor-pointer bg-surface-container p-space-md rounded-lg hover:shadow-sm transition-all flex flex-col gap-space-xs group" onclick="selectTask(this, 'board')">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-5 h-5 rounded flex items-center justify-center bg-error/10">
+<span class="w-2.5 h-2.5 rounded-full bg-error"></span>
+</div>
+<span class="px-1.5 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm uppercase tracking-wider font-semibold">Priority Imperative</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high font-label-sm text-label-sm uppercase text-on-surface-variant">Quorum Required</span>
+</div>
+<span class="font-label-sm text-label-sm text-error font-medium uppercase tracking-wider">In 18 Minutes</span>
+</div>
+<div class="flex items-start justify-between gap-space-md mt-1">
+<div class="flex flex-col min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface group-hover:text-secondary transition-colors font-semibold truncate">
+                    Board of Trustees Annual Endowment Allocation
+                  </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">
+                    Formal approval of the 2025 Philanthropic Heritage Trust &amp; Classical Arts Fellowship capital tranche.
+                  </p>
+</div>
+<div class="text-right shrink-0">
+<span class="font-numeral-meta text-numeral-meta text-on-surface font-semibold block">14:00 CET</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Salon Privé</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-xs mt-space-xs">
+<div class="flex items-center gap-space-md text-on-surface-variant font-label-sm text-label-sm">
+<span>Participants: 7 Trustees</span>
+<span>•</span>
+<span>Audio encryption active</span>
+</div>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant group-hover:text-on-surface transition-colors">chevron_right</span>
+</div>
+</div>
+<!-- Mandate 4: Horological Calibre 4130 Commission Review -->
+<div class="cursor-pointer bg-surface-container p-space-md rounded-lg hover:shadow-sm transition-all flex flex-col gap-space-xs group" onclick="selectTask(this, 'calibre')">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-5 h-5 rounded flex items-center justify-center bg-secondary/10">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+</div>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">Private Commission</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-numeral-meta">Evening Horizon</span>
+</div>
+<div class="flex items-start justify-between gap-space-md mt-1">
+<div class="flex flex-col min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface font-semibold truncate">
+                    Horological Atelier Bespoke Hand-Finishing Review
+                  </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">
+                    Inspect anglage beveling and black polish perlage on the unique titanium escapement balance wheel.
+                  </p>
+</div>
+<div class="text-right shrink-0">
+<span class="font-numeral-meta text-numeral-meta text-on-surface font-semibold block">17:00 CET</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Atelier Genéve</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-xs mt-space-xs">
+<div class="flex items-center gap-space-md text-on-surface-variant font-label-sm text-label-sm">
+<span>Artisan: Philippe Dufour Guild</span>
+</div>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Deep Work Focus Windows & Shielding Session Timeline -->
+<div class="bg-surface-container-low p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-[20px] text-secondary">hourglass_empty</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-medium">Cognitive Focus Windows</h3>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-label-sm text-label-sm uppercase text-secondary font-semibold">Chroniq Shield Armed</span>
+</div>
+<!-- Interactive Focus Timeline Strip -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">Window I (Concluded)</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">check_circle</span>
+</div>
+<div class="my-space-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface block">09:00 — 11:30</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Deep Reading &amp; Portfolio Audit</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm pt-space-xs">
+<span>Distractions: 0</span>
+<span class="text-secondary">2.5h Honored</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-md rounded-lg shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-label-sm text-label-sm uppercase text-secondary font-semibold">Active Window II</span>
+</div>
+<span class="material-symbols-outlined text-[16px] text-secondary">shield</span>
+</div>
+<div class="my-space-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface block">15:45 — 18:00</span>
+<span class="font-body-sm text-body-sm text-on-surface">Architectural Folio Synthesis</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm pt-space-xs">
+<span>DND VIP Telephony: ON</span>
+<span class="text-on-surface font-numeral-meta text-numeral-meta">2.25h window</span>
+</div>
+</div>
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">Evening Horizon</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">bedtime</span>
+</div>
+<div class="my-space-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface-variant block">19:30 — 20:30</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Decompression &amp; Chroniq Purge</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm pt-space-xs">
+<span>30-Day Auto Archive</span>
+<span class="font-numeral-meta text-numeral-meta">Pending</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT 5 COLUMNS: SCHEDULE HORIZON + DOCKED TASK DETAIL INSPECTOR -->
+<div class="lg:col-span-5 flex flex-col gap-space-lg min-w-0">
+<!-- DOCKED TASK DETAIL INSPECTOR (Untruncated Executive Dossier) -->
+<div class="bg-surface-container-low p-space-lg rounded-xl shadow-md flex flex-col gap-space-md relative overflow-hidden">
+<!-- Inspector Header Meta -->
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Task Detail Inspector</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Cryptographic Record Ref: #CHQ-884-GVA</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="px-space-xs py-0.5 rounded bg-secondary-container text-on-secondary-fixed font-label-sm text-label-sm uppercase font-semibold">Tier 1 Sovereign</span>
+</div>
+</div>
+<!-- Inspector Hero Title & Narrative -->
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<h2 class="font-headline-md text-headline-md text-on-surface font-semibold leading-snug" id="inspectorTitle">
+              Fiduciary Trust Agreement Execution
+            </h2>
+<div class="flex items-center gap-space-md text-on-surface-variant font-label-sm text-label-sm uppercase pt-1">
+<span class="flex items-center gap-1 text-secondary font-medium">
+<span class="material-symbols-outlined text-[14px]">event</span> Today, 15:30 CET
+              </span>
+<span>•</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">pin_drop</span> Geneva Chamber B
+              </span>
+</div>
+</div>
+<!-- Unabridged Confidential Directives Field -->
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col gap-space-xs">
+<span class="font-label-sm text-label-sm uppercase text-secondary font-semibold">Confidential Instructions</span>
+<p class="font-body-sm text-body-sm text-on-surface leading-relaxed" id="inspectorDescription">
+              Verify biometric sign-off on Swiss Federal Banking Commission Form A. Co-signatory Lord Sterling has confirmed asynchronous validation via verified hardware key. Ensure delivery slip is sealed in Diplomatic Pouch #12 prior to 17:00 courier cutoff.
+            </p>
+</div>
+<!-- Dossier Metadata Specification Grid -->
+<div class="grid grid-cols-2 gap-space-sm pt-space-xs">
+<div class="bg-surface-container p-space-sm rounded">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant block">Proactive Alert</span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface font-semibold">10-Min Advance Armed</span>
+</div>
+<div class="bg-surface-container p-space-sm rounded">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant block">Purge Schedule</span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface font-semibold">30-Day Permanent Shred</span>
+</div>
+<div class="bg-surface-container p-space-sm rounded">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant block">Soundscape</span>
+<span class="font-numeral-meta text-numeral-meta text-secondary font-semibold">528Hz Solfeggio</span>
+</div>
+<div class="bg-surface-container p-space-sm rounded">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant block">Assigned Escrow</span>
+<span class="font-numeral-meta text-numeral-meta text-on-surface font-semibold">Dr. A. Vane-Tempest</span>
+</div>
+</div>
+<!-- Primary Luxury Action Controls -->
+<div class="flex flex-col sm:flex-row items-center gap-space-sm pt-space-sm">
+<button class="w-full sm:flex-1 py-space-sm px-space-md bg-primary text-on-primary rounded hover:bg-primary-container font-label-sm text-label-sm uppercase tracking-wider font-semibold transition-all shadow-sm flex items-center justify-center gap-space-xs" id="honoredButton" onclick="markTaskHonored()">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span>Mark Honored &amp; Complete</span>
+</button>
+<button class="w-full sm:w-auto py-space-sm px-space-md bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded font-label-sm text-label-sm uppercase tracking-wider transition-colors flex items-center justify-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px]">concierge</span>
+<span>Concierge</span>
+</button>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-secondary">encrypted</span>
+              Notarial Hash: 0x9f...4a12
+            </span>
+<button class="text-secondary hover:underline flex items-center gap-0.5">
+<span>Inspect Seal</span>
+<span class="material-symbols-outlined text-[12px]">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- TODAY'S CHRONOLOGICAL HORIZON (Linear Architectural Axis) -->
+<div class="bg-surface-container-low p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-[20px] text-secondary">schedule</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-medium">Today’s Horizon</h3>
+</div>
+<span class="font-numeral-meta text-numeral-meta text-on-surface-variant">Wednesday, 24 Oct</span>
+</div>
+<!-- Continuous Vertical Horizon Axis -->
+<div class="relative pl-6 flex flex-col gap-space-lg my-space-xs">
+<!-- Continuous Hairline Axis Rule -->
+<div class="absolute left-2.5 top-2 bottom-2 w-px bg-secondary/30"></div>
+<!-- Event Node 1 (Past) -->
+<div class="relative flex flex-col gap-0.5">
+<div class="absolute -left-6 top-1.5 w-3 h-3 rounded-full bg-surface-container-high"></div>
+<div class="flex items-center justify-between">
+<span class="font-numeral-meta text-numeral-meta text-on-surface-variant">08:30 — 09:15</span>
+<span class="font-label-sm text-label-sm text-secondary uppercase font-semibold">Honored</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface-variant line-through">Morning Contemplation &amp; Espresso</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Private Library • No Devices</span>
+</div>
+<!-- Event Node 2 (Past) -->
+<div class="relative flex flex-col gap-0.5">
+<div class="absolute -left-6 top-1.5 w-3 h-3 rounded-full bg-surface-container-high"></div>
+<div class="flex items-center justify-between">
+<span class="font-numeral-meta text-numeral-meta text-on-surface-variant">11:00 — 12:00</span>
+<span class="font-label-sm text-label-sm text-secondary uppercase font-semibold">Executed</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface-variant line-through">Villa Bellagio Acquisition Review</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Milan Notary Counsel</span>
+</div>
+<!-- CURRENT HORIZON MARKER (Chroniq Dial Needle) -->
+<div class="relative -left-6 flex items-center py-1">
+<div class="w-3.5 h-3.5 rounded-full bg-secondary shadow-sm ring-4 ring-surface-container-low shrink-0"></div>
+<div class="h-px bg-secondary flex-1 ml-2"></div>
+<span class="font-label-sm text-label-sm uppercase bg-secondary text-on-secondary px-1.5 py-0.5 rounded font-semibold ml-2">13:42 Current Dial</span>
+</div>
+<!-- Event Node 3 (Active / Imminent) -->
+<div class="relative flex flex-col gap-0.5 bg-surface-container p-space-sm rounded-lg">
+<div class="absolute -left-6 top-4 w-3 h-3 rounded-full bg-error"></div>
+<div class="flex items-center justify-between">
+<span class="font-numeral-meta text-numeral-meta text-error font-semibold">14:00 — 15:15 CET</span>
+<span class="px-1 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm uppercase font-semibold">In 18 Min</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface font-semibold">Board of Trustees Review</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Salon Privé • 10m Proactive Dispatch Active</span>
+</div>
+<!-- Event Node 4 (Upcoming) -->
+<div class="relative flex flex-col gap-0.5">
+<div class="absolute -left-6 top-1.5 w-3 h-3 rounded-full bg-surface-container-high"></div>
+<div class="flex items-center justify-between">
+<span class="font-numeral-meta text-numeral-meta text-on-surface">15:30 — 16:15 CET</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Sovereign Tier</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface font-medium">Fiduciary Trust Agreement Execution</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Banque Privée Geneva</span>
+</div>
+<!-- Event Node 5 (Evening) -->
+<div class="relative flex flex-col gap-0.5">
+<div class="absolute -left-6 top-1.5 w-3 h-3 rounded-full bg-surface-container-high"></div>
+<div class="flex items-center justify-between">
+<span class="font-numeral-meta text-numeral-meta text-on-surface">17:00 — 18:30 CET</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Atelier</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface font-medium">Curatorial Calibre 4130 Escapement</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Master Horologist Guild</span>
+</div>
+</div>
+</div>
+<!-- RECENT DISPATCHES & ARCHIVAL TELEMETRY TICKER -->
+<div class="bg-surface-container p-space-md rounded-xl flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold">Delivery Telemetry Ledger</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Zero Tech Clutter</span>
+</div>
+<div class="flex flex-col gap-space-xs mt-1 text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex items-center justify-between py-1 bg-surface-container-low px-space-sm rounded">
+<div class="flex items-center gap-space-xs truncate">
+<span class="material-symbols-outlined text-[14px] text-secondary">check</span>
+<span class="text-on-surface">10-Min Pre-Alert delivered to iPhone &amp; Watch</span>
+</div>
+<span class="font-numeral-meta text-numeral-meta shrink-0 ml-2">13:50:00</span>
+</div>
+<div class="flex items-center justify-between py-1 bg-surface-container-low px-space-sm rounded">
+<div class="flex items-center gap-space-xs truncate">
+<span class="material-symbols-outlined text-[14px] text-secondary">check</span>
+<span>528Hz Solfeggio soundscape initiated</span>
+</div>
+<span class="font-numeral-meta text-numeral-meta shrink-0 ml-2">13:50:02</span>
+</div>
+<div class="flex items-center justify-between py-1 bg-surface-container-low px-space-sm rounded">
+<div class="flex items-center gap-space-xs truncate">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">archive</span>
+<span>30-Day automated shredder cleared 3 tasks</span>
+</div>
+<span class="font-numeral-meta text-numeral-meta shrink-0 ml-2">00:00:00</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Micro-interaction Scripts -->
+<script>
+    function inscribeTask() {
+      var input = document.getElementById('quickTaskInput');
+      var val = input.value.trim();
+      if (!val) return;
+
+      var ledger = document.getElementById('taskLedgerList');
+      var newCard = document.createElement('div');
+      newCard.className = "cursor-pointer bg-surface-container-lowest p-space-md rounded-lg shadow-sm hover:shadow-md transition-all flex flex-col gap-space-xs group animate-fadeIn";
+      newCard.onclick = function() { selectTask(this, 'inscribed'); };
+      newCard.innerHTML = `
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-space-sm">
+            <div class="w-5 h-5 rounded flex items-center justify-center bg-secondary/10">
+              <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+            </div>
+            <span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">Inscribed Just Now</span>
+          </div>
+          <span class="font-label-sm text-label-sm text-secondary font-medium">10m Alert Armed</span>
+        </div>
+        <div class="flex items-start justify-between gap-space-md mt-1">
+          <div class="flex flex-col min-w-0">
+            <h4 class="font-title-md text-title-md text-on-surface font-semibold truncate">` + escapeHtml(val) + `</h4>
+            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">Natural language registered through Chroniq Calibre engine.</p>
+          </div>
+          <div class="text-right shrink-0">
+            <span class="font-numeral-meta text-numeral-meta text-on-surface font-semibold block">Today, 16:00</span>
+            <span class="font-label-sm text-label-sm text-on-surface-variant">Executive Vault</span>
+          </div>
+        </div>
+        <div class="flex items-center justify-between pt-space-xs mt-space-xs">
+          <div class="flex items-center gap-space-md text-on-surface-variant font-label-sm text-label-sm">
+            <span>Cryptographic Draft #901</span>
+          </div>
+          <span class="material-symbols-outlined text-[16px] text-on-surface-variant group-hover:text-on-surface">chevron_right</span>
+        </div>
+      `;
+
+      ledger.insertBefore(newCard, ledger.firstChild);
+      input.value = '';
+    }
+
+    function selectTask(el, id) {
+      var allCards = document.querySelectorAll('#taskLedgerList > div');
+      allCards.forEach(function(card) {
+        card.classList.remove('bg-surface-container-lowest', 'shadow-sm');
+        card.classList.add('bg-surface-container');
+      });
+      el.classList.remove('bg-surface-container');
+      el.classList.add('bg-surface-container-lowest', 'shadow-sm');
+
+      var title = document.getElementById('inspectorTitle');
+      var desc = document.getElementById('inspectorDescription');
+
+      if (id === 'bellagio') {
+        title.innerText = 'Villa Bellagio Acquisition Deed Audit';
+        desc.innerText = 'Historical land registries and maritime easements confirmed in Como records. Notarial deeds ready for archiving into the 30-day retention lock.';
+      } else if (id === 'board') {
+        title.innerText = 'Board of Trustees Annual Endowment Allocation';
+        desc.innerText = 'Formal sign-off on 2025 Philanthropic Tranche. 7 Trustees present. Audio record sealed and encrypted under Sovereign protocol.';
+      } else if (id === 'calibre') {
+        title.innerText = 'Horological Atelier Bespoke Hand-Finishing Review';
+        desc.innerText = 'Evaluate black polished screws and inward angles of the Calibre 4130 tourbillon cage with Master Artisan Philippe Dufour Guild.';
+      } else {
+        title.innerText = 'Fiduciary Trust Agreement Execution';
+        desc.innerText = 'Verify biometric sign-off on Swiss Federal Banking Commission Form A. Co-signatory Lord Sterling has confirmed asynchronous validation via hardware key.';
+      }
+    }
+
+    function markTaskHonored() {
+      var btn = document.getElementById('honoredButton');
+      btn.innerHTML = '<span class="material-symbols-outlined text-[16px] text-secondary">check_circle</span> <span>Honored & Sealed</span>';
+      btn.classList.remove('bg-primary', 'text-on-primary');
+      btn.classList.add('bg-surface-container-high', 'text-secondary');
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+  </script>
+</div></main></div></body></html>

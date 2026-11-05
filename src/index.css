@@ -2,160 +2,183 @@
 
 @layer base {
   :root {
-    --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --font-serif: 'Playfair Display', 'Bodoni Moda', Georgia, serif;
+    --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'Space Grotesk', ui-monospace, monospace;
 
-    /* Luxury Theme Tokens — Soft Warm Obsidian & Satin Slate */
-    --color-obsidian: #0A0E17;
-    --color-canvas-subtle: #0F1420;
-    --color-graphite-1: #131A27;
-    --color-graphite-2: #182233;
-    --color-graphite-3: #1E2B40;
-    --color-text-primary: #F3F4F8;
-    --color-text-secondary: #94A3B8;
-    --color-text-muted: #64748B;
-    --color-cyan: #5EEAD4;
-    --color-cyan-hover: #7EFAF0;
-    --color-gold: #F5D08A;
-    --color-lavender: #C4B5FD;
-    --border-subtle: rgba(255, 255, 255, 0.07);
-    --border-refined: rgba(255, 255, 255, 0.12);
+    /* Stitch Luxury Tokens: Haute Horlogerie & Editorial */
+    --color-surface: #121315;
+    --color-surface-dim: #0D0E10;
+    --color-surface-container-low: #1B1C1E;
+    --color-surface-container: #1F2022;
+    --color-surface-container-high: #292A2C;
+    --color-surface-container-highest: #343537;
+    --color-on-surface: #E3E2E5;
+    --color-on-surface-variant: #D0C5AF;
+    --color-outline: #99907C;
+    --color-outline-variant: #4D4635;
+    --color-primary: #F2CA50;
+    --color-primary-container: #D4AF37;
+    --color-secondary: #DAC58F;
+    --color-secondary-container: #56481E;
+    --color-on-secondary-container: #CBB782;
+    --color-gold-bright: #F2CA50;
+    --color-gold: #D4AF37;
+    --color-gold-light: #E5CA9E;
+    --color-gold-dark: #9C7944;
+    --color-champagne: #DAC58F;
+    --color-amber-fixed: #FEDAA3;
+    --border-subtle: rgba(218, 197, 143, 0.12);
+    --border-refined: rgba(218, 197, 143, 0.22);
   }
 
   body {
     font-family: var(--font-sans);
-    background-color: var(--color-obsidian);
+    background-color: var(--color-surface);
     background-image: 
-      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(94, 234, 212, 0.05), transparent 70%),
-      radial-gradient(ellipse 60% 40% at 85% 15%, rgba(196, 181, 253, 0.03), transparent 60%);
+      radial-gradient(circle at 50% 15%, rgba(212, 175, 55, 0.07) 0%, rgba(18, 19, 21, 0.95) 55%, #0B0C0E 100%),
+      radial-gradient(circle at 80% 80%, rgba(218, 197, 143, 0.03) 0%, transparent 60%);
     background-attachment: fixed;
-    color: var(--color-text-primary);
+    color: var(--color-on-surface);
     overflow-x: hidden;
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
+    -webkit-font-smoothing: antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
-    letter-spacing: -0.018em;
+  h1, h2, h3, h4, .font-serif {
+    font-family: var(--font-serif);
+    letter-spacing: -0.015em;
   }
 }
 
-/* Tabular figures for all countdowns, times, and statistical numbers */
+/* Material Symbols configuration */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 350, 'GRAD' 0, 'opsz' 24;
+}
+
+.material-symbols-outlined.fill-1 {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Tabular figures for countdowns, times, and metrics */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
 
 /* ── Surface Architecture ─────────────────────────────────────────── */
 
-/* Luxury Elevated Graphite Panel */
 .surface-panel {
-  background-color: #121826;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(12px);
+  background-color: #1B1C1E;
+  border: 1px solid rgba(218, 197, 143, 0.12);
+  box-shadow: 0 12px 36px -4px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(16px);
 }
 
-/* Card item inside list */
 .surface-card {
-  background-color: #161F2E;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease;
+  background-color: #1B1C1E;
+  border: 1px solid rgba(218, 197, 143, 0.08);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .surface-card:hover {
-  background-color: #1B263B;
-  border-color: rgba(255, 255, 255, 0.13);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.25);
+  background-color: #24262A;
+  border-color: rgba(218, 197, 143, 0.22);
+  box-shadow: 0 8px 28px -4px rgba(0, 0, 0, 0.45);
 }
 
-/* Selective Header Glass - applied to sticky navigation */
 .header-glass {
-  background-color: rgba(10, 14, 23, 0.82);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-/* Bottom Floating Navigation Dock */
-.bottom-dock-glass {
-  background-color: rgba(15, 20, 32, 0.88);
+  background-color: rgba(18, 19, 21, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.55);
+  border-bottom: 1px solid rgba(218, 197, 143, 0.08);
+}
+
+.bottom-dock-glass {
+  background-color: rgba(18, 19, 21, 0.90);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(218, 197, 143, 0.16);
+  box-shadow: 0 16px 48px -8px rgba(0, 0, 0, 0.7);
 }
 
 /* ── Premium Buttons ────────────────────────────────────────────── */
 
-/* Primary Action Button: Luminous Ice Mint / Cyan */
 .btn-primary {
-  background-color: #5EEAD4;
-  color: #0A0E17;
+  background: linear-gradient(135deg, #F2CA50 0%, #D4AF37 100%);
+  color: #141211;
   font-weight: 600;
   border-radius: 0.625rem;
-  transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 12px -2px rgba(94, 234, 212, 0.3);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.25);
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-primary:hover {
-  background-color: #7EFAF0;
+  background: linear-gradient(135deg, #FFE088 0%, #E5CA9E 100%);
+  box-shadow: 0 6px 22px rgba(212, 175, 55, 0.38);
   transform: translateY(-1px);
-  box-shadow: 0 4px 18px -2px rgba(94, 234, 212, 0.45);
 }
 
 .btn-primary:active {
-  transform: translateY(0);
+  transform: scale(0.98);
 }
 
-/* Secondary Button: Elevated Graphite */
 .btn-secondary {
-  background-color: #161F2E;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #F3F4F8;
+  background-color: #292A2C;
+  color: #E3E2E5;
+  border: 1px solid rgba(218, 197, 143, 0.15);
   font-weight: 500;
   border-radius: 0.625rem;
-  transition: all 0.15s ease;
+  transition: all 0.18s ease;
 }
 
 .btn-secondary:hover {
-  background-color: #1D2A3E;
-  border-color: rgba(255, 255, 255, 0.16);
-  color: #ffffff;
+  background-color: #343537;
+  border-color: rgba(218, 197, 143, 0.3);
+  color: #FFFFFF;
 }
 
-/* Ghost / Icon button */
-.btn-ghost {
-  color: #94A3B8;
-  border-radius: 0.5rem;
-  transition: all 0.15s ease;
+/* ── Horological Guilloche Grid Overlay ────────────────────────── */
+.guilloche-overlay {
+  background-image: radial-gradient(#D4AF37 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.04;
+  pointer-events: none;
 }
 
-.btn-ghost:hover {
-  color: #F3F4F8;
-  background-color: rgba(255, 255, 255, 0.06);
+/* ── Gold Ambient Aura Glow ─────────────────────────────────────── */
+.gold-bloom {
+  position: relative;
+}
+.gold-bloom::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -20%;
+  width: 140%;
+  height: 140%;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* ── Input Styling ──────────────────────────────────────────────── */
-
-.input-graphite {
-  background-color: #121826;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #F3F4F8;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.input-graphite:focus {
-  outline: none;
-  border-color: rgba(94, 234, 212, 0.5);
-  box-shadow: 0 0 0 2px rgba(94, 234, 212, 0.15);
-}
-
-/* ── Custom Scrollbar ───────────────────────────────────────────── */
-
+/* ── Custom Subtle Scrollbar ───────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -166,20 +189,37 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 9999px;
+  background: rgba(218, 197, 143, 0.15);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(218, 197, 143, 0.3);
 }
 
-/* Respect user preferences */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+/* ── Animations ─────────────────────────────────────────────────── */
+@keyframes horologicalSpin {
+  from {
+    transform: rotate(0deg);
   }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes horologicalSpinReverse {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: horologicalSpin 60s linear infinite;
+}
+
+.animate-spin-reverse-slow {
+  animation: horologicalSpinReverse 35s linear infinite;
 }

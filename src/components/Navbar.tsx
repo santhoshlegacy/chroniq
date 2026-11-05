@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Bell, BellOff, Settings, Plus, Download, Check, LogIn, Cloud, HardDrive, CheckSquare, Calendar, User } from 'lucide-react'
+import { ChroniqLogo } from './ChroniqLogo'
 import { useSettingsStore } from '@/store/useSettingsStore'
 import { useAuthStore } from '@/store/useAuthStore'
 import { secondsUntilNextReminder, formatCountdown, type CustomScheduleConfig } from '@/lib/reminderUtils'
 import type { NavTab } from './BottomNav'
-import logoImg from '@/assets/logo.png'
 
 interface NavbarProps {
   activeTab: NavTab
@@ -69,132 +68,113 @@ export const Navbar: React.FC<NavbarProps> = ({
     return () => clearInterval(timer)
   }, [preferences])
 
-  const userDisplayName = profile?.display_name || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Member'
+  const userDisplayName =
+    profile?.display_name || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Member'
   const userAvatar = profile?.avatar_url || user?.user_metadata?.avatar_url
 
+  const tabLabels: Record<NavTab, string> = {
+    tasks: 'Tasks',
+    schedule: 'Schedule',
+    settings: 'Settings',
+    account: 'Account',
+  }
+
   return (
-    <header className="sticky top-0 z-40 w-full header-glass">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        {/* Brand / Logo */}
+    <header className="sticky top-0 z-40 w-full header-glass border-b border-[#DAC58F]/12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-18 flex items-center justify-between">
+        {/* Brand Monogram & Status */}
         <div
           onClick={() => onSelectTab('tasks')}
-          className="flex items-center space-x-3 cursor-pointer group"
+          className="flex items-center gap-3 cursor-pointer group"
         >
-          <div className="w-8 h-8 rounded-xl overflow-hidden border border-white/[0.12] bg-[#121826] flex-shrink-0 flex items-center justify-center shadow-sm group-hover:border-[#5EEAD4]/40 transition">
-            <img
-              src={logoImg}
-              alt="Chroniq"
-              className="w-full h-full object-cover scale-[2.2] translate-y-[22%]"
-            />
+          <div className="w-9 h-9 rounded-xl overflow-hidden border border-[#DAC58F]/25 bg-[#0D0E10] flex-shrink-0 flex items-center justify-center shadow-md p-1 group-hover:border-[#F2CA50]/50 transition-all">
+            <ChroniqLogo className="w-full h-full object-contain" />
           </div>
-          <div className="flex items-baseline space-x-2">
-            <span className="text-base font-bold tracking-tight text-white font-['Outfit']">
-              Chroniq
-            </span>
-            <span className="text-[11px] text-[#64748B] hidden lg:inline font-normal">
-              Own your time.
-            </span>
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5">
+              <span className="font-serif text-lg font-bold tracking-tight text-white group-hover:text-[#F2CA50] transition-colors">
+                Chroniq
+              </span>
+              <span className="text-[10px] uppercase font-mono tracking-wider text-[#DAC58F] font-semibold">
+                · {tabLabels[activeTab]}
+              </span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#DAC58F] animate-pulse" />
+              <span className="text-[9px] uppercase tracking-widest text-[#99907C] font-mono">
+                Synchronized &amp; Calm
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Desktop Tab Navigation */}
-        <nav className="hidden md:flex items-center space-x-1 p-1 rounded-xl bg-[#121826] border border-white/[0.06]">
-          <button
-            onClick={() => onSelectTab('tasks')}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
-              activeTab === 'tasks'
-                ? 'bg-[#182233] text-white border border-white/[0.08] font-semibold shadow-xs'
-                : 'text-[#94A3B8] hover:text-white'
-            }`}
-          >
-            <CheckSquare className={`w-3.5 h-3.5 ${activeTab === 'tasks' ? 'text-[#5EEAD4]' : 'text-[#64748B]'}`} />
-            <span>Tasks</span>
-          </button>
-          <button
-            onClick={() => onSelectTab('schedule')}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
-              activeTab === 'schedule'
-                ? 'bg-[#182233] text-white border border-white/[0.08] font-semibold shadow-xs'
-                : 'text-[#94A3B8] hover:text-white'
-            }`}
-          >
-            <Calendar className={`w-3.5 h-3.5 ${activeTab === 'schedule' ? 'text-[#5EEAD4]' : 'text-[#64748B]'}`} />
-            <span>Schedule</span>
-          </button>
-          <button
-            onClick={() => onSelectTab('settings')}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
-              activeTab === 'settings'
-                ? 'bg-[#182233] text-white border border-white/[0.08] font-semibold shadow-xs'
-                : 'text-[#94A3B8] hover:text-white'
-            }`}
-          >
-            <Settings className={`w-3.5 h-3.5 ${activeTab === 'settings' ? 'text-[#5EEAD4]' : 'text-[#64748B]'}`} />
-            <span>Settings</span>
-          </button>
-          <button
-            onClick={() => onSelectTab('account')}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
-              activeTab === 'account'
-                ? 'bg-[#182233] text-white border border-white/[0.08] font-semibold shadow-xs'
-                : 'text-[#94A3B8] hover:text-white'
-            }`}
-          >
-            <User className={`w-3.5 h-3.5 ${activeTab === 'account' ? 'text-[#5EEAD4]' : 'text-[#64748B]'}`} />
-            <span>{user ? 'Account' : 'Sign In'}</span>
-          </button>
+        <nav className="hidden md:flex items-center gap-1 p-1 rounded-xl bg-[#1B1C1E] border border-[#DAC58F]/15">
+          {(['tasks', 'schedule', 'settings', 'account'] as NavTab[]).map((tab) => {
+            const isActive = activeTab === tab
+            return (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => onSelectTab(tab)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs uppercase tracking-wider font-semibold transition-all cursor-pointer ${
+                  isActive
+                    ? 'bg-gradient-to-r from-[#D4AF37] to-[#F2CA50] text-[#141211] shadow-sm'
+                    : 'text-[#D0C5AF] hover:text-white hover:bg-[#292A2C]'
+                }`}
+              >
+                <span>{tab === 'account' ? (user ? 'Account' : 'Sign In') : tabLabels[tab]}</span>
+              </button>
+            )
+          })}
         </nav>
 
-        {/* Live Clock & Next Reminder indicator (Subtle, Tabular) */}
-        <div className="hidden xl:flex items-center space-x-3 text-xs text-[#94A3B8]">
-          <span className="tabular-nums font-mono text-white/90">{timeStr}</span>
-          <span className="text-white/20">•</span>
-          <div className="flex items-center space-x-1.5">
-            <span className="text-[#64748B]">Next check-in:</span>
-            <span className="tabular-nums font-mono font-medium text-[#5EEAD4]">
+        {/* Live Clock & Next Reminder indicator */}
+        <div className="hidden xl:flex items-center gap-3 text-xs text-[#99907C] font-mono">
+          <span className="tabular-nums text-white/90">{timeStr}</span>
+          <span className="text-[#DAC58F]/30">•</span>
+          <div className="flex items-center gap-1.5">
+            <span>Next Check-in:</span>
+            <span className="tabular-nums font-semibold text-[#F2CA50]">
               {countdownStr}
             </span>
           </div>
-          <span className="text-white/20">•</span>
-          <div className="flex items-center space-x-1" title={user ? 'Connected to Supabase cloud database' : 'Operating in local offline storage'}>
-            {user ? (
-              <span className="flex items-center space-x-1 text-emerald-400 text-[11px]">
-                <Cloud className="w-3 h-3" />
-                <span>Cloud</span>
-              </span>
-            ) : (
-              <span className="flex items-center space-x-1 text-[#64748B] text-[11px]">
-                <HardDrive className="w-3 h-3" />
-                <span>Local</span>
-              </span>
-            )}
+          <span className="text-[#DAC58F]/30">•</span>
+          <div
+            className="flex items-center gap-1"
+            title={user ? 'Connected to cloud ledger' : 'Operating in local vault storage'}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full ${user ? 'bg-emerald-400' : 'bg-[#DAC58F]'}`} />
+            <span className="text-[10px] uppercase text-[#D0C5AF]">
+              {user ? 'Cloud' : 'Local'}
+            </span>
           </div>
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           {/* Push Status Badge */}
           {permission === 'granted' ? (
             <button
               onClick={onOpenSettings}
-              className="p-1.5 text-xs text-[#94A3B8] hover:text-white rounded-lg hover:bg-white/[0.04] transition flex items-center space-x-1.5 cursor-pointer"
+              type="button"
+              className="p-1.5 text-xs text-[#D0C5AF] hover:text-white rounded-lg hover:bg-[#292A2C] transition flex items-center gap-1.5 cursor-pointer border border-[#DAC58F]/15"
               title="Push notifications active. Click to configure."
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-              <span className="hidden sm:inline text-[11px]">Push Active</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#DAC58F]" />
+              <span className="hidden sm:inline text-[11px] font-mono">Push Armed</span>
             </button>
           ) : (
             <button
               onClick={enablePushNotifications}
               disabled={isSettingUpPush}
-              className="p-1.5 text-xs rounded-lg hover:bg-white/[0.04] transition text-[#94A3B8] hover:text-amber-300 flex items-center space-x-1 cursor-pointer"
+              type="button"
+              className="p-1.5 text-xs rounded-lg hover:bg-[#292A2C] transition text-[#D0C5AF] hover:text-[#F2CA50] flex items-center gap-1 cursor-pointer border border-[#DAC58F]/15"
               title="Enable push notifications"
             >
-              {permission === 'denied' ? (
-                <BellOff className="w-4 h-4 text-rose-400" />
-              ) : (
-                <Bell className="w-4 h-4 text-amber-400" />
-              )}
+              <span className="material-symbols-outlined text-sm">
+                {permission === 'denied' ? 'notifications_off' : 'notifications'}
+              </span>
               <span className="hidden sm:inline text-[11px]">
                 {permission === 'denied' ? 'Blocked' : 'Enable Push'}
               </span>
@@ -204,29 +184,31 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Standalone status / PWA Install */}
           {isStandalone ? (
             <div
-              className="px-2.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center space-x-1.5"
+              className="px-2.5 py-1.5 rounded-lg bg-[#56481E]/40 border border-[#DAC58F]/30 text-[#DAC58F] text-xs flex items-center gap-1"
               title="Running in standalone PWA mode"
             >
-              <Check className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline text-[11px] font-medium">Installed</span>
+              <span className="material-symbols-outlined text-sm">verified</span>
+              <span className="hidden sm:inline text-[10px] uppercase font-mono font-semibold">Installed</span>
             </div>
           ) : (
             <button
               onClick={onOpenInstall}
-              className="px-2.5 py-1.5 text-xs rounded-xl bg-[#121826] hover:bg-[#182233] text-[#F3F4F8] border border-white/[0.08] transition flex items-center space-x-1.5 cursor-pointer"
+              type="button"
+              className="px-2.5 py-1.5 text-xs rounded-lg bg-[#1B1C1E] hover:bg-[#292A2C] text-[#E3E2E5] border border-[#DAC58F]/20 transition flex items-center gap-1 cursor-pointer"
               title="Install Chroniq as a Progressive Web App"
             >
-              <Download className="w-3.5 h-3.5 text-[#5EEAD4]" />
-              <span className="hidden sm:inline">Install</span>
+              <span className="material-symbols-outlined text-sm text-[#F2CA50]">download</span>
+              <span className="hidden sm:inline text-[11px]">Install</span>
             </button>
           )}
 
           {/* Primary Action: New Task */}
           <button
             onClick={onOpenNewTask}
-            className="px-3 py-1.5 text-xs font-medium rounded-xl btn-primary transition flex items-center space-x-1 cursor-pointer font-semibold shadow-sm"
+            type="button"
+            className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-tr from-[#D4AF37] to-[#F2CA50] text-[#141211] transition flex items-center gap-1 cursor-pointer shadow-sm hover:opacity-90 active:scale-95"
           >
-            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span className="material-symbols-outlined text-sm font-bold">add</span>
             <span>New Task</span>
           </button>
 
@@ -234,17 +216,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           {user ? (
             <button
               onClick={() => onSelectTab('account')}
-              className="p-0.5 rounded-xl hover:ring-2 hover:ring-[#5EEAD4]/40 transition flex items-center cursor-pointer border border-white/[0.12]"
+              type="button"
+              className="p-0.5 rounded-lg hover:ring-2 hover:ring-[#DAC58F]/60 transition flex items-center cursor-pointer border border-[#DAC58F]/25 bg-[#1B1C1E]"
               title={user.email ?? 'Account'}
             >
               {userAvatar ? (
                 <img
                   src={userAvatar}
                   alt={userDisplayName}
-                  className="w-7 h-7 rounded-lg object-cover"
+                  className="w-7 h-7 rounded-md object-cover"
                 />
               ) : (
-                <div className="w-7 h-7 rounded-lg bg-[#182233] text-[#5EEAD4] text-xs font-bold flex items-center justify-center font-['Outfit']">
+                <div className="w-7 h-7 rounded-md bg-[#292A2C] text-[#F2CA50] text-xs font-bold flex items-center justify-center font-serif">
                   {userDisplayName.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -252,11 +235,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           ) : (
             <button
               onClick={() => onSelectTab('account')}
-              className="px-2.5 py-1.5 text-xs rounded-xl bg-[#121826] hover:bg-[#182233] text-[#F3F4F8] border border-white/[0.08] transition flex items-center space-x-1.5 cursor-pointer"
-              title="Sign in to sync tasks"
+              type="button"
+              className="px-2.5 py-1.5 text-xs rounded-lg bg-[#1B1C1E] hover:bg-[#292A2C] text-[#E3E2E5] border border-[#DAC58F]/20 transition flex items-center gap-1 cursor-pointer"
+              title="Sign in to sync mandates"
             >
-              <LogIn className="w-3.5 h-3.5 text-[#5EEAD4]" />
-              <span className="hidden sm:inline">Sign In</span>
+              <span className="material-symbols-outlined text-sm text-[#F2CA50]">login</span>
+              <span className="hidden sm:inline text-[11px]">Sign In</span>
             </button>
           )}
         </div>

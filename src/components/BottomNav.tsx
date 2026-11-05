@@ -1,5 +1,4 @@
 import React from 'react'
-import { CheckSquare, Calendar, Settings, User } from 'lucide-react'
 import { useTaskStore } from '@/store/useTaskStore'
 import { useAuthStore } from '@/store/useAuthStore'
 
@@ -8,84 +7,110 @@ export type NavTab = 'tasks' | 'schedule' | 'settings' | 'account'
 interface BottomNavProps {
   activeTab: NavTab
   onSelectTab: (tab: NavTab) => void
+  onQuickAdd?: () => void
 }
 
-export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onSelectTab }) => {
+export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onSelectTab, onQuickAdd }) => {
   const { tasks } = useTaskStore()
   const { user } = useAuthStore()
 
   const pendingCount = tasks.filter((t) => t.status !== 'completed' && t.archived_at === null).length
 
-  const tabs: { id: NavTab; label: string; icon: React.ReactNode; badge?: number }[] = [
+  const tabs: { id: NavTab; label: string; icon: string; badge?: number }[] = [
     {
       id: 'tasks',
       label: 'Tasks',
-      icon: <CheckSquare className="w-4 h-4" />,
+      icon: 'checklist',
       badge: pendingCount > 0 ? pendingCount : undefined,
     },
     {
       id: 'schedule',
       label: 'Schedule',
-      icon: <Calendar className="w-4 h-4" />,
+      icon: 'schedule',
     },
     {
       id: 'settings',
       label: 'Settings',
-      icon: <Settings className="w-4 h-4" />,
+      icon: 'tune',
     },
     {
       id: 'account',
       label: user ? 'Account' : 'Sign In',
-      icon: <User className="w-4 h-4" />,
+      icon: 'workspace_premium',
     },
   ]
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 sm:bottom-4 sm:left-1/2 sm:-translate-x-1/2 z-40 sm:max-w-md w-full px-2 sm:px-0">
-      <div className="bottom-dock-glass rounded-t-2xl sm:rounded-2xl py-1.5 px-2 flex items-center justify-around shadow-2xl">
-        {tabs.map((tab) => {
-          const isActive = activeTab === tab.id
-          return (
-            <button
-              key={tab.id}
-              onClick={() => onSelectTab(tab.id)}
-              className={`relative flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all duration-180 cursor-pointer flex-1 ${
-                isActive
-                  ? 'text-white'
-                  : 'text-[#94A3B8] hover:text-white hover:bg-white/[0.04]'
-              }`}
-            >
-              {/* Active Tab Background Pill */}
-              {isActive && (
-                <div className="absolute inset-0 rounded-xl bg-white/[0.08] border border-white/[0.1] -z-10 shadow-xs" />
-              )}
+    <>
+      {/* Floating Quick Inscribe Button (Mobile & Desktop) */}
+      {onQuickAdd && (
+        <div className="fixed bottom-20 right-4 sm:bottom-24 sm:right-8 z-50">
+          <button
+            onClick={onQuickAdd}
+            aria-label="Chroniq Quick Add"
+            type="button"
+            className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#D4AF37] to-[#F2CA50] text-[#141211] shadow-[0_8px_24px_rgba(212,175,55,0.35)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer group"
+          >
+            <span className="material-symbols-outlined text-[24px] font-bold group-hover:rotate-90 transition-transform duration-300">
+              add
+            </span>
+          </button>
+        </div>
+      )}
 
-              <div className="relative">
-                <span className={isActive ? 'text-[#5EEAD4]' : 'text-[#94A3B8]'}>
-                  {tab.icon}
+      {/* Luxury Dock Navigation Bar */}
+      <nav className="fixed bottom-0 inset-x-0 z-40 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-1 bg-[#121315]/90 backdrop-blur-2xl border-t border-[#DAC58F]/15 shadow-[0_-8px_32px_rgba(0,0,0,0.6)]">
+        <div className="max-w-md mx-auto flex items-center justify-around h-14 px-2">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id
+            return (
+              <button
+                key={tab.id}
+                onClick={() => onSelectTab(tab.id)}
+                type="button"
+                className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] transition-all duration-200 cursor-pointer relative ${
+                  isActive ? 'text-[#F2CA50] font-semibold' : 'text-[#99907C] hover:text-[#E3E2E5]'
+                }`}
+              >
+                {/* Active Satin Pill */}
+                {isActive && (
+                  <div className="absolute inset-x-1.5 -inset-y-0.5 rounded-xl bg-[#56481E]/40 border border-[#DAC58F]/20 -z-10 shadow-sm" />
+                )}
+
+                <div className="relative flex items-center justify-center">
+                  <span
+                    className={`material-symbols-outlined text-[22px] transition-transform duration-200 ${
+                      isActive ? 'scale-110' : ''
+                    }`}
+                  >
+                    {tab.icon}
+                  </span>
+
+                  {/* Badge Counter */}
+                  {tab.badge !== undefined && (
+                    <span className="absolute -top-1.5 -right-2.5 min-w-4 h-4 px-1 rounded-full bg-[#D4AF37] text-[#141211] text-[9px] font-bold flex items-center justify-center tabular-nums shadow-sm">
+                      {tab.badge > 99 ? '99+' : tab.badge}
+                    </span>
+                  )}
+                </div>
+
+                <span
+                  className={`text-[10px] uppercase tracking-wider mt-0.5 ${
+                    isActive ? 'text-[#F2CA50] font-bold' : 'text-[#99907C]'
+                  }`}
+                >
+                  {tab.label}
                 </span>
 
-                {/* Badge Indicator */}
-                {tab.badge !== undefined && (
-                  <span className="absolute -top-1.5 -right-2 min-w-4 h-4 px-1 rounded-full bg-[#5EEAD4] text-[#0A0E17] text-[10px] font-bold flex items-center justify-center tabular-nums">
-                    {tab.badge > 99 ? '99+' : tab.badge}
-                  </span>
+                {/* Subtitle Dot for active tab */}
+                {isActive && (
+                  <span className="w-1 h-1 rounded-full bg-[#DAC58F] mt-0.5 shadow-[0_0_4px_#DAC58F]" />
                 )}
-              </div>
-
-              <span className={`text-[10px] mt-1 font-medium tracking-tight ${isActive ? 'text-white font-semibold' : 'text-[#94A3B8]'}`}>
-                {tab.label}
-              </span>
-
-              {/* Active Indicator Dot */}
-              {isActive && (
-                <span className="w-1 h-1 rounded-full bg-[#5EEAD4] mt-0.5" />
-              )}
-            </button>
-          )
-        })}
-      </div>
-    </nav>
+              </button>
+            )
+          })}
+        </div>
+      </nav>
+    </>
   )
 }
-

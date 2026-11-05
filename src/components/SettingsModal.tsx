@@ -104,18 +104,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-[#080B12]/80 backdrop-blur-md animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-[#0D0E10]/85 backdrop-blur-md animate-in fade-in duration-150">
       <div className="fixed inset-0" onClick={onClose} />
-      <div className="relative w-full max-w-2xl bg-[#0E131F] border border-white/[0.08] rounded-2xl p-5 sm:p-6 shadow-2xl z-10 max-h-[92vh] flex flex-col animate-in zoom-in-95 duration-150 text-[#E7ECF4]">
+      <div className="relative w-full max-w-2xl bg-[#1B1C1E] border border-[#DAC58F]/20 rounded-2xl p-5 sm:p-6 shadow-2xl z-10 max-h-[92vh] flex flex-col animate-in zoom-in-95 duration-150 text-[#E3E2E5]">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3.5 border-b border-white/[0.06]">
+        <div className="flex items-center justify-between pb-3.5 border-b border-[#DAC58F]/10">
           <div className="flex items-center space-x-2.5">
-            <div className="p-1.5 rounded-lg bg-[#151B28] border border-white/[0.08] text-[#70DFFF]">
+            <div className="p-1.5 rounded-lg bg-[#121315] border border-[#DAC58F]/20 text-[#F2CA50]">
               <Bell className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-white tracking-tight">Notification & Reminders</h2>
-              <p className="text-xs text-[#94A3B8]">Customize daily reminder times, voice check-ins, and notification preferences</p>
+              <h2 className="text-base font-semibold text-white tracking-tight font-serif">Notification &amp; Reminders</h2>
+              <p className="text-xs text-[#99907C]">Customize daily reminder times, voice check-ins, and notification preferences</p>
             </div>
           </div>
           <button
