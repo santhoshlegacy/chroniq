@@ -91,15 +91,17 @@ self.addEventListener('notificationclick', (event) => {
 
   if (event.action === 'dismiss') return
 
-  const rawTarget = (event.notification.data && event.notification.data.url) || self.location.origin
-  let safeUrl = self.location.origin + '/'
+  const defaultScope = self.registration.scope || (self.location.origin + '/')
+  const rawTarget = (event.notification.data && event.notification.data.url) || defaultScope
+  let safeUrl = defaultScope
   try {
-    const parsed = new URL(rawTarget, self.location.origin)
+    const targetPath = rawTarget === '/' ? defaultScope : rawTarget
+    const parsed = new URL(targetPath, defaultScope)
     if (parsed.origin === self.location.origin && (parsed.protocol === 'http:' || parsed.protocol === 'https:')) {
       safeUrl = parsed.href
     }
   } catch {
-    safeUrl = self.location.origin + '/'
+    safeUrl = defaultScope
   }
 
   event.waitUntil(

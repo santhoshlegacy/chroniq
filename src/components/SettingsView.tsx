@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useSettingsStore } from '@/store/useSettingsStore'
+import { useTaskStore } from '@/store/useTaskStore'
 import { COMMON_TIMEZONES } from '@/lib/reminderUtils'
 import { isValidE164PhoneNumber } from '@/lib/voiceReminderClient'
 
@@ -22,6 +23,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ onOpenInstall, isSta
   const {
     preferences,
     voicePreferences,
+    permission,
+    isSettingUpPush,
+    enablePushNotifications,
+    sendTestNotification,
+    testNotificationStatus,
+    errorMessage,
+    clearError,
     updatePreferences,
     updateVoicePreferences,
     addCustomSlot,
@@ -30,7 +38,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ onOpenInstall, isSta
     toggleDayActive,
     events,
   } = useSettingsStore()
+  const { tasks } = useTaskStore()
 
+  const pendingCount = tasks.filter((t) => t.status !== 'completed' && t.archived_at === null).length
   const [activeTab, setActiveTab] = useState<'schedule' | 'voice' | 'history'>('schedule')
   const [newSlotInput, setNewSlotInput] = useState('14:00')
   const [isSaved, setIsSaved] = useState(false)
@@ -80,24 +90,106 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ onOpenInstall, isSta
         </p>
       </section>
 
-      {/* Atmospheric Notification Banner */}
-      <section className="relative w-full rounded-2xl overflow-hidden bg-[#F4EFEB] border border-[rgba(45,41,38,0.08)] p-5 sm:p-6 shadow-xs mb-8">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex flex-col gap-1 min-w-0">
-            <span className="text-[10px] uppercase tracking-widest text-[#745A2E] font-mono font-semibold">
-              Notification Mode
-            </span>
-            <span className="font-serif text-lg sm:text-xl text-[#181615]">
-              Gentle &amp; Clear
-            </span>
-            <p className="text-xs text-[#7A746E]">
-              Alerts are designed to keep you focused without unnecessary disruption.
-            </p>
+      {/* Web Push Notification Control Card */}
+      <section className="relative w-full rounded-2xl overflow-hidden bg-[#F4EFEB] border border-[rgba(45,41,38,0.12)] p-5 sm:p-6 shadow-xs mb-8 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3.5 min-w-0">
+            <div className="w-12 h-12 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] flex items-center justify-center text-[#745A2E] shrink-0 shadow-xs">
+              <span className="material-symbols-outlined text-[24px]">
+                {permission === 'granted' ? 'notifications_active' : permission === 'denied' ? 'notifications_off' : 'notifications'}
+              </span>
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] uppercase tracking-widest text-[#745A2E] font-mono font-semibold">
+                  Web Push Engine
+                </span>
+                <span
+                  className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${
+                    permission === 'granted'
+                      ? 'bg-[#EFECE3] text-[#4A6B56] border border-[#4A6B56]/20'
+                      : permission === 'denied'
+                      ? 'bg-[#BA1A1A]/10 text-[#BA1A1A] border border-[#BA1A1A]/20'
+                      : 'bg-[#FEDAA3]/50 text-[#745A2E] border border-[#745A2E]/20'
+                  }`}
+                >
+                  {permission === 'granted' ? 'Active' : permission === 'denied' ? 'Blocked in Browser' : 'Inactive'}
+                </span>
+              </div>
+              <span className="font-serif text-lg sm:text-xl text-[#181615]">
+                {permission === 'granted'
+                  ? 'Notifications Active'
+                  : permission === 'denied'
+                  ? 'Notifications Blocked'
+                  : 'Enable Push Notifications'}
+              </span>
+              <p className="text-xs text-[#7A746E] max-w-md">
+                {permission === 'granted'
+                  ? 'Receive 10-minute advance warnings and scheduled daily check-in alerts.'
+                  : permission === 'denied'
+                  ? 'Notifications are blocked in your browser settings. Unblock notifications in site settings to receive reminders.'
+                  : 'Grant browser permission to receive lock screen reminders and advance task alerts.'}
+              </p>
+            </div>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] flex items-center justify-center text-[#745A2E] flex-shrink-0 shadow-xs">
-            <span className="material-symbols-outlined text-[24px]">tune</span>
+
+          <div className="flex items-center gap-2 shrink-0 self-start sm:self-center">
+            {permission === 'granted' ? (
+              <button
+                type="button"
+                onClick={() => sendTestNotification(pendingCount)}
+                className="px-3.5 py-2 rounded-xl bg-[#1C1917] hover:bg-[#2D2926] text-[#FAF7F2] text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs transition-all active:scale-[0.98]"
+                title="Send an immediate test alert to this device"
+              >
+                <span className="material-symbols-outlined text-sm text-[#FEDAA3]">send</span>
+                <span>Send Test Alert</span>
+              </button>
+            ) : permission === 'denied' ? (
+              <button
+                type="button"
+                onClick={() => alert('Notifications are blocked by your browser. Please click the padlock or tune icon in your address bar and set Notifications to "Allow".')}
+                className="px-3.5 py-2 rounded-xl bg-[#EFECE3] border border-[rgba(45,41,38,0.12)] text-[#181615] text-xs font-semibold flex items-center gap-1.5 cursor-pointer hover:bg-[#FAF7F2] transition-all"
+              >
+                <span className="material-symbols-outlined text-sm text-[#BA1A1A]">help</span>
+                <span>How to Unblock</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={enablePushNotifications}
+                disabled={isSettingUpPush}
+                className="btn-primary px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs transition-all"
+              >
+                <span className="material-symbols-outlined text-sm">notifications</span>
+                <span>{isSettingUpPush ? 'Setting Up...' : 'Enable Push'}</span>
+              </button>
+            )}
           </div>
         </div>
+
+        {/* Live Feedback Pill / Status */}
+        {testNotificationStatus && (
+          <div className="pt-2 border-t border-[rgba(45,41,38,0.08)] flex items-center gap-2 text-xs text-[#4A6B56] font-mono animate-in fade-in duration-200">
+            <span className="material-symbols-outlined text-sm">check_circle</span>
+            <span>{testNotificationStatus}</span>
+          </div>
+        )}
+
+        {errorMessage && (
+          <div className="pt-2 border-t border-[rgba(45,41,38,0.08)] flex items-center justify-between text-xs text-[#BA1A1A] font-mono animate-in fade-in duration-200">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-sm">error</span>
+              <span>{errorMessage}</span>
+            </div>
+            <button
+              type="button"
+              onClick={clearError}
+              className="text-[#7A746E] hover:text-[#181615] cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-xs">close</span>
+            </button>
+          </div>
+        )}
       </section>
 
       {/* Main Panel */}

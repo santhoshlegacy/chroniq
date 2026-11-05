@@ -137,15 +137,17 @@ export function App() {
             notifiedKeys.add(key10m)
             setActiveToast({ task: t, type: '10m' })
             try {
-              if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-                void navigator.serviceWorker.ready.then((reg) => {
-                  void reg.showNotification('Chroniq — Due in 10 Minutes', {
-                    body: `"${t.title}" is due in 10 minutes.`,
-                    icon: '/logo.png',
-                    badge: '/logo.png',
-                    tag: `chroniq-10m-${t.id}`,
+              if ('Notification' in window && Notification.permission === 'granted') {
+                if ('serviceWorker' in navigator) {
+                  void navigator.serviceWorker.ready.then((reg) => {
+                    void reg.showNotification('Chroniq — Due in 10 Minutes', {
+                      body: `"${t.title}" is due in 10 minutes.`,
+                      icon: logoUrl,
+                      badge: logoUrl,
+                      tag: `chroniq-10m-${t.id}`,
+                    })
                   })
-                })
+                }
               }
             } catch {
               // Notification fallback
@@ -160,15 +162,17 @@ export function App() {
             notifiedKeys.add(keyDue)
             setActiveToast({ task: t, type: 'due' })
             try {
-              if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-                void navigator.serviceWorker.ready.then((reg) => {
-                  void reg.showNotification('Chroniq — Task Due Now', {
-                    body: `"${t.title}" is due now!`,
-                    icon: '/logo.png',
-                    badge: '/logo.png',
-                    tag: `chroniq-due-${t.id}`,
+              if ('Notification' in window && Notification.permission === 'granted') {
+                if ('serviceWorker' in navigator) {
+                  void navigator.serviceWorker.ready.then((reg) => {
+                    void reg.showNotification('Chroniq — Task Due Now', {
+                      body: `"${t.title}" is due now!`,
+                      icon: logoUrl,
+                      badge: logoUrl,
+                      tag: `chroniq-due-${t.id}`,
+                    })
                   })
-                })
+                }
               }
             } catch {
               // Notification fallback

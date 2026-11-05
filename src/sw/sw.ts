@@ -108,15 +108,18 @@ self.addEventListener('notificationclick', (event: NotificationEvent) => {
 
   if (event.action === 'dismiss') return
 
-  const rawTarget: string = (event.notification.data as { url?: string })?.url ?? self.location.origin
-  let safeUrl = self.location.origin + '/'
+  const defaultScope = self.registration.scope || (self.location.origin + '/')
+  const rawTarget: string = (event.notification.data as { url?: string })?.url ?? defaultScope
+  let safeUrl = defaultScope
   try {
-    const parsed = new URL(rawTarget, self.location.origin)
+    // If target is root '/', map to the PWA scope to preserve subpath deployments (e.g., GitHub Pages)
+    const targetPath = rawTarget === '/' ? defaultScope : rawTarget
+    const parsed = new URL(targetPath, defaultScope)
     if (parsed.origin === self.location.origin && (parsed.protocol === 'http:' || parsed.protocol === 'https:')) {
       safeUrl = parsed.href
     }
   } catch {
-    safeUrl = self.location.origin + '/'
+    safeUrl = defaultScope
   }
 
   event.waitUntil(

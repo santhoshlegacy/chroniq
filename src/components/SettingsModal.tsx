@@ -11,6 +11,7 @@ import {
   Info,
 } from 'lucide-react'
 import { useSettingsStore } from '@/store/useSettingsStore'
+import { useTaskStore } from '@/store/useTaskStore'
 import { DEFAULT_REMINDER_SLOTS } from '@/lib/reminderUtils'
 import { isValidE164PhoneNumber } from '@/lib/voiceReminderClient'
 import { format, parseISO } from 'date-fns'
@@ -50,6 +51,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
   const {
     preferences,
     voicePreferences,
+    permission,
+    isSettingUpPush,
+    enablePushNotifications,
+    sendTestNotification,
+    testNotificationStatus,
     updatePreferences,
     updateVoicePreferences,
     addCustomSlot,
@@ -58,7 +64,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
     toggleDayActive,
     events,
   } = useSettingsStore()
+  const { tasks } = useTaskStore()
 
+  const pendingCount = tasks.filter((t) => t.status !== 'completed' && t.archived_at === null).length
   const [activeTab, setActiveTab] = useState<'schedule' | 'voice' | 'history'>('schedule')
   const [newSlotInput, setNewSlotInput] = useState('14:00')
   const [isSaved, setIsSaved] = useState(false)
@@ -171,6 +179,71 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
           {/* ──────── TAB 1: SCHEDULE & SLOTS ──────── */}
           {activeTab === 'schedule' && (
             <div className="space-y-4">
+              {/* Web Push Status & Test Card */}
+              <div className="p-3.5 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.12)] space-y-2.5">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[18px] text-[#745A2E]">
+                      {permission === 'granted' ? 'notifications_active' : permission === 'denied' ? 'notifications_off' : 'notifications'}
+                    </span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-semibold text-[#181615]">Web Push Notifications</span>
+                        <span
+                          className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold ${
+                            permission === 'granted'
+                              ? 'bg-[#EFECE3] text-[#4A6B56]'
+                              : permission === 'denied'
+                              ? 'bg-[#BA1A1A]/10 text-[#BA1A1A]'
+                              : 'bg-[#FEDAA3]/50 text-[#745A2E]'
+                          }`}
+                        >
+                          {permission === 'granted' ? 'Active' : permission === 'denied' ? 'Blocked' : 'Inactive'}
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-[#7A746E] block">
+                        {permission === 'granted'
+                          ? 'Lock screen and 10-minute advance warnings active.'
+                          : permission === 'denied'
+                          ? 'Blocked in browser site settings. Allow notifications to enable.'
+                          : 'Grant browser permission to receive reminder alerts.'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="shrink-0">
+                    {permission === 'granted' ? (
+                      <button
+                        type="button"
+                        onClick={() => sendTestNotification(pendingCount)}
+                        className="px-2.5 py-1.5 rounded-lg bg-[#1C1917] hover:bg-[#2D2926] text-[#FAF7F2] text-[11px] font-semibold flex items-center gap-1 cursor-pointer shadow-xs transition-all"
+                        title="Send test alert"
+                      >
+                        <span className="material-symbols-outlined text-xs text-[#FEDAA3]">send</span>
+                        <span>Test Alert</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={enablePushNotifications}
+                        disabled={isSettingUpPush}
+                        className="btn-primary px-3 py-1.5 rounded-lg text-[11px] font-semibold flex items-center gap-1 cursor-pointer shadow-xs"
+                      >
+                        <span className="material-symbols-outlined text-xs">notifications</span>
+                        <span>{isSettingUpPush ? '...' : 'Enable'}</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {testNotificationStatus && (
+                  <div className="pt-1.5 border-t border-[rgba(45,41,38,0.08)] flex items-center gap-1.5 text-[11px] text-[#4A6B56] font-mono">
+                    <span className="material-symbols-outlined text-xs">check_circle</span>
+                    <span>{testNotificationStatus}</span>
+                  </div>
+                )}
+              </div>
+
               {/* Master automated check-in toggle */}
               <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)]">
                 <div>

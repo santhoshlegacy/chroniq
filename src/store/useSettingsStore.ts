@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import logoUrl from '@/assets/logo.png'
 import type { NotificationEvent, NotificationPreferences, VoiceReminderPreferences, Task } from '@/types'
 import {
   getPermissionState,
@@ -321,12 +322,13 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
   },
 
   enablePushNotifications: async () => {
-    set({ isSettingUpPush: true })
+    set({ isSettingUpPush: true, errorMessage: null })
     try {
       const result = await setupPushNotifications('Primary Device')
       set({
         permission: result.permissionState,
         isSubscribed: result.success,
+        errorMessage: result.error || null,
       })
       if (result.success) {
         playNotificationChime()
@@ -365,21 +367,21 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
     if ('Notification' in window && Notification.permission === 'granted') {
       try {
         if ('serviceWorker' in navigator) {
-          const reg = await navigator.serviceWorker.getRegistration()
+          const reg = await navigator.serviceWorker.ready
           if (reg) {
             await reg.showNotification(title, {
               body,
-              icon: '/logo.png',
-              badge: '/logo.png',
+              icon: logoUrl,
+              badge: logoUrl,
               tag: 'chroniq-test-reminder',
-              data: { url: window.location.origin },
+              data: { url: window.location.href },
             })
             set({ testNotificationStatus: 'Dispatched to Service Worker!' })
             setTimeout(() => set({ testNotificationStatus: null }), 4000)
             return true
           }
         }
-        new Notification(title, { body, icon: '/logo.png' })
+        new Notification(title, { body, icon: logoUrl })
         set({ testNotificationStatus: 'Browser notification shown!' })
         setTimeout(() => set({ testNotificationStatus: null }), 4000)
         return true
