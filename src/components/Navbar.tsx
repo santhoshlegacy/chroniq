@@ -85,7 +85,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Brand Monogram & Status */}
         <div
           onClick={() => onSelectTab('tasks')}
-          className="flex items-center gap-3 cursor-pointer group"
+          className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group shrink-0 min-w-0"
         >
           <div className="w-10 h-10 rounded-full overflow-hidden border border-[rgba(45,41,38,0.12)] bg-[#F4EFEB] flex-shrink-0 flex items-center justify-center shadow-xs p-1 group-hover:border-[#C2A26F] transition-all">
             <img
@@ -207,7 +207,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               title="Installed as standalone application. Click for details."
             >
               <span className="material-symbols-outlined text-sm">verified</span>
-              <span className="text-[11px] font-medium">Installed</span>
+              <span className="hidden sm:inline text-[11px] font-medium">Installed</span>
             </button>
           ) : (
             <button
@@ -217,15 +217,15 @@ export const Navbar: React.FC<NavbarProps> = ({
               title="Install Chroniq on your device"
             >
               <span className="material-symbols-outlined text-sm text-[#745A2E]">download</span>
-              <span className="text-[11px] font-medium">Install</span>
+              <span className="hidden sm:inline text-[11px] font-medium">Install</span>
             </button>
           )}
 
-          {/* Primary Action: New Task */}
+          {/* Primary Action: New Task (Desktop only - mobile uses Quick Add / inline action) */}
           <button
             onClick={onOpenNewTask}
             type="button"
-            className="btn-primary px-3 sm:px-3.5 py-1.5 text-xs font-semibold rounded-md flex items-center gap-1 cursor-pointer shrink-0"
+            className="hidden sm:inline-flex btn-primary px-3 sm:px-3.5 py-1.5 text-xs font-semibold rounded-md items-center gap-1 cursor-pointer shrink-0"
           >
             <span className="material-symbols-outlined text-sm font-bold">add</span>
             <span>New Task</span>

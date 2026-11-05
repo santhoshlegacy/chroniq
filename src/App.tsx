@@ -318,11 +318,11 @@ export function App() {
 
         {/* PWA Installation Callout Banner */}
         {!isStandalone && !isBannerDismissed && (
-          <div className="bg-[#F4EFEB] border-b border-[rgba(45,41,38,0.08)] py-2.5 px-4 text-xs">
-            <div className="editorial-container flex items-center justify-between gap-3">
-              <div className="flex items-center space-x-2 text-[#7A746E]">
+          <div className="editorial-container my-3 sm:my-4">
+            <div className="bg-[#F4EFEB] border border-[rgba(45,41,38,0.1)] rounded-xl py-2.5 px-4 text-xs flex items-center justify-between gap-3 shadow-xs">
+              <div className="flex items-center space-x-2 text-[#7A746E] min-w-0">
                 <Download className="w-3.5 h-3.5 text-[#745A2E] flex-shrink-0" />
-                <span>
+                <span className="truncate sm:overflow-visible">
                   Install Chroniq for quick home screen access and offline support.
                 </span>
               </div>

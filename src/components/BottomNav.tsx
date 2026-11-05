@@ -10,7 +10,7 @@ interface BottomNavProps {
   onQuickAdd?: () => void
 }
 
-export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onSelectTab, onQuickAdd }) => {
+export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onSelectTab }) => {
   const { tasks } = useTaskStore()
   const { user } = useAuthStore()
 
@@ -42,22 +42,6 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onSelectTab, on
 
   return (
     <>
-      {/* Floating Quick Add Button (Mobile & Desktop) */}
-      {onQuickAdd && (
-        <div className="fixed bottom-20 right-5 sm:bottom-24 sm:right-12 z-50">
-          <button
-            onClick={onQuickAdd}
-            aria-label="Add Task"
-            type="button"
-            className="w-12 h-12 rounded-full bg-[#181615] text-[#FAF7F2] shadow-[0_8px_24px_rgba(45,41,38,0.22)] flex items-center justify-center hover:bg-[#2D2926] hover:scale-105 active:scale-95 transition-all cursor-pointer group border border-[rgba(45,41,38,0.12)]"
-          >
-            <span className="material-symbols-outlined text-[24px] text-[#FEDAA3] font-bold group-hover:rotate-90 transition-transform duration-300">
-              add
-            </span>
-          </button>
-        </div>
-      )}
-
       {/* Clean Navigation Bar in Frosted Silk Glass */}
       <nav className="fixed bottom-0 inset-x-0 z-40 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-1 bg-[#FAF7F2]/95 backdrop-blur-2xl border-t border-[rgba(45,41,38,0.1)] shadow-[0_-4px_24px_rgba(45,41,38,0.04)]">
         <div className="max-w-md mx-auto flex items-center justify-around h-14 px-2">
