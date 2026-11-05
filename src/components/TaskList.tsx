@@ -62,17 +62,14 @@ export const TaskList: React.FC<TaskListProps> = ({
 
   if (sorted.length === 0) {
     return (
-      <div className="bg-[#1B1C1E] border border-[#DAC58F]/15 rounded-2xl p-8 sm:p-12 text-center my-4 shadow-sm relative overflow-hidden">
-        {/* Subtle radial glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-[#DAC58F]/5 blur-3xl pointer-events-none" />
-
-        <div className="w-12 h-12 mx-auto rounded-full bg-[#121315] border border-[#DAC58F]/25 flex items-center justify-center text-[#F2CA50] mb-3.5 shadow-md">
+      <div className="bg-[#F4EFEB] border border-[rgba(45,41,38,0.08)] rounded-2xl p-8 sm:p-14 text-center my-6 shadow-xs relative overflow-hidden">
+        <div className="w-12 h-12 mx-auto rounded-xl bg-[#EFECE3] border border-[rgba(45,41,38,0.08)] flex items-center justify-center text-[#745A2E] mb-3.5 shadow-xs">
           <span className="material-symbols-outlined text-[24px]">
             {activeFilter === 'completed' ? 'verified' : 'hourglass_empty'}
           </span>
         </div>
 
-        <h3 className="font-serif text-lg text-white">
+        <h3 className="font-serif text-xl sm:text-2xl text-[#181615]">
           {activeFilter === 'completed'
             ? 'No completed mandates recorded yet today'
             : activeFilter === 'overdue'
@@ -80,7 +77,7 @@ export const TaskList: React.FC<TaskListProps> = ({
             : 'Ledger Empty • Tranquil Horizon'}
         </h3>
 
-        <p className="mt-1 text-xs text-[#99907C] max-w-xs mx-auto leading-relaxed">
+        <p className="mt-1.5 text-xs text-[#7A746E] max-w-sm mx-auto leading-relaxed">
           {activeFilter === 'today'
             ? 'Inscribe a high-priority mandate to structure your focus cadence.'
             : 'All recorded mandates matching this filter will materialize here.'}
@@ -88,7 +85,7 @@ export const TaskList: React.FC<TaskListProps> = ({
 
         <button
           onClick={onOpenNewTask}
-          className="mt-5 px-4 py-2 rounded-lg bg-gradient-to-tr from-[#D4AF37] to-[#F2CA50] text-[#141211] text-xs font-semibold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-md hover:opacity-90 active:scale-95 transition-all cursor-pointer"
+          className="btn-primary mt-6 px-5 py-2.5 rounded-md inline-flex items-center gap-1.5 cursor-pointer text-xs uppercase tracking-wider font-semibold"
         >
           <span className="material-symbols-outlined text-sm font-bold">add</span>
           <span>Inscribe Mandate</span>
@@ -98,27 +95,27 @@ export const TaskList: React.FC<TaskListProps> = ({
   }
 
   return (
-    <div className="flex flex-col gap-3 mb-20 sm:mb-12">
+    <div className="flex flex-col gap-3 mb-24 sm:mb-16">
       {/* Editorial Section Horizon Header */}
-      <div className="flex items-end justify-between pt-1 pb-1">
+      <div className="flex items-end justify-between pt-2 pb-1">
         <div className="flex flex-col">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#DAC58F] font-semibold">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#745A2E] font-semibold">
             Master Ledger
           </span>
-          <h2 className="font-serif text-xl sm:text-2xl text-white">
+          <h2 className="font-serif text-2xl sm:text-3xl text-[#181615]">
             Curated Mandates
           </h2>
         </div>
-        <div className="flex items-center gap-1.5 bg-[#1B1C1E] border border-[#DAC58F]/15 px-3 py-1 rounded-full text-[#D0C5AF] shadow-sm">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#DAC58F]" />
-          <span className="font-mono text-xs text-white tabular-nums">
+        <div className="flex items-center gap-2 bg-[#F4EFEB] border border-[rgba(45,41,38,0.08)] px-3.5 py-1 rounded-full text-[#2D2926] shadow-xs">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#745A2E]" />
+          <span className="font-mono text-xs text-[#181615] tabular-nums font-semibold">
             {sorted.length} {sorted.length === 1 ? 'Mandate' : 'Mandates'}
           </span>
         </div>
       </div>
 
       {/* Task Cards List */}
-      <div className="space-y-2.5">
+      <div className="space-y-3">
         {sorted.map((task) => (
           <TaskCard
             key={task.id}

@@ -33,7 +33,6 @@ export const QuickAddTask: React.FC = () => {
     setIsSubmitting(false)
   }
 
-  // Voice dictation using browser Web Speech API
   const handleToggleVoice = () => {
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
@@ -75,46 +74,41 @@ export const QuickAddTask: React.FC = () => {
     title: string
     colorClass: string
     activeClass: string
-    borderClass: string
   }[] = [
     {
       priority: 'urgent',
       title: 'Crimson Sovereign / VIP',
       colorClass: 'bg-[#BA1A1A]',
-      activeClass: 'ring-2 ring-[#BA1A1A] scale-125 shadow-[0_0_8px_#BA1A1A]',
-      borderClass: 'border-[#BA1A1A]/40',
+      activeClass: 'ring-2 ring-[#BA1A1A] ring-offset-2 ring-offset-[#F4EFEB] scale-125',
     },
     {
       priority: 'high',
       title: 'Amber Horizon / High',
-      colorClass: 'bg-[#D4AF37]',
-      activeClass: 'ring-2 ring-[#D4AF37] scale-125 shadow-[0_0_8px_#D4AF37]',
-      borderClass: 'border-[#D4AF37]/40',
+      colorClass: 'bg-[#C2A26F]',
+      activeClass: 'ring-2 ring-[#C2A26F] ring-offset-2 ring-offset-[#F4EFEB] scale-125',
     },
     {
       priority: 'medium',
-      title: 'Champagne / Medium',
-      colorClass: 'bg-[#DAC58F]',
-      activeClass: 'ring-2 ring-[#DAC58F] scale-125 shadow-[0_0_8px_#DAC58F]',
-      borderClass: 'border-[#DAC58F]/40',
+      title: 'Polished Bronze / Medium',
+      colorClass: 'bg-[#8C7654]',
+      activeClass: 'ring-2 ring-[#8C7654] ring-offset-2 ring-offset-[#F4EFEB] scale-125',
     },
     {
       priority: 'low',
       title: 'Sage Ritual / Standard',
-      colorClass: 'bg-[#7F7570]',
-      activeClass: 'ring-2 ring-[#99907C] scale-125 shadow-[0_0_8px_#99907C]',
-      borderClass: 'border-[#7F7570]/40',
+      colorClass: 'bg-[#7A746E]',
+      activeClass: 'ring-2 ring-[#7A746E] ring-offset-2 ring-offset-[#F4EFEB] scale-125',
     },
   ]
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-[#1B1C1E] border border-[#DAC58F]/15 rounded-xl p-3 sm:p-4 mb-6 flex flex-col gap-3 shadow-md hover:border-[#DAC58F]/25 transition-all focus-within:border-[#DAC58F]/40"
+      className="bg-[#F4EFEB] border border-[rgba(45,41,38,0.08)] rounded-xl p-4 mb-8 flex flex-col gap-3 shadow-[0_4px_16px_rgba(45,41,38,0.03)] hover:border-[rgba(45,41,38,0.16)] transition-all focus-within:border-[#C2A26F]"
     >
       {/* Input Row */}
       <div className="flex items-center gap-3">
-        <span className="material-symbols-outlined text-[#DAC58F] text-[20px] flex-shrink-0">
+        <span className="material-symbols-outlined text-[#745A2E] text-[20px] flex-shrink-0">
           edit_note
         </span>
         <input
@@ -123,7 +117,7 @@ export const QuickAddTask: React.FC = () => {
           onChange={(e) => setTitle(e.target.value)}
           maxLength={255}
           placeholder="Inscribe new mandate or focus block..."
-          className="bg-transparent flex-1 text-sm text-[#E3E2E5] placeholder-[#99907C]/70 focus:outline-none"
+          className="bg-transparent flex-1 text-sm text-[#181615] placeholder-[#7A746E]/70 focus:outline-none"
         />
         <button
           type="button"
@@ -131,8 +125,8 @@ export const QuickAddTask: React.FC = () => {
           title={isListening ? 'Listening...' : 'Voice Dictation'}
           className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
             isListening
-              ? 'bg-[#BA1A1A] text-white animate-pulse'
-              : 'bg-[#292A2C] text-[#D0C5AF] hover:text-white hover:bg-[#343537]'
+              ? 'bg-[#BA1A1A] text-[#FAF7F2] animate-pulse'
+              : 'bg-[#EFECE3] text-[#4D4541] hover:text-[#181615] hover:bg-[#E5E2DB]'
           }`}
         >
           <span className="material-symbols-outlined text-[18px]">mic</span>
@@ -140,9 +134,9 @@ export const QuickAddTask: React.FC = () => {
       </div>
 
       {/* Urgency Pips & Inscribe Action */}
-      <div className="flex items-center justify-between pt-1 border-t border-[#DAC58F]/10">
+      <div className="flex items-center justify-between pt-2 border-t border-[rgba(45,41,38,0.06)]">
         <div className="flex items-center gap-3">
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-[#99907C]">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-[#7A746E]">
             Urgency
           </span>
           <div className="flex items-center gap-2.5">
@@ -155,13 +149,13 @@ export const QuickAddTask: React.FC = () => {
                   onClick={() => setPriority(item.priority)}
                   title={item.title}
                   className={`w-3.5 h-3.5 rounded-full ${item.colorClass} transition-all cursor-pointer ${
-                    isSelected ? item.activeClass : 'opacity-60 hover:opacity-100 hover:scale-115'
+                    isSelected ? item.activeClass : 'opacity-50 hover:opacity-100 hover:scale-115'
                   }`}
                 />
               )
             })}
           </div>
-          <span className="text-[10px] uppercase font-mono text-[#DAC58F] hidden sm:inline">
+          <span className="text-[10px] uppercase font-mono text-[#745A2E] font-semibold hidden sm:inline">
             {priority.toUpperCase()}
           </span>
         </div>
@@ -169,7 +163,7 @@ export const QuickAddTask: React.FC = () => {
         <button
           type="submit"
           disabled={!title.trim() || isSubmitting}
-          className="px-4 py-1.5 rounded-lg bg-gradient-to-tr from-[#D4AF37] to-[#F2CA50] text-[#141211] font-semibold text-xs uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all shadow-sm disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex items-center gap-1.5"
+          className="px-4 py-1.5 rounded-md bg-[#181615] text-[#FAF7F2] font-semibold text-xs uppercase tracking-wider hover:bg-[#2D2926] active:scale-95 transition-all shadow-xs disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex items-center gap-1.5"
         >
           <span className="material-symbols-outlined text-sm font-bold">add</span>
           <span>Inscribe</span>

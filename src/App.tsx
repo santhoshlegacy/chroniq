@@ -218,10 +218,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#121315] text-[#E3E2E5] relative selection:bg-[#D4AF37]/25 selection:text-[#F2CA50] flex flex-col justify-between">
-      {/* Horological Guilloche Overlay */}
-      <div className="pointer-events-none fixed inset-0 z-0 opacity-40 bg-[radial-gradient(#d4af37_1px,transparent_1px)] [background-size:24px_24px]" />
-
+    <div className="min-h-screen bg-[#FAF7F2] text-[#1C1917] relative selection:bg-[#C2A26F]/30 selection:text-[#181615] flex flex-col justify-between font-sans">
       {/* TrueSynk Cinematic Splash Screen */}
       {showSplash && <SplashScreen onEnter={handleCompleteSplash} />}
 
@@ -238,9 +235,9 @@ export function App() {
 
         {/* Offline Status Warning Banner */}
         {!isOnline && (
-          <div className="bg-[#1B1C1E] border-b border-[#D4AF37]/30 py-2 px-4 text-xs text-[#DAC58F]">
-            <div className="max-w-6xl mx-auto flex items-center space-x-2">
-              <WifiOff className="w-3.5 h-3.5 text-[#F2CA50] flex-shrink-0" />
+          <div className="bg-[#F4EFEB] border-b border-[rgba(45,41,38,0.08)] py-2.5 px-4 text-xs text-[#2D2926]">
+            <div className="editorial-container flex items-center space-x-2">
+              <WifiOff className="w-3.5 h-3.5 text-[#745A2E] flex-shrink-0" />
               <span>
                 Offline vault active. Your mandates remain saved securely on this device. Cloud sync and scheduler triggers will resume once connection is restored.
               </span>
@@ -250,15 +247,15 @@ export function App() {
 
         {/* Auth Error Banner */}
         {authError && (
-          <div className="bg-[#93000A]/40 border-b border-[#FFB4AB]/20 py-2 px-4 text-xs text-[#FFDAD6]">
-            <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className="bg-[#FFDAD6] border-b border-[#BA1A1A]/20 py-2.5 px-4 text-xs text-[#93000A]">
+            <div className="editorial-container flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <AlertTriangle className="w-3.5 h-3.5 text-[#FFB4AB] flex-shrink-0" />
+                <AlertTriangle className="w-3.5 h-3.5 text-[#BA1A1A] flex-shrink-0" />
                 <span>{authError}</span>
               </div>
               <button
                 onClick={clearAuthError}
-                className="text-[#FFB4AB] hover:text-white p-1 cursor-pointer"
+                className="text-[#93000A] hover:text-[#BA1A1A] p-1 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -268,15 +265,15 @@ export function App() {
 
         {/* Database/Network Error Banner */}
         {errorMessage && (
-          <div className="bg-[#93000A]/40 border-b border-[#FFB4AB]/20 py-2 px-4 text-xs text-[#FFDAD6]">
-            <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className="bg-[#FFDAD6] border-b border-[#BA1A1A]/20 py-2.5 px-4 text-xs text-[#93000A]">
+            <div className="editorial-container flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <AlertTriangle className="w-3.5 h-3.5 text-[#FFB4AB] flex-shrink-0" />
+                <AlertTriangle className="w-3.5 h-3.5 text-[#BA1A1A] flex-shrink-0" />
                 <span>{errorMessage}</span>
               </div>
               <button
                 onClick={clearError}
-                className="text-[#FFB4AB] hover:text-white p-1 cursor-pointer"
+                className="text-[#93000A] hover:text-[#BA1A1A] p-1 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -286,18 +283,18 @@ export function App() {
 
         {/* Local Offline Tasks Migration Banner */}
         {user && unmigratedLocalCount > 0 && !importStatus && (
-          <div className="bg-[#1B1C1E] border-b border-[#DAC58F]/25 py-2.5 px-4 text-xs text-[#E3E2E5]">
-            <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
+          <div className="bg-[#F4EFEB] border-b border-[#C2A26F]/30 py-2.5 px-4 text-xs text-[#2D2926]">
+            <div className="editorial-container flex items-center justify-between gap-3">
               <div className="flex items-center space-x-2">
-                <CloudUpload className="w-4 h-4 text-[#F2CA50] flex-shrink-0" />
+                <CloudUpload className="w-4 h-4 text-[#745A2E] flex-shrink-0" />
                 <span>
-                  You have <strong className="text-white font-medium">{unmigratedLocalCount} offline mandates</strong> saved on this device. Migrate them into your authenticated cloud vault?
+                  You have <strong className="text-[#181615] font-semibold">{unmigratedLocalCount} offline mandates</strong> saved on this device. Migrate them into your authenticated cloud vault?
                 </span>
               </div>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={handleImportLocalTasks}
-                  className="px-3 py-1 rounded-lg bg-gradient-to-tr from-[#D4AF37] to-[#F2CA50] text-[#141211] font-semibold text-[11px] transition cursor-pointer"
+                  className="px-3 py-1 rounded-md bg-[#181615] hover:bg-[#2D2926] text-[#FAF7F2] font-semibold text-[11px] transition cursor-pointer"
                 >
                   Import to Cloud
                 </button>
@@ -307,9 +304,9 @@ export function App() {
         )}
 
         {importStatus && (
-          <div className="bg-emerald-950/40 border-b border-emerald-500/20 py-2 px-4 text-xs text-emerald-300">
-            <div className="max-w-6xl mx-auto flex items-center space-x-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="bg-[#4A6B56]/15 border-b border-[#4A6B56]/30 py-2 px-4 text-xs text-[#4A6B56]">
+            <div className="editorial-container flex items-center space-x-2">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#4A6B56]" />
               <span>{importStatus}</span>
             </div>
           </div>
@@ -317,10 +314,10 @@ export function App() {
 
         {/* PWA Installation Callout Banner */}
         {!isStandalone && !isBannerDismissed && (
-          <div className="bg-[#1B1C1E] border-b border-[#DAC58F]/15 py-2 px-4 text-xs">
-            <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
-              <div className="flex items-center space-x-2 text-[#99907C]">
-                <Download className="w-3.5 h-3.5 text-[#F2CA50] flex-shrink-0" />
+          <div className="bg-[#F4EFEB] border-b border-[rgba(45,41,38,0.08)] py-2.5 px-4 text-xs">
+            <div className="editorial-container flex items-center justify-between gap-3">
+              <div className="flex items-center space-x-2 text-[#7A746E]">
+                <Download className="w-3.5 h-3.5 text-[#745A2E] flex-shrink-0" />
                 <span>
                   Install Chroniq as a Progressive Web App for offline horological access and native home screen integration.
                 </span>
@@ -334,13 +331,13 @@ export function App() {
                       setIsInstallOpen(true)
                     }
                   }}
-                  className="px-2.5 py-1 rounded-lg bg-[#292A2C] hover:bg-[#343537] text-[#DAC58F] font-medium border border-[#DAC58F]/20 transition cursor-pointer text-[11px]"
+                  className="px-2.5 py-1 rounded-md bg-[#EFECE3] hover:bg-[#FAF7F2] text-[#181615] font-medium border border-[rgba(45,41,38,0.12)] transition cursor-pointer text-[11px]"
                 >
                   {deferredPrompt ? 'Install Now' : 'Install Guide'}
                 </button>
                 <button
                   onClick={handleDismissBanner}
-                  className="p-1 rounded-md text-[#99907C] hover:text-[#DAC58F] transition cursor-pointer"
+                  className="p-1 rounded-md text-[#7A746E] hover:text-[#181615] transition cursor-pointer"
                   title="Dismiss banner"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -351,7 +348,7 @@ export function App() {
         )}
 
         {/* ──────── TABBED VIEWS ROUTER ──────── */}
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 sm:pb-24">
+        <main className="editorial-container py-8 sm:py-12 pb-32 sm:pb-28">
           {/* Active In-App Toast Notification Stack */}
           {activeToast && (
             <div className="mb-6">
@@ -373,20 +370,20 @@ export function App() {
           {/* VIEW 1: TASKS / FOCUS */}
           {activeTab === 'tasks' && (
             <div className="animate-in fade-in duration-200">
-              {/* Studio Provenance Sub-bar */}
-              <div className="mb-6 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-[#DAC58F]/10 pb-4">
+              {/* Studio Provenance Editorial Header */}
+              <div className="mb-8 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-[rgba(45,41,38,0.08)] pb-5">
                 <div>
-                  <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[#DAC58F] mb-1 font-semibold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#DAC58F]" />
+                  <div className="flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-[#745A2E] mb-1 font-semibold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#745A2E]" />
                     <span>A True Synk Product</span>
-                    <span className="text-[#99907C]">•</span>
-                    <span className="text-[#99907C]">Horological Series IX</span>
+                    <span className="text-[#7A746E]">•</span>
+                    <span className="text-[#7A746E]">Horological Series IX</span>
                   </div>
-                  <h1 className="text-2xl sm:text-3xl font-serif text-white tracking-tight">
+                  <h1 className="text-3xl sm:text-4xl font-serif text-[#181615] tracking-tight">
                     Focus on What Matters.
                   </h1>
-                  <p className="text-xs sm:text-sm text-[#99907C] mt-0.5">
-                    Your daily focus window. Click any dossier card to inspect confidential instructions or honor completion.
+                  <p className="text-xs sm:text-sm text-[#7A746E] mt-1 max-w-xl">
+                    Your daily focus window. Inspect confidential instructions or honor completion with deliberate precision.
                   </p>
                 </div>
               </div>
@@ -408,7 +405,7 @@ export function App() {
 
           {/* VIEW 2: SCHEDULE & CADENCE */}
           {activeTab === 'schedule' && (
-            <div className="space-y-6 animate-in fade-in duration-200">
+            <div className="animate-in fade-in duration-200 space-y-8">
               {/* Reminder Hero & Cadence Strip */}
               <ReminderHero />
 
@@ -475,33 +472,33 @@ export function App() {
       />
 
       {/* Editorial Horological Footer */}
-      <footer className="relative z-10 border-t border-[#DAC58F]/10 py-6 text-xs text-[#99907C] bg-[#0D0E10] mb-16 sm:mb-0">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <footer className="relative z-10 border-t border-[rgba(45,41,38,0.08)] py-8 text-xs text-[#7A746E] bg-[#FAF7F2] mb-16 sm:mb-0">
+        <div className="editorial-container flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-2.5">
-            <div className="w-5 h-5 rounded-md overflow-hidden border border-[#DAC58F]/25 bg-[#121315] flex-shrink-0 flex items-center justify-center p-0.5 shadow-sm">
+            <div className="w-6 h-6 rounded-md overflow-hidden border border-[rgba(45,41,38,0.12)] bg-[#F4EFEB] flex-shrink-0 flex items-center justify-center p-0.5 shadow-xs">
               <ChroniqLogo className="w-full h-full object-contain" />
             </div>
-            <span className="font-semibold text-white font-serif">Chroniq</span>
+            <span className="font-semibold text-[#181615] font-serif">Chroniq</span>
             <span>—</span>
             <span>The Architecture of Time &amp; Precision Productivity</span>
           </div>
 
-          <div className="flex items-center space-x-4 text-[11px] font-mono text-[#99907C]">
-            <span className="flex items-center space-x-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#DAC58F]" />
+          <div className="flex items-center space-x-4 text-[11px] font-mono text-[#7A746E]">
+            <span className="flex items-center space-x-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#745A2E]" />
               <span>Multi-User RLS • 10m Push Dispatch</span>
             </span>
             <span>•</span>
             <button
               onClick={() => setShowSplash(true)}
-              className="hover:text-[#F2CA50] transition cursor-pointer"
+              className="hover:text-[#181615] transition cursor-pointer"
             >
               Replay Cinematic Entry
             </button>
             <span>•</span>
             <button
               onClick={() => setIsInstallOpen(true)}
-              className="hover:text-[#F2CA50] transition cursor-pointer"
+              className="hover:text-[#181615] transition cursor-pointer"
             >
               Install App
             </button>

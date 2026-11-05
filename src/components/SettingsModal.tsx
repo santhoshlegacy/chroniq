@@ -104,23 +104,23 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-[#0D0E10]/85 backdrop-blur-md animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-[#181615]/40 backdrop-blur-sm animate-in fade-in duration-150">
       <div className="fixed inset-0" onClick={onClose} />
-      <div className="relative w-full max-w-2xl bg-[#1B1C1E] border border-[#DAC58F]/20 rounded-2xl p-5 sm:p-6 shadow-2xl z-10 max-h-[92vh] flex flex-col animate-in zoom-in-95 duration-150 text-[#E3E2E5]">
+      <div className="relative w-full max-w-2xl bg-[#F4EFEB] border border-[rgba(45,41,38,0.12)] rounded-2xl p-5 sm:p-6 shadow-2xl z-10 max-h-[92vh] flex flex-col animate-in zoom-in-95 duration-150 text-[#181615]">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3.5 border-b border-[#DAC58F]/10">
+        <div className="flex items-center justify-between pb-3.5 border-b border-[rgba(45,41,38,0.08)]">
           <div className="flex items-center space-x-2.5">
-            <div className="p-1.5 rounded-lg bg-[#121315] border border-[#DAC58F]/20 text-[#F2CA50]">
+            <div className="p-1.5 rounded-lg bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] text-[#745A2E]">
               <Bell className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-white tracking-tight font-serif">Notification &amp; Reminders</h2>
-              <p className="text-xs text-[#99907C]">Customize daily reminder times, voice check-ins, and notification preferences</p>
+              <h2 className="text-base font-semibold text-[#181615] tracking-tight font-serif">Notification &amp; Reminders</h2>
+              <p className="text-xs text-[#7A746E]">Customize daily reminder times, voice check-ins, and notification preferences</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-md text-[#94A3B8] hover:text-white hover:bg-white/[0.06] transition cursor-pointer"
+            className="p-1.5 rounded-md text-[#7A746E] hover:text-[#181615] hover:bg-[#EFECE3] transition cursor-pointer"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
@@ -128,14 +128,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
         </div>
 
         {/* Tab Selection */}
-        <div className="flex items-center space-x-1.5 mt-3.5 p-1 rounded-xl bg-[#151B28] border border-white/[0.06]">
+        <div className="flex items-center space-x-1.5 mt-3.5 p-1 rounded-xl bg-[#EFECE3] border border-[rgba(45,41,38,0.08)]">
           <button
             type="button"
             onClick={() => setActiveTab('schedule')}
             className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
               activeTab === 'schedule'
-                ? 'bg-[#0E131F] text-white border border-white/[0.08] font-semibold'
-                : 'text-[#94A3B8] hover:text-white'
+                ? 'bg-[#181615] text-[#FAF7F2] font-semibold shadow-xs'
+                : 'text-[#7A746E] hover:text-[#181615]'
             }`}
           >
             Schedule & Slots
@@ -145,11 +145,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             onClick={() => setActiveTab('voice')}
             className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer flex items-center justify-center space-x-1.5 ${
               activeTab === 'voice'
-                ? 'bg-[#0E131F] text-white border border-white/[0.08] font-semibold'
-                : 'text-[#94A3B8] hover:text-white'
+                ? 'bg-[#181615] text-[#FAF7F2] font-semibold shadow-xs'
+                : 'text-[#7A746E] hover:text-[#181615]'
             }`}
           >
-            <Volume2 className="w-3.5 h-3.5 text-[#A78BFA]" />
+            <Volume2 className="w-3.5 h-3.5 text-[#745A2E]" />
             <span>Voice & Calls</span>
           </button>
           <button
@@ -157,8 +157,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             onClick={() => setActiveTab('history')}
             className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer flex items-center justify-center space-x-1.5 ${
               activeTab === 'history'
-                ? 'bg-[#0E131F] text-white border border-white/[0.08] font-semibold'
-                : 'text-[#94A3B8] hover:text-white'
+                ? 'bg-[#181615] text-[#FAF7F2] font-semibold shadow-xs'
+                : 'text-[#7A746E] hover:text-[#181615]'
             }`}
           >
             <History className="w-3.5 h-3.5" />
@@ -172,10 +172,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
           {activeTab === 'schedule' && (
             <div className="space-y-4">
               {/* Master automated check-in toggle */}
-              <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#151B28] border border-white/[0.06]">
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)]">
                 <div>
-                  <span className="text-xs font-semibold text-white block">Automated Reminder Engine</span>
-                  <span className="text-[11px] text-[#94A3B8]">
+                  <span className="text-xs font-semibold text-[#181615] block">Automated Reminder Engine</span>
+                  <span className="text-[11px] text-[#7A746E]">
                     Evaluates user reminder slots every minute via backend scheduler
                   </span>
                 </div>
@@ -186,23 +186,23 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                     onChange={(e) => updatePreferences({ enabled: e.target.checked })}
                     className="sr-only peer"
                   />
-                  <div className="w-9 h-5 bg-[#080B12] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#70DFFF]"></div>
+                  <div className="w-9 h-5 bg-[#EFECE3] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#181615]"></div>
                 </label>
               </div>
 
               {/* Custom Slots Management */}
-              <div className="p-3.5 rounded-xl bg-[#151B28] border border-white/[0.06] space-y-3">
+              <div className="p-3.5 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] space-y-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-semibold text-white block">Reminder Schedule Slots</span>
-                    <span className="text-[11px] text-[#94A3B8]">
+                    <span className="text-xs font-semibold text-[#181615] block">Reminder Schedule Slots</span>
+                    <span className="text-[11px] text-[#7A746E]">
                       Default: 9:00 AM, 12:00 PM, 3:00 PM, 6:00 PM, 9:00 PM. Toggle on/off or add custom slots.
                     </span>
                   </div>
                   <button
                     type="button"
                     onClick={handleResetSlotsToDefault}
-                    className="text-[11px] text-[#70DFFF] hover:underline cursor-pointer"
+                    className="text-[11px] text-[#745A2E] hover:underline cursor-pointer"
                   >
                     Reset Defaults
                   </button>
@@ -217,8 +217,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                         key={slot}
                         className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-lg border text-xs transition ${
                           isActive
-                            ? 'bg-[#0E131F] border-[#70DFFF]/40 text-[#70DFFF]'
-                            : 'bg-[#0E131F]/40 border-white/[0.06] text-[#64748B]'
+                            ? 'bg-[#EFECE3] border-[rgba(45,41,38,0.15)] text-[#181615]'
+                            : 'bg-[#FAF7F2] border-[rgba(45,41,38,0.08)] text-[#7A746E]'
                         }`}
                       >
                         <button
@@ -232,7 +232,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                         <button
                           type="button"
                           onClick={() => removeCustomSlot(slot)}
-                          className="text-[#64748B] hover:text-rose-400 p-0.5 cursor-pointer"
+                          className="text-[#7A746E] hover:text-[#BA1A1A] p-0.5 cursor-pointer"
                           title="Remove slot"
                         >
                           <X className="w-3 h-3" />
@@ -243,26 +243,26 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                 </div>
 
                 {/* Add Custom Slot Input */}
-                <form onSubmit={handleAddSlot} className="flex items-center space-x-2 pt-2 border-t border-white/[0.04]">
+                <form onSubmit={handleAddSlot} className="flex items-center space-x-2 pt-2 border-t border-[rgba(45,41,38,0.08)]">
                   <input
                     type="time"
                     value={newSlotInput}
                     onChange={(e) => setNewSlotInput(e.target.value)}
-                    className="px-2.5 py-1.5 rounded-lg bg-[#0E131F] border border-white/[0.08] text-xs text-white focus:outline-none focus:border-[#70DFFF]"
+                    className="px-2.5 py-1.5 rounded-lg bg-[#EFECE3] border border-[rgba(45,41,38,0.12)] text-xs text-[#181615] focus:outline-none focus:bg-[#FAF7F2] focus:border-[#C2A26F]"
                   />
                   <button
                     type="submit"
-                    className="px-3 py-1.5 rounded-lg bg-[#1C2436] hover:bg-[#253046] text-xs text-white border border-white/[0.08] flex items-center space-x-1 cursor-pointer"
+                    className="btn-primary px-3 py-1.5 rounded-md text-xs flex items-center space-x-1 cursor-pointer"
                   >
-                    <Plus className="w-3 h-3 text-[#70DFFF]" />
+                    <Plus className="w-3 h-3" />
                     <span>Add Slot</span>
                   </button>
                 </form>
               </div>
 
               {/* Active Days of Week */}
-              <div className="p-3.5 rounded-xl bg-[#151B28] border border-white/[0.06] space-y-2">
-                <span className="text-xs font-semibold text-white block">Active Days of Week</span>
+              <div className="p-3.5 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] space-y-2">
+                <span className="text-xs font-semibold text-[#181615] block">Active Days of Week</span>
                 <div className="flex gap-1.5">
                   {DAYS_OF_WEEK.map((day) => {
                     const isDaySelected = (preferences.active_days || [1, 2, 3, 4, 5, 6, 7]).includes(day.id)
@@ -273,8 +273,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                         onClick={() => toggleDayActive(day.id)}
                         className={`flex-1 py-1.5 rounded-lg text-xs font-mono font-medium border transition cursor-pointer ${
                           isDaySelected
-                            ? 'bg-[#0E131F] border-[#70DFFF]/50 text-[#70DFFF]'
-                            : 'bg-[#0E131F]/30 border-white/[0.04] text-[#64748B]'
+                            ? 'bg-[#181615] text-[#FAF7F2]'
+                            : 'bg-[#EFECE3] text-[#7A746E] border-[rgba(45,41,38,0.08)]'
                         }`}
                       >
                         {day.label}
@@ -285,13 +285,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
               </div>
 
               {/* Quiet Hours */}
-              <div className="p-3.5 rounded-xl bg-[#151B28] border border-white/[0.06] space-y-3">
+              <div className="p-3.5 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Moon className="w-3.5 h-3.5 text-[#A78BFA]" />
+                    <Moon className="w-3.5 h-3.5 text-[#745A2E]" />
                     <div>
-                      <span className="text-xs font-semibold text-white block">Quiet Hours</span>
-                      <span className="text-[11px] text-[#94A3B8]">Suppress check-in notifications during resting hours</span>
+                      <span className="text-xs font-semibold text-[#181615] block">Quiet Hours</span>
+                      <span className="text-[11px] text-[#7A746E]">Suppress check-in notifications during resting hours</span>
                     </div>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
@@ -301,28 +301,28 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                       onChange={(e) => updatePreferences({ quiet_hours_enabled: e.target.checked })}
                       className="sr-only peer"
                     />
-                    <div className="w-9 h-5 bg-[#080B12] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#A78BFA]"></div>
+                    <div className="w-9 h-5 bg-[#EFECE3] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#181615]"></div>
                   </label>
                 </div>
 
                 {preferences.quiet_hours_enabled && (
                   <div className="grid grid-cols-2 gap-3 pt-2">
                     <div>
-                      <label className="block text-[11px] text-[#94A3B8] mb-1">Quiet Window Starts</label>
+                      <label className="block text-[11px] text-[#7A746E] mb-1">Quiet Window Starts</label>
                       <input
                         type="time"
                         value={preferences.quiet_hours_start}
                         onChange={(e) => updatePreferences({ quiet_hours_start: e.target.value })}
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-[#0E131F] border border-white/[0.08] text-xs text-white"
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-[#EFECE3] border border-[rgba(45,41,38,0.12)] text-xs text-[#181615]"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] text-[#94A3B8] mb-1">Quiet Window Ends</label>
+                      <label className="block text-[11px] text-[#7A746E] mb-1">Quiet Window Ends</label>
                       <input
                         type="time"
                         value={preferences.quiet_hours_end}
                         onChange={(e) => updatePreferences({ quiet_hours_end: e.target.value })}
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-[#0E131F] border border-white/[0.08] text-xs text-white"
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-[#EFECE3] border border-[rgba(45,41,38,0.12)] text-xs text-[#181615]"
                       />
                     </div>
                   </div>
@@ -331,15 +331,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
 
               {/* Timezone & Eligible Tasks */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="p-3 rounded-xl bg-[#151B28] border border-white/[0.06]">
-                  <label className="block text-xs font-semibold text-white mb-1.5 flex items-center space-x-1.5">
-                    <Globe className="w-3.5 h-3.5 text-[#70DFFF]" />
+                <div className="p-3 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)]">
+                  <label className="block text-xs font-semibold text-[#181615] mb-1.5 flex items-center space-x-1.5">
+                    <Globe className="w-3.5 h-3.5 text-[#745A2E]" />
                     <span>User Timezone (IANA)</span>
                   </label>
                   <select
                     value={preferences.timezone}
                     onChange={(e) => updatePreferences({ timezone: e.target.value })}
-                    className="w-full px-2.5 py-1.5 rounded-lg bg-[#0E131F] border border-white/[0.08] text-xs text-white focus:outline-none focus:border-[#70DFFF]"
+                    className="w-full px-2.5 py-1.5 rounded-lg bg-[#EFECE3] border border-[rgba(45,41,38,0.12)] text-xs text-[#181615] focus:outline-none focus:bg-[#FAF7F2] focus:border-[#C2A26F]"
                   >
                     {COMMON_TIMEZONES.map((tz) => (
                       <option key={tz} value={tz}>
@@ -349,14 +349,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                   </select>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#151B28] border border-white/[0.06]">
-                  <label className="block text-xs font-semibold text-white mb-1.5">
+                <div className="p-3 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)]">
+                  <label className="block text-xs font-semibold text-[#181615] mb-1.5">
                     Eligible Reminder Tasks
                   </label>
                   <select
                     value={preferences.eligible_task_types || 'all_pending'}
                     onChange={(e) => updatePreferences({ eligible_task_types: e.target.value as any })}
-                    className="w-full px-2.5 py-1.5 rounded-lg bg-[#0E131F] border border-white/[0.08] text-xs text-white focus:outline-none focus:border-[#70DFFF]"
+                    className="w-full px-2.5 py-1.5 rounded-lg bg-[#EFECE3] border border-[rgba(45,41,38,0.12)] text-xs text-[#181615] focus:outline-none focus:bg-[#FAF7F2] focus:border-[#C2A26F]"
                   >
                     <option value="all_pending">All Pending Tasks</option>
                     <option value="due_today_or_overdue">Due Today or Overdue Only</option>
@@ -371,13 +371,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
           {activeTab === 'voice' && (
             <div className="space-y-4">
               {/* Spoken Reminders (Web Speech API) */}
-              <div className="p-3.5 rounded-xl bg-[#151B28] border border-white/[0.06] space-y-3">
+              <div className="p-3.5 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Volume2 className="w-4 h-4 text-[#A78BFA]" />
+                    <Volume2 className="w-4 h-4 text-[#745A2E]" />
                     <div>
-                      <span className="text-xs font-semibold text-white block">In-App Spoken Voice Reminders</span>
-                      <span className="text-[11px] text-[#94A3B8]">
+                      <span className="text-xs font-semibold text-[#181615] block">In-App Spoken Voice Reminders</span>
+                      <span className="text-[11px] text-[#7A746E]">
                         Uses client-side Web Speech API to narrate pending tasks
                       </span>
                     </div>
@@ -389,13 +389,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                       onChange={(e) => updateVoicePreferences({ speech_enabled: e.target.checked })}
                       className="sr-only peer"
                     />
-                    <div className="w-9 h-5 bg-[#080B12] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#A78BFA]"></div>
+                    <div className="w-9 h-5 bg-[#EFECE3] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#181615]"></div>
                   </label>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/[0.04]">
+                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-[rgba(45,41,38,0.08)]">
                   <div>
-                    <label className="block text-[11px] text-[#94A3B8] mb-1">
+                    <label className="block text-[11px] text-[#7A746E] mb-1">
                       Speech Rate: {voicePreferences.speech_rate}x
                     </label>
                     <input
@@ -405,11 +405,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                       step="0.1"
                       value={voicePreferences.speech_rate}
                       onChange={(e) => updateVoicePreferences({ speech_rate: parseFloat(e.target.value) })}
-                      className="w-full accent-[#A78BFA]"
+                      className="w-full accent-[#745A2E]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] text-[#94A3B8] mb-1">
+                    <label className="block text-[11px] text-[#7A746E] mb-1">
                       Speech Pitch: {voicePreferences.speech_pitch}
                     </label>
                     <input
@@ -419,20 +419,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                       step="0.1"
                       value={voicePreferences.speech_pitch}
                       onChange={(e) => updateVoicePreferences({ speech_pitch: parseFloat(e.target.value) })}
-                      className="w-full accent-[#A78BFA]"
+                      className="w-full accent-[#745A2E]"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Actual Phone Calls (Telephony Architecture) */}
-              <div className="p-3.5 rounded-xl bg-[#151B28] border border-white/[0.06] space-y-3">
+              <div className="p-3.5 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Phone className="w-4 h-4 text-emerald-400" />
+                    <Phone className="w-4 h-4 text-[#4A6B56]" />
                     <div>
-                      <span className="text-xs font-semibold text-white block">Actual Incoming Phone Calls</span>
-                      <span className="text-[11px] text-[#94A3B8]">
+                      <span className="text-xs font-semibold text-[#181615] block">Actual Incoming Phone Calls</span>
+                      <span className="text-[11px] text-[#7A746E]">
                         Automated phone check-in via server-side telephony provider
                       </span>
                     </div>
@@ -444,14 +444,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                       onChange={(e) => updateVoicePreferences({ phone_call_enabled: e.target.checked })}
                       className="sr-only peer"
                     />
-                    <div className="w-9 h-5 bg-[#080B12] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-400"></div>
+                    <div className="w-9 h-5 bg-[#EFECE3] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#4A6B56]"></div>
                   </label>
                 </div>
 
                 {voicePreferences.phone_call_enabled && (
-                  <div className="space-y-3 pt-2 border-t border-white/[0.04]">
+                  <div className="space-y-3 pt-2 border-t border-[rgba(45,41,38,0.08)]">
                     <div>
-                      <label className="block text-[11px] text-[#94A3B8] mb-1">
+                      <label className="block text-[11px] text-[#7A746E] mb-1">
                         Mobile Phone Number (E.164 Format, e.g. +14155552671)
                       </label>
                       <input
@@ -459,7 +459,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                         value={phoneInput}
                         onChange={(e) => setPhoneInput(e.target.value)}
                         placeholder="+14155552671"
-                        className="w-full px-3 py-1.5 rounded-lg bg-[#0E131F] border border-white/[0.08] text-xs text-white font-mono focus:outline-none focus:border-[#70DFFF]"
+                        className="w-full px-3 py-1.5 rounded-lg bg-[#EFECE3] border border-[rgba(45,41,38,0.12)] text-xs text-[#181615] font-mono focus:outline-none focus:bg-[#FAF7F2] focus:border-[#C2A26F]"
                       />
                     </div>
 
@@ -469,25 +469,25 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                         id="phoneConsent"
                         checked={consentChecked}
                         onChange={(e) => setConsentChecked(e.target.checked)}
-                        className="mt-0.5 rounded border-white/20 bg-[#0E131F] text-[#70DFFF] focus:ring-0"
+                        className="mt-0.5 rounded border-[rgba(45,41,38,0.2)] bg-[#FAF7F2] text-[#745A2E] focus:ring-0"
                       />
-                      <label htmlFor="phoneConsent" className="text-[11px] text-[#94A3B8]">
+                      <label htmlFor="phoneConsent" className="text-[11px] text-[#7A746E]">
                         I explicitly authorize Chroniq to process my phone number and place automated reminder calls according to my configured schedule.
                       </label>
                     </div>
 
                     {phoneError && (
-                      <div className="p-2 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs">
+                      <div className="p-2 rounded-lg bg-[#FFDAD6] border border-[#BA1A1A]/20 text-[#BA1A1A] text-xs">
                         {phoneError}
                       </div>
                     )}
 
-                    <div className="p-3 rounded-lg bg-[#0E131F] border border-white/[0.06] space-y-1.5">
-                      <div className="flex items-center space-x-1.5 text-xs text-[#94A3B8]">
-                        <Info className="w-3.5 h-3.5 text-[#70DFFF]" />
-                        <span className="font-semibold text-white">Telephony Provider Status & Pricing</span>
+                    <div className="p-3 rounded-lg bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] space-y-1.5">
+                      <div className="flex items-center space-x-1.5 text-xs text-[#7A746E]">
+                        <Info className="w-3.5 h-3.5 text-[#745A2E]" />
+                        <span className="font-semibold text-[#181615]">Telephony Provider Status & Pricing</span>
                       </div>
-                      <p className="text-[11px] text-[#64748B]">
+                      <p className="text-[11px] text-[#7A746E]">
                         Telephony providers (Twilio / Vonage) require outbound call minutes (~$0.014/min) and server-side API keys. Calls are dispatched securely via Supabase Edge Functions without exposing provider secrets in frontend code.
                       </p>
                     </div>
@@ -495,11 +495,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                     <button
                       type="button"
                       onClick={handleSaveVoicePhone}
-                      className="px-3 py-1.5 rounded-lg bg-[#70DFFF] hover:bg-[#58CFEF] text-[#080B12] font-semibold text-xs transition cursor-pointer"
+                      className="btn-primary px-3.5 py-1.5 rounded-md text-xs font-semibold cursor-pointer"
                     >
                       Save Voice Settings
                     </button>
-                    {isSaved && <span className="ml-2 text-xs text-emerald-400">Saved successfully!</span>}
+                    {isSaved && <span className="ml-2 text-xs text-[#4A6B56]">Saved successfully!</span>}
                   </div>
                 )}
               </div>
@@ -509,13 +509,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
           {/* ──────── TAB 3: DELIVERY HISTORY ──────── */}
           {activeTab === 'history' && (
             <div className="space-y-3">
-              <div className="flex items-center justify-between text-xs text-[#94A3B8]">
+              <div className="flex items-center justify-between text-xs text-[#7A746E]">
                 <span>Logged reminder delivery events</span>
-                <span className="text-[11px] text-[#64748B]">Total: {events.length}</span>
+                <span className="text-[11px] text-[#7A746E]">Total: {events.length}</span>
               </div>
 
               {events.length === 0 ? (
-                <div className="p-6 text-center text-xs text-[#64748B] bg-[#151B28] rounded-xl border border-white/[0.06]">
+                <div className="p-6 text-center text-xs text-[#7A746E] bg-[#FAF7F2] rounded-xl border border-[rgba(45,41,38,0.08)]">
                   No delivery events recorded yet. Scheduled reminder cycles will appear here once executed.
                 </div>
               ) : (
@@ -523,32 +523,32 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                   {events.map((evt) => (
                     <div
                       key={evt.id}
-                      className="p-3 rounded-xl bg-[#151B28] border border-white/[0.06] flex items-center justify-between text-xs"
+                      className="p-3 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] flex items-center justify-between text-xs"
                     >
                       <div className="space-y-0.5">
                         <div className="flex items-center space-x-2">
                           <span
                             className={`px-1.5 py-0.5 rounded text-[10px] font-mono uppercase font-semibold ${
                               evt.result === 'sent'
-                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                ? 'bg-[#4A6B56]/15 text-[#4A6B56] border border-[#4A6B56]/30'
                                 : evt.result === 'no_tasks'
-                                ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                                ? 'bg-[#EFECE3] text-[#745A2E] border border-[rgba(45,41,38,0.1)]'
                                 : evt.result === 'quiet_hours'
-                                ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
-                                : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                                ? 'bg-[#FEDAA3] text-[#745A2E] border border-[#745A2E]/25'
+                                : 'bg-[#FFDAD6] text-[#BA1A1A] border border-[#BA1A1A]/30'
                             }`}
                           >
                             {evt.result}
                           </span>
-                          <span className="text-[11px] font-mono text-[#94A3B8]">
+                          <span className="text-[11px] font-mono text-[#7A746E]">
                             {evt.delivery_mode || 'push'}
                           </span>
                         </div>
-                        <p className="text-[11px] text-[#64748B]">
+                        <p className="text-[11px] text-[#7A746E]">
                           Occurrence: {evt.schedule_occurrence_key}
                         </p>
                       </div>
-                      <div className="text-right text-[11px] text-[#64748B] font-mono">
+                      <div className="text-right text-[11px] text-[#7A746E] font-mono">
                         {format(parseISO(evt.created_at || evt.scheduled_at), 'MMM d, h:mm a')}
                       </div>
                     </div>

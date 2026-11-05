@@ -44,22 +44,22 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onSelectTab, on
     <>
       {/* Floating Quick Inscribe Button (Mobile & Desktop) */}
       {onQuickAdd && (
-        <div className="fixed bottom-20 right-4 sm:bottom-24 sm:right-8 z-50">
+        <div className="fixed bottom-20 right-5 sm:bottom-24 sm:right-12 z-50">
           <button
             onClick={onQuickAdd}
-            aria-label="Chroniq Quick Add"
+            aria-label="Chroniq Quick Inscribe"
             type="button"
-            className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#D4AF37] to-[#F2CA50] text-[#141211] shadow-[0_8px_24px_rgba(212,175,55,0.35)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer group"
+            className="w-12 h-12 rounded-full bg-[#181615] text-[#FAF7F2] shadow-[0_8px_24px_rgba(45,41,38,0.22)] flex items-center justify-center hover:bg-[#2D2926] hover:scale-105 active:scale-95 transition-all cursor-pointer group border border-[rgba(45,41,38,0.12)]"
           >
-            <span className="material-symbols-outlined text-[24px] font-bold group-hover:rotate-90 transition-transform duration-300">
+            <span className="material-symbols-outlined text-[24px] text-[#FEDAA3] font-bold group-hover:rotate-90 transition-transform duration-300">
               add
             </span>
           </button>
         </div>
       )}
 
-      {/* Luxury Dock Navigation Bar */}
-      <nav className="fixed bottom-0 inset-x-0 z-40 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-1 bg-[#121315]/90 backdrop-blur-2xl border-t border-[#DAC58F]/15 shadow-[0_-8px_32px_rgba(0,0,0,0.6)]">
+      {/* Luxury Dock Navigation Bar in Frosted Silk Glass */}
+      <nav className="fixed bottom-0 inset-x-0 z-40 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-1 bg-[#FAF7F2]/92 backdrop-blur-2xl border-t border-[rgba(45,41,38,0.1)] shadow-[0_-8px_32px_rgba(45,41,38,0.06)]">
         <div className="max-w-md mx-auto flex items-center justify-around h-14 px-2">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id
@@ -69,18 +69,18 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onSelectTab, on
                 onClick={() => onSelectTab(tab.id)}
                 type="button"
                 className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] transition-all duration-200 cursor-pointer relative ${
-                  isActive ? 'text-[#F2CA50] font-semibold' : 'text-[#99907C] hover:text-[#E3E2E5]'
+                  isActive ? 'text-[#181615] font-semibold' : 'text-[#7A746E] hover:text-[#181615]'
                 }`}
               >
-                {/* Active Satin Pill */}
+                {/* Active Satin Pill in Ecru Travertine */}
                 {isActive && (
-                  <div className="absolute inset-x-1.5 -inset-y-0.5 rounded-xl bg-[#56481E]/40 border border-[#DAC58F]/20 -z-10 shadow-sm" />
+                  <div className="absolute inset-x-1.5 -inset-y-0.5 rounded-lg bg-[#EFECE3] border border-[rgba(45,41,38,0.08)] -z-10 shadow-xs" />
                 )}
 
                 <div className="relative flex items-center justify-center">
                   <span
                     className={`material-symbols-outlined text-[22px] transition-transform duration-200 ${
-                      isActive ? 'scale-110' : ''
+                      isActive ? 'scale-110 text-[#745A2E]' : ''
                     }`}
                   >
                     {tab.icon}
@@ -88,7 +88,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onSelectTab, on
 
                   {/* Badge Counter */}
                   {tab.badge !== undefined && (
-                    <span className="absolute -top-1.5 -right-2.5 min-w-4 h-4 px-1 rounded-full bg-[#D4AF37] text-[#141211] text-[9px] font-bold flex items-center justify-center tabular-nums shadow-sm">
+                    <span className="absolute -top-1.5 -right-2.5 min-w-4 h-4 px-1 rounded-full bg-[#745A2E] text-[#FAF7F2] text-[9px] font-bold flex items-center justify-center tabular-nums shadow-xs">
                       {tab.badge > 99 ? '99+' : tab.badge}
                     </span>
                   )}
@@ -96,7 +96,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onSelectTab, on
 
                 <span
                   className={`text-[10px] uppercase tracking-wider mt-0.5 ${
-                    isActive ? 'text-[#F2CA50] font-bold' : 'text-[#99907C]'
+                    isActive ? 'text-[#181615] font-bold' : 'text-[#7A746E]'
                   }`}
                 >
                   {tab.label}
@@ -104,7 +104,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onSelectTab, on
 
                 {/* Subtitle Dot for active tab */}
                 {isActive && (
-                  <span className="w-1 h-1 rounded-full bg-[#DAC58F] mt-0.5 shadow-[0_0_4px_#DAC58F]" />
+                  <span className="w-1 h-1 rounded-full bg-[#745A2E] mt-0.5" />
                 )}
               </button>
             )

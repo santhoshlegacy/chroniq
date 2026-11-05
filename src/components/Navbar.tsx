@@ -80,28 +80,28 @@ export const Navbar: React.FC<NavbarProps> = ({
   }
 
   return (
-    <header className="sticky top-0 z-40 w-full header-glass border-b border-[#DAC58F]/12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-18 flex items-center justify-between">
+    <header className="sticky top-0 z-40 w-full header-silk">
+      <div className="editorial-container h-20 flex items-center justify-between">
         {/* Brand Monogram & Status */}
         <div
           onClick={() => onSelectTab('tasks')}
           className="flex items-center gap-3 cursor-pointer group"
         >
-          <div className="w-9 h-9 rounded-xl overflow-hidden border border-[#DAC58F]/25 bg-[#0D0E10] flex-shrink-0 flex items-center justify-center shadow-md p-1 group-hover:border-[#F2CA50]/50 transition-all">
+          <div className="w-10 h-10 rounded-xl overflow-hidden border border-[rgba(45,41,38,0.12)] bg-[#F4EFEB] flex-shrink-0 flex items-center justify-center shadow-xs p-1 group-hover:border-[#C2A26F] transition-all">
             <ChroniqLogo className="w-full h-full object-contain" />
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
-              <span className="font-serif text-lg font-bold tracking-tight text-white group-hover:text-[#F2CA50] transition-colors">
+              <span className="font-serif text-xl font-bold tracking-tight text-[#181615] group-hover:text-[#745A2E] transition-colors">
                 Chroniq
               </span>
-              <span className="text-[10px] uppercase font-mono tracking-wider text-[#DAC58F] font-semibold">
+              <span className="text-[10px] uppercase font-mono tracking-widest text-[#745A2E] font-semibold">
                 · {tabLabels[activeTab]}
               </span>
             </div>
-            <div className="flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#DAC58F] animate-pulse" />
-              <span className="text-[9px] uppercase tracking-widest text-[#99907C] font-mono">
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#745A2E] animate-pulse" />
+              <span className="text-[9px] uppercase tracking-widest text-[#7A746E] font-mono">
                 Synchronized &amp; Calm
               </span>
             </div>
@@ -109,7 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Desktop Tab Navigation */}
-        <nav className="hidden md:flex items-center gap-1 p-1 rounded-xl bg-[#1B1C1E] border border-[#DAC58F]/15">
+        <nav className="hidden md:flex items-center gap-1 p-1 rounded-xl bg-[#EFECE3] border border-[rgba(45,41,38,0.08)]">
           {(['tasks', 'schedule', 'settings', 'account'] as NavTab[]).map((tab) => {
             const isActive = activeTab === tab
             return (
@@ -117,10 +117,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 key={tab}
                 type="button"
                 onClick={() => onSelectTab(tab)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs uppercase tracking-wider font-semibold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs uppercase tracking-wider font-semibold transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-gradient-to-r from-[#D4AF37] to-[#F2CA50] text-[#141211] shadow-sm'
-                    : 'text-[#D0C5AF] hover:text-white hover:bg-[#292A2C]'
+                    ? 'bg-[#181615] text-[#FAF7F2] shadow-xs'
+                    : 'text-[#7A746E] hover:text-[#181615] hover:bg-[#FAF7F2]/60'
                 }`}
               >
                 <span>{tab === 'account' ? (user ? 'Account' : 'Sign In') : tabLabels[tab]}</span>
@@ -130,22 +130,22 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Live Clock & Next Reminder indicator */}
-        <div className="hidden xl:flex items-center gap-3 text-xs text-[#99907C] font-mono">
-          <span className="tabular-nums text-white/90">{timeStr}</span>
-          <span className="text-[#DAC58F]/30">•</span>
+        <div className="hidden xl:flex items-center gap-3 text-xs text-[#7A746E] font-mono">
+          <span className="tabular-nums text-[#181615] font-semibold">{timeStr}</span>
+          <span className="text-[rgba(45,41,38,0.2)]">•</span>
           <div className="flex items-center gap-1.5">
             <span>Next Check-in:</span>
-            <span className="tabular-nums font-semibold text-[#F2CA50]">
+            <span className="tabular-nums font-semibold text-[#745A2E]">
               {countdownStr}
             </span>
           </div>
-          <span className="text-[#DAC58F]/30">•</span>
+          <span className="text-[rgba(45,41,38,0.2)]">•</span>
           <div
             className="flex items-center gap-1"
             title={user ? 'Connected to cloud ledger' : 'Operating in local vault storage'}
           >
-            <span className={`w-1.5 h-1.5 rounded-full ${user ? 'bg-emerald-400' : 'bg-[#DAC58F]'}`} />
-            <span className="text-[10px] uppercase text-[#D0C5AF]">
+            <span className={`w-1.5 h-1.5 rounded-full ${user ? 'bg-[#4A6B56]' : 'bg-[#745A2E]'}`} />
+            <span className="text-[10px] uppercase text-[#7A746E]">
               {user ? 'Cloud' : 'Local'}
             </span>
           </div>
@@ -158,10 +158,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={onOpenSettings}
               type="button"
-              className="p-1.5 text-xs text-[#D0C5AF] hover:text-white rounded-lg hover:bg-[#292A2C] transition flex items-center gap-1.5 cursor-pointer border border-[#DAC58F]/15"
+              className="p-1.5 px-2.5 text-xs text-[#2D2926] hover:text-[#181615] rounded-lg hover:bg-[#EFECE3] transition flex items-center gap-1.5 cursor-pointer border border-[rgba(45,41,38,0.1)] bg-[#F4EFEB]"
               title="Push notifications active. Click to configure."
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#DAC58F]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#4A6B56]" />
               <span className="hidden sm:inline text-[11px] font-mono">Push Armed</span>
             </button>
           ) : (
@@ -169,7 +169,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={enablePushNotifications}
               disabled={isSettingUpPush}
               type="button"
-              className="p-1.5 text-xs rounded-lg hover:bg-[#292A2C] transition text-[#D0C5AF] hover:text-[#F2CA50] flex items-center gap-1 cursor-pointer border border-[#DAC58F]/15"
+              className="p-1.5 px-2.5 text-xs rounded-lg hover:bg-[#EFECE3] transition text-[#745A2E] flex items-center gap-1 cursor-pointer border border-[rgba(45,41,38,0.1)] bg-[#F4EFEB]"
               title="Enable push notifications"
             >
               <span className="material-symbols-outlined text-sm">
@@ -184,7 +184,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Standalone status / PWA Install */}
           {isStandalone ? (
             <div
-              className="px-2.5 py-1.5 rounded-lg bg-[#56481E]/40 border border-[#DAC58F]/30 text-[#DAC58F] text-xs flex items-center gap-1"
+              className="px-2.5 py-1.5 rounded-lg bg-[#EFECE3] border border-[rgba(45,41,38,0.1)] text-[#745A2E] text-xs flex items-center gap-1"
               title="Running in standalone PWA mode"
             >
               <span className="material-symbols-outlined text-sm">verified</span>
@@ -194,19 +194,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={onOpenInstall}
               type="button"
-              className="px-2.5 py-1.5 text-xs rounded-lg bg-[#1B1C1E] hover:bg-[#292A2C] text-[#E3E2E5] border border-[#DAC58F]/20 transition flex items-center gap-1 cursor-pointer"
+              className="px-2.5 py-1.5 text-xs rounded-lg bg-[#EFECE3] hover:bg-[#FAF7F2] text-[#181615] border border-[rgba(45,41,38,0.12)] transition flex items-center gap-1 cursor-pointer"
               title="Install Chroniq as a Progressive Web App"
             >
-              <span className="material-symbols-outlined text-sm text-[#F2CA50]">download</span>
+              <span className="material-symbols-outlined text-sm text-[#745A2E]">download</span>
               <span className="hidden sm:inline text-[11px]">Install</span>
             </button>
           )}
 
-          {/* Primary Action: New Task */}
+          {/* Primary Action: New Task (Architectural Primary Button) */}
           <button
             onClick={onOpenNewTask}
             type="button"
-            className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-tr from-[#D4AF37] to-[#F2CA50] text-[#141211] transition flex items-center gap-1 cursor-pointer shadow-sm hover:opacity-90 active:scale-95"
+            className="btn-primary px-3.5 py-1.5 text-xs font-semibold rounded-md flex items-center gap-1 cursor-pointer"
           >
             <span className="material-symbols-outlined text-sm font-bold">add</span>
             <span>New Task</span>
@@ -217,7 +217,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={() => onSelectTab('account')}
               type="button"
-              className="p-0.5 rounded-lg hover:ring-2 hover:ring-[#DAC58F]/60 transition flex items-center cursor-pointer border border-[#DAC58F]/25 bg-[#1B1C1E]"
+              className="p-0.5 rounded-lg hover:ring-2 hover:ring-[#C2A26F]/60 transition flex items-center cursor-pointer border border-[rgba(45,41,38,0.12)] bg-[#F4EFEB]"
               title={user.email ?? 'Account'}
             >
               {userAvatar ? (
@@ -227,7 +227,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className="w-7 h-7 rounded-md object-cover"
                 />
               ) : (
-                <div className="w-7 h-7 rounded-md bg-[#292A2C] text-[#F2CA50] text-xs font-bold flex items-center justify-center font-serif">
+                <div className="w-7 h-7 rounded-md bg-[#EFECE3] text-[#181615] text-xs font-bold flex items-center justify-center font-serif">
                   {userDisplayName.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -236,10 +236,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={() => onSelectTab('account')}
               type="button"
-              className="px-2.5 py-1.5 text-xs rounded-lg bg-[#1B1C1E] hover:bg-[#292A2C] text-[#E3E2E5] border border-[#DAC58F]/20 transition flex items-center gap-1 cursor-pointer"
+              className="px-2.5 py-1.5 text-xs rounded-lg bg-[#EFECE3] hover:bg-[#FAF7F2] text-[#181615] border border-[rgba(45,41,38,0.12)] transition flex items-center gap-1 cursor-pointer"
               title="Sign in to sync mandates"
             >
-              <span className="material-symbols-outlined text-sm text-[#F2CA50]">login</span>
+              <span className="material-symbols-outlined text-sm text-[#745A2E]">login</span>
               <span className="hidden sm:inline text-[11px]">Sign In</span>
             </button>
           )}

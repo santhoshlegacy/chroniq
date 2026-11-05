@@ -34,7 +34,7 @@ export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
   ]
 
   return (
-    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-5">
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-6">
       {/* Editorial Filter Horizon (Pills) */}
       <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
         {filterTabs.map((tab) => {
@@ -46,8 +46,8 @@ export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
               onClick={() => setFilter(tab.id)}
               className={`px-3.5 py-1.5 rounded-full text-xs uppercase tracking-wider font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                 isActive
-                  ? 'bg-gradient-to-r from-[#D4AF37] to-[#F2CA50] text-[#141211] shadow-sm'
-                  : 'bg-[#1B1C1E] text-[#D0C5AF] hover:text-white hover:bg-[#292A2C] border border-[#DAC58F]/10'
+                  ? 'bg-[#181615] text-[#FAF7F2] shadow-xs'
+                  : 'bg-[#F4EFEB] text-[#2D2926] hover:text-[#181615] hover:bg-[#EFECE3] border border-[rgba(45,41,38,0.08)]'
               }`}
             >
               <span>{tab.label}</span>
@@ -55,8 +55,8 @@ export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
                 <span
                   className={`w-4 h-4 rounded-full flex items-center justify-center font-mono text-[9px] font-bold ${
                     isActive
-                      ? 'bg-[#141211] text-[#F2CA50]'
-                      : 'bg-[#93000A] text-[#FFDAD6]'
+                      ? 'bg-[#FAF7F2] text-[#BA1A1A]'
+                      : 'bg-[#FFDAD6] text-[#BA1A1A]'
                   }`}
                 >
                   {tab.count}
@@ -64,7 +64,7 @@ export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
               ) : (
                 <span
                   className={`font-mono text-[10px] tabular-nums ${
-                    isActive ? 'text-[#141211] font-bold' : 'text-[#99907C]'
+                    isActive ? 'text-[#FAF7F2] font-semibold' : 'text-[#7A746E]'
                   }`}
                 >
                   ({tab.count})
@@ -79,7 +79,7 @@ export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
       <div className="flex items-center gap-2">
         {/* Search Input */}
         <div className="relative flex-1 sm:w-48">
-          <span className="material-symbols-outlined text-[16px] text-[#99907C] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+          <span className="material-symbols-outlined text-[16px] text-[#7A746E] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
             search
           </span>
           <input
@@ -87,7 +87,7 @@ export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search mandates..."
-            className="w-full pl-8 pr-3 py-1.5 rounded-full bg-[#1B1C1E] border border-[#DAC58F]/15 text-xs text-white placeholder-[#99907C]/70 focus:outline-none focus:border-[#DAC58F]/50 transition"
+            className="w-full pl-8 pr-3 py-1.5 rounded-full bg-[#F4EFEB] border border-[rgba(45,41,38,0.1)] text-xs text-[#181615] placeholder-[#7A746E] focus:outline-none focus:bg-[#FAF7F2] focus:border-[#C2A26F] transition"
           />
         </div>
 
@@ -96,7 +96,7 @@ export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value as TaskPriority | 'all')}
-            className="appearance-none px-3 py-1.5 pr-7 rounded-full bg-[#1B1C1E] border border-[#DAC58F]/15 text-xs text-[#D0C5AF] hover:text-white font-medium focus:outline-none focus:border-[#DAC58F]/50 cursor-pointer transition"
+            className="appearance-none px-3 py-1.5 pr-7 rounded-full bg-[#F4EFEB] border border-[rgba(45,41,38,0.1)] text-xs text-[#181615] font-medium focus:outline-none focus:bg-[#FAF7F2] focus:border-[#C2A26F] cursor-pointer transition"
           >
             <option value="all">All Tiers</option>
             <option value="urgent">Tier 1 Sovereign</option>
@@ -104,7 +104,7 @@ export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
             <option value="medium">Champagne</option>
             <option value="low">Sage Ritual</option>
           </select>
-          <span className="material-symbols-outlined text-[15px] text-[#99907C] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
+          <span className="material-symbols-outlined text-[15px] text-[#7A746E] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
             expand_more
           </span>
         </div>

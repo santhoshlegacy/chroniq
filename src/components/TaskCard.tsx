@@ -16,27 +16,27 @@ const priorityBadges: Record<
 > = {
   urgent: {
     label: 'Crimson VIP',
-    text: 'text-[#FFB4AB]',
-    bg: 'bg-[#93000A]/40 border-[#FFB4AB]/30',
+    text: 'text-[#BA1A1A]',
+    bg: 'bg-[#FFDAD6] border-[rgba(186,26,26,0.25)]',
     dot: 'bg-[#BA1A1A]',
   },
   high: {
     label: 'Amber Horizon',
-    text: 'text-[#F2CA50]',
-    bg: 'bg-[#56481E]/40 border-[#DAC58F]/30',
-    dot: 'bg-[#D4AF37]',
+    text: 'text-[#745A2E]',
+    bg: 'bg-[#FEDAA3] border-[rgba(116,90,46,0.25)]',
+    dot: 'bg-[#C2A26F]',
   },
   medium: {
-    label: 'Champagne',
-    text: 'text-[#DAC58F]',
-    bg: 'bg-[#1F2022] border-[#DAC58F]/20',
-    dot: 'bg-[#DAC58F]',
+    label: 'Geneva Calibre',
+    text: 'text-[#4D4541]',
+    bg: 'bg-[#EFECE3] border-[rgba(45,41,38,0.08)]',
+    dot: 'bg-[#8C7654]',
   },
   low: {
     label: 'Sage Ritual',
-    text: 'text-[#D0C5AF]',
-    bg: 'bg-[#292A2C] border-[#99907C]/20',
-    dot: 'bg-[#99907C]',
+    text: 'text-[#7A746E]',
+    bg: 'bg-[#EFECE3] border-[rgba(45,41,38,0.06)]',
+    dot: 'bg-[#7A746E]',
   },
 }
 
@@ -54,38 +54,38 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) =>
   return (
     <div
       onClick={() => onSelect?.(task)}
-      className={`group relative rounded-xl p-4 border transition-all duration-200 cursor-pointer flex flex-col gap-2 ${
+      className={`group relative rounded-lg p-5 border transition-all duration-200 cursor-pointer flex flex-col gap-2.5 ${
         isCompleted
-          ? 'bg-[#121315]/70 border-[#DAC58F]/8 opacity-65'
+          ? 'bg-[#F4EFEB]/60 border-[rgba(45,41,38,0.05)] opacity-65'
           : isOverdue
-          ? 'bg-[#1B1C1E] border-[#BA1A1A]/35 hover:border-[#BA1A1A]/60 shadow-md'
-          : 'bg-[#1B1C1E] border-[#DAC58F]/12 hover:border-[#DAC58F]/30 hover:bg-[#222428] shadow-sm hover:shadow-md'
+          ? 'bg-[#F4EFEB] border-[#BA1A1A]/35 hover:border-[#BA1A1A]/60 shadow-xs hover:shadow-md'
+          : 'bg-[#F4EFEB] border-[rgba(45,41,38,0.08)] hover:border-[#C2A26F] hover:bg-[#FAF7F2] shadow-xs hover:shadow-md'
       }`}
     >
-      <div className="flex items-start justify-between gap-3">
-        {/* Left: Tactile Horological Checkbox */}
+      <div className="flex items-start justify-between gap-3.5">
+        {/* Left: Tactile 18x18px Checkbox */}
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation()
             toggleTaskComplete(task.id)
           }}
-          className={`flex-shrink-0 w-5 h-5 mt-0.5 rounded-[4px] border flex items-center justify-center transition-all cursor-pointer ${
+          className={`flex-shrink-0 w-[18px] h-[18px] mt-0.5 rounded-[3px] border flex items-center justify-center transition-all cursor-pointer ${
             isCompleted
-              ? 'bg-[#D4AF37] border-[#D4AF37] text-[#141211] shadow-[0_0_8px_rgba(212,175,55,0.4)]'
-              : 'border-[#DAC58F]/30 bg-[#121315] hover:border-[#DAC58F] text-transparent hover:text-[#DAC58F]'
+              ? 'bg-[#181615] border-[#181615] text-[#C2A26F]'
+              : 'border-[#8C7654]/40 bg-transparent hover:border-[#745A2E] text-transparent hover:text-[#745A2E]'
           }`}
           aria-label={isCompleted ? 'Mark incomplete' : 'Mark complete'}
         >
-          <span className="material-symbols-outlined text-[15px] font-bold">check</span>
+          <span className="material-symbols-outlined text-[13px] font-bold">check</span>
         </button>
 
         {/* Center: Title & Description & Priority Badges */}
         <div className="flex-1 min-w-0">
-          <div className="flex flex-wrap items-center gap-2 mb-1">
+          <div className="flex flex-wrap items-center gap-2 mb-1.5">
             {/* Priority Indicator */}
             <span
-              className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider border ${pBadge.bg} ${pBadge.text}`}
+              className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[3px] text-[10px] font-semibold uppercase tracking-wider border ${pBadge.bg} ${pBadge.text}`}
             >
               <span className={`w-1.5 h-1.5 rounded-full ${pBadge.dot}`} />
               <span>{pBadge.label}</span>
@@ -93,14 +93,14 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) =>
 
             {/* Category */}
             {task.category && (
-              <span className="px-2 py-0.5 rounded text-[10px] font-mono text-[#D0C5AF] bg-[#292A2C] border border-[#DAC58F]/10">
+              <span className="px-2 py-0.5 rounded-[3px] text-[10px] font-mono text-[#7A746E] bg-[#EFECE3] border border-[rgba(45,41,38,0.06)]">
                 {task.category}
               </span>
             )}
 
             {/* Overdue Alert */}
             {isOverdue && !isCompleted && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-[#93000A]/40 text-[#FFB4AB] border border-[#FFB4AB]/30">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[3px] text-[10px] font-semibold bg-[#FFDAD6] text-[#BA1A1A] border border-[#BA1A1A]/30">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#BA1A1A] animate-pulse" />
                 <span>Past Due</span>
               </span>
@@ -109,8 +109,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) =>
 
           {/* Task Title */}
           <h3
-            className={`text-sm sm:text-base font-semibold leading-snug transition-colors group-hover:text-[#F2CA50] ${
-              isCompleted ? 'line-through text-[#99907C]' : 'text-white'
+            className={`text-sm sm:text-base font-semibold leading-snug transition-colors group-hover:text-[#745A2E] ${
+              isCompleted ? 'line-through text-[#7A746E]' : 'text-[#181615]'
             }`}
           >
             {task.title}
@@ -120,7 +120,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) =>
           {task.description && (
             <p
               className={`mt-1 text-xs leading-relaxed line-clamp-2 ${
-                isCompleted ? 'text-[#99907C]' : 'text-[#D0C5AF]'
+                isCompleted ? 'text-[#7A746E]' : 'text-[#4D4541]'
               }`}
             >
               {task.description}
@@ -133,7 +133,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) =>
           <button
             type="button"
             onClick={() => onSelect?.(task)}
-            className="p-1 rounded bg-[#292A2C]/60 text-[#D0C5AF] hover:text-[#F2CA50] hover:bg-[#343537] transition-colors cursor-pointer"
+            className="p-1.5 rounded bg-[#EFECE3] text-[#7A746E] hover:text-[#181615] hover:bg-[#E5E2DB] transition-colors cursor-pointer"
             title="Inspect dossier"
           >
             <span className="material-symbols-outlined text-[17px]">open_in_new</span>
@@ -143,7 +143,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) =>
             <button
               type="button"
               onClick={() => setShowMenu(!showMenu)}
-              className="p-1 rounded bg-[#292A2C]/60 text-[#D0C5AF] hover:text-white hover:bg-[#343537] transition-colors cursor-pointer"
+              className="p-1.5 rounded bg-[#EFECE3] text-[#7A746E] hover:text-[#181615] hover:bg-[#E5E2DB] transition-colors cursor-pointer"
               aria-label="Options"
             >
               <span className="material-symbols-outlined text-[17px]">more_horiz</span>
@@ -155,17 +155,17 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) =>
                   className="fixed inset-0 z-20"
                   onClick={() => setShowMenu(false)}
                 />
-                <div className="absolute right-0 mt-1 w-36 bg-[#1F2022] border border-[#DAC58F]/20 rounded-xl py-1 z-30 shadow-2xl">
+                <div className="absolute right-0 mt-1 w-36 bg-[#F4EFEB] border border-[rgba(45,41,38,0.12)] rounded-lg py-1 z-30 shadow-xl">
                   <button
                     type="button"
                     onClick={() => {
                       setShowMenu(false)
                       onEdit(task)
                     }}
-                    className="w-full px-3 py-1.5 text-left text-xs text-[#D0C5AF] hover:text-white hover:bg-[#292A2C] flex items-center gap-2 cursor-pointer"
+                    className="w-full px-3 py-1.5 text-left text-xs text-[#2D2926] hover:bg-[#EFECE3] flex items-center gap-2 cursor-pointer"
                   >
-                    <span className="material-symbols-outlined text-sm text-[#DAC58F]">edit</span>
-                    <span>Edit Task</span>
+                    <span className="material-symbols-outlined text-sm text-[#745A2E]">edit</span>
+                    <span>Edit Mandate</span>
                   </button>
                   <button
                     type="button"
@@ -173,19 +173,19 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) =>
                       setShowMenu(false)
                       archiveTask(task.id)
                     }}
-                    className="w-full px-3 py-1.5 text-left text-xs text-[#D0C5AF] hover:text-white hover:bg-[#292A2C] flex items-center gap-2 cursor-pointer"
+                    className="w-full px-3 py-1.5 text-left text-xs text-[#2D2926] hover:bg-[#EFECE3] flex items-center gap-2 cursor-pointer"
                   >
-                    <span className="material-symbols-outlined text-sm text-[#D0C5AF]">inventory_2</span>
+                    <span className="material-symbols-outlined text-sm text-[#7A746E]">inventory_2</span>
                     <span>Archive</span>
                   </button>
-                  <div className="h-px bg-[#DAC58F]/10 my-1" />
+                  <div className="h-px bg-[rgba(45,41,38,0.08)] my-1" />
                   <button
                     type="button"
                     onClick={() => {
                       setShowMenu(false)
                       deleteTask(task.id)
                     }}
-                    className="w-full px-3 py-1.5 text-left text-xs text-[#FFB4AB] hover:bg-[#93000A]/20 flex items-center gap-2 cursor-pointer"
+                    className="w-full px-3 py-1.5 text-left text-xs text-[#BA1A1A] hover:bg-[#FFDAD6] flex items-center gap-2 cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-sm">delete</span>
                     <span>Delete</span>
@@ -198,10 +198,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) =>
       </div>
 
       {/* Dossier Bottom Framing Strip */}
-      <div className="flex items-center justify-between pt-1.5 mt-1 border-t border-[#DAC58F]/8 text-[11px] text-[#99907C]">
+      <div className="flex items-center justify-between pt-2 mt-1 border-t border-[rgba(45,41,38,0.06)] text-[11px] text-[#7A746E]">
         <div className="flex items-center gap-3">
           {formattedDue ? (
-            <span className={`flex items-center gap-1 font-mono ${isOverdue && !isCompleted ? 'text-[#FFB4AB] font-semibold' : ''}`}>
+            <span className={`flex items-center gap-1 font-mono ${isOverdue && !isCompleted ? 'text-[#BA1A1A] font-semibold' : ''}`}>
               <span className="material-symbols-outlined text-[13px]">schedule</span>
               <span>Due {formattedDue}</span>
             </span>
@@ -218,13 +218,13 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) =>
           )}
 
           {task.estimated_duration_minutes && (
-            <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-[#292A2C] text-[#DAC58F]">
+            <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-[#EFECE3] text-[#745A2E]">
               {task.estimated_duration_minutes}m deep focus
             </span>
           )}
         </div>
 
-        <div className="flex items-center gap-1 text-[#DAC58F] text-[10px] uppercase font-mono tracking-wider">
+        <div className="flex items-center gap-1 text-[#745A2E] text-[10px] uppercase font-mono tracking-wider">
           <span className="material-symbols-outlined text-[12px]">lock</span>
           <span className="hidden sm:inline">Vault Protected</span>
         </div>
