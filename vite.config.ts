@@ -4,19 +4,8 @@ import path from 'path'
 import { defineConfig } from 'vitest/config'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// Resolve base path for GitHub Pages deployment:
-// e.g., https://<username>.github.io/chroniq/
-const getBasePath = (): string => {
-  if (process.env.BASE_PATH) return process.env.BASE_PATH.trim()
-  if (process.env.GITHUB_PAGES || process.env.GITHUB_ACTIONS) {
-    const rawRepo = process.env.GITHUB_REPOSITORY?.trim()
-    const repoName = rawRepo ? rawRepo.split('/')[1]?.trim() : 'chroniq'
-    return `/${repoName || 'chroniq'}/`
-  }
-  return './'
-}
-
-const base = getBasePath()
+// Resolve base path for GitHub Pages deployment: https://<username>.github.io/chroniq/
+const base = '/chroniq/'
 
 export default defineConfig({
   base,
@@ -37,29 +26,29 @@ export default defineConfig({
         background_color: '#FAF7F2',
         display: 'standalone',
         orientation: 'portrait-primary',
-        start_url: base === './' ? './' : base,
-        scope: base === './' ? './' : base,
+        start_url: '/chroniq/',
+        scope: '/chroniq/',
         icons: [
           {
-            src: '/logo.png',
+            src: 'logo.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any',
           },
           {
-            src: '/logo.png',
+            src: 'logo.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'maskable',
           },
           {
-            src: '/logo.png',
+            src: 'logo.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any',
           },
           {
-            src: '/logo.png',
+            src: 'logo.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable',
