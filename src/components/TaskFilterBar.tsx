@@ -30,7 +30,7 @@ export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
     { id: 'upcoming', label: 'Upcoming', count: upcomingCount },
     { id: 'overdue', label: 'Overdue', count: overdueCount, isOverdue: true },
     { id: 'completed', label: 'Completed', count: completedCount },
-    { id: 'all', label: 'All Folios', count: allCount },
+    { id: 'all', label: 'All Tasks', count: allCount },
   ]
 
   return (
@@ -86,7 +86,7 @@ export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search mandates..."
+            placeholder="Search tasks..."
             className="w-full pl-8 pr-3 py-1.5 rounded-full bg-[#F4EFEB] border border-[rgba(45,41,38,0.1)] text-xs text-[#181615] placeholder-[#7A746E] focus:outline-none focus:bg-[#FAF7F2] focus:border-[#C2A26F] transition"
           />
         </div>
@@ -98,11 +98,11 @@ export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
             onChange={(e) => setPriorityFilter(e.target.value as TaskPriority | 'all')}
             className="appearance-none px-3 py-1.5 pr-7 rounded-full bg-[#F4EFEB] border border-[rgba(45,41,38,0.1)] text-xs text-[#181615] font-medium focus:outline-none focus:bg-[#FAF7F2] focus:border-[#C2A26F] cursor-pointer transition"
           >
-            <option value="all">All Tiers</option>
-            <option value="urgent">Tier 1 Sovereign</option>
-            <option value="high">Amber Horizon</option>
-            <option value="medium">Champagne</option>
-            <option value="low">Sage Ritual</option>
+            <option value="all">All Priorities</option>
+            <option value="urgent">Urgent</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
           </select>
           <span className="material-symbols-outlined text-[15px] text-[#7A746E] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
             expand_more

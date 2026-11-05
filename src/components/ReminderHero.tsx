@@ -65,7 +65,7 @@ export const ReminderHero: React.FC = () => {
         <div className="flex items-baseline justify-between">
           <div>
             <span className="text-[10px] font-mono uppercase tracking-widest text-[#745A2E] font-semibold">
-              Temporal Architecture
+              Schedule Overview
             </span>
             <h1 className="font-serif text-3xl sm:text-4xl text-[#181615]">
               Today’s Schedule
@@ -118,14 +118,14 @@ export const ReminderHero: React.FC = () => {
                 hourglass_top
               </span>
               <span className="text-[10px] font-mono uppercase tracking-widest text-[#745A2E] font-semibold">
-                Composure Architecture
+                Daily Progress
               </span>
             </div>
             <h2 className="font-serif text-lg sm:text-xl text-[#181615] leading-tight">
-              Focus Horizon: {bookedHours}h Deep Work Booked
+              Daily Focus: {bookedHours}h Planned
             </h2>
             <p className="text-xs text-[#7A746E]">
-              Continuous check-ins running at designated reminder windows. Push notification fires 10m prior to milestones.
+              Notifications alert you 10 minutes before deadlines and at each scheduled reminder slot.
             </p>
           </div>
 
@@ -160,7 +160,7 @@ export const ReminderHero: React.FC = () => {
               </span>
             </div>
             <span className="text-[9px] uppercase tracking-wider text-[#7A746E] font-mono mt-1">
-              Calm Index
+              Next Alert
             </span>
           </div>
         </div>
@@ -174,9 +174,9 @@ export const ReminderHero: React.FC = () => {
               notifications_active
             </span>
             <div>
-              <span className="font-semibold text-[#181615] block">Push Notifications Arming</span>
+              <span className="font-semibold text-[#181615] block">Push Notifications</span>
               <span className="text-[11px] text-[#2D2926]">
-                Enable web push to receive 10-minute advance dispatches and scheduled slot alerts.
+                Enable notifications to receive 10-minute advance reminders and scheduled alerts.
               </span>
             </div>
           </div>
@@ -184,12 +184,12 @@ export const ReminderHero: React.FC = () => {
             onClick={enablePushNotifications}
             className="btn-primary px-3.5 py-1.5 rounded-md font-semibold text-xs whitespace-nowrap cursor-pointer"
           >
-            Arm Push
+            Enable
           </button>
         </div>
       )}
 
-      {/* Today's Reminder Schedule Slots with Bronzed Hairline Axis */}
+      {/* Today's Reminder Schedule Slots */}
       <section className="bg-[#F4EFEB] border border-[rgba(45,41,38,0.08)] rounded-2xl p-5 sm:p-6 shadow-xs">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -201,7 +201,7 @@ export const ReminderHero: React.FC = () => {
             </h3>
           </div>
           <span className="text-[10px] font-mono uppercase tracking-wider text-[#7A746E]">
-            528Hz Dispatch
+            Smart Alerts
           </span>
         </div>
 
@@ -241,15 +241,15 @@ export const ReminderHero: React.FC = () => {
                   <div>
                     {slot.isPast ? (
                       <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#EFECE3] text-[#4A6B56] font-medium">
-                        Dispatched ✓
+                        Sent ✓
                       </span>
                     ) : slot.isNext ? (
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono uppercase font-bold bg-[#181615] text-[#FAF7F2] shadow-xs">
-                        Next Horizon
+                        Next Reminder
                       </span>
                     ) : (
                       <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#FAF7F2] text-[#7A746E] border border-[rgba(45,41,38,0.08)]">
-                        Queued
+                        Scheduled
                       </span>
                     )}
                   </div>

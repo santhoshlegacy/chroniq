@@ -71,16 +71,16 @@ export const TaskList: React.FC<TaskListProps> = ({
 
         <h3 className="font-serif text-xl sm:text-2xl text-[#181615]">
           {activeFilter === 'completed'
-            ? 'No completed mandates recorded yet today'
+            ? 'No completed tasks yet today'
             : activeFilter === 'overdue'
-            ? 'No overdue mandates — celestial cadence honored'
-            : 'Ledger Empty • Tranquil Horizon'}
+            ? "No overdue tasks — you're all caught up!"
+            : 'No tasks found'}
         </h3>
 
         <p className="mt-1.5 text-xs text-[#7A746E] max-w-sm mx-auto leading-relaxed">
           {activeFilter === 'today'
-            ? 'Inscribe a high-priority mandate to structure your focus cadence.'
-            : 'All recorded mandates matching this filter will materialize here.'}
+            ? 'Add a task to plan your day and stay on track.'
+            : 'Tasks matching this filter will appear here.'}
         </p>
 
         <button
@@ -88,7 +88,7 @@ export const TaskList: React.FC<TaskListProps> = ({
           className="btn-primary mt-6 px-5 py-2.5 rounded-md inline-flex items-center gap-1.5 cursor-pointer text-xs uppercase tracking-wider font-semibold"
         >
           <span className="material-symbols-outlined text-sm font-bold">add</span>
-          <span>Inscribe Mandate</span>
+          <span>Add Task</span>
         </button>
       </div>
     )
@@ -100,16 +100,16 @@ export const TaskList: React.FC<TaskListProps> = ({
       <div className="flex items-end justify-between pt-2 pb-1">
         <div className="flex flex-col">
           <span className="text-[10px] font-mono uppercase tracking-widest text-[#745A2E] font-semibold">
-            Master Ledger
+            Task List
           </span>
           <h2 className="font-serif text-2xl sm:text-3xl text-[#181615]">
-            Curated Mandates
+            All Tasks
           </h2>
         </div>
         <div className="flex items-center gap-2 bg-[#F4EFEB] border border-[rgba(45,41,38,0.08)] px-3.5 py-1 rounded-full text-[#2D2926] shadow-xs">
           <span className="w-1.5 h-1.5 rounded-full bg-[#745A2E]" />
           <span className="font-mono text-xs text-[#181615] tabular-nums font-semibold">
-            {sorted.length} {sorted.length === 1 ? 'Mandate' : 'Mandates'}
+            {sorted.length} {sorted.length === 1 ? 'Task' : 'Tasks'}
           </span>
         </div>
       </div>

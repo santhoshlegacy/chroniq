@@ -40,7 +40,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
     if (mode === 'signin') {
       const res = await loginWithEmail(email, password)
       if (!res.error) {
-        setSuccessMessage('Welcome back! Synchronizing your mandates...')
+        setSuccessMessage('Welcome back! Loading your tasks...')
       }
     } else {
       const res = await signUpWithEmail(email, password)
@@ -53,7 +53,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
 
   const handleMigrate = async () => {
     const res = await importLocalTasksToCloud()
-    setImportStatus(`Successfully migrated ${res.imported} offline mandate${res.imported === 1 ? '' : 's'} to your cloud vault!`)
+    setImportStatus(`Successfully migrated ${res.imported} offline task${res.imported === 1 ? '' : 's'} to your cloud storage!`)
     setTimeout(() => setImportStatus(null), 5000)
   }
 
@@ -91,7 +91,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
               </div>
               <p className="text-xs text-[#7A746E] truncate mt-0.5 font-mono">{user.email}</p>
               <p className="text-[11px] text-[#745A2E] mt-1 font-mono uppercase tracking-wider">
-                Horological Series IX • Private Suite
+                Personal Cloud Account
               </p>
             </div>
           </div>
@@ -99,14 +99,14 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
           {/* Sync Status Card */}
           <div className="p-4 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-[#7A746E]">Storage Architecture</span>
+              <span className="text-[#7A746E]">Storage</span>
               <span className="text-[#181615] font-medium flex items-center gap-1 font-mono">
                 <span className="material-symbols-outlined text-sm text-[#745A2E]">cloud_done</span>
-                Supabase Cloud Vault
+                Cloud Storage
               </span>
             </div>
             <div className="flex items-center justify-between text-xs">
-              <span className="text-[#7A746E]">Row-Level Security</span>
+              <span className="text-[#7A746E]">Data Protection</span>
               <span className="text-[#181615] font-medium flex items-center gap-1 font-mono">
                 <span className="material-symbols-outlined text-sm text-[#4A6B56]">lock</span>
                 Strict User Isolation
@@ -120,7 +120,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-xs font-semibold text-[#181615] block">
-                    Offline Mandates Awaiting Migration
+                    Offline Tasks Ready to Sync
                   </span>
                   <span className="text-[11px] text-[#2D2926]">
                     You have <strong className="text-[#745A2E]">{unmigratedLocalCount} offline tasks</strong> saved locally on this browser.
@@ -131,7 +131,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
                 onClick={handleMigrate}
                 className="btn-primary w-full py-2 rounded-md font-semibold text-xs uppercase tracking-wider transition cursor-pointer"
               >
-                Migrate to Cloud Vault
+                Sync Tasks to Cloud
               </button>
               {importStatus && <p className="text-xs text-[#4A6B56] text-center">{importStatus}</p>}
             </div>
@@ -143,7 +143,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
               onClick={onContinueOffline}
               className="text-xs text-[#7A746E] hover:text-[#181615] transition cursor-pointer"
             >
-              Back to Ledger
+              Back to Tasks
             </button>
             <button
               onClick={() => logout()}
@@ -169,12 +169,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
             <ChroniqLogo className="w-full h-full object-contain" />
           </div>
           <h1 className="text-2xl font-bold text-[#181615] tracking-tight font-serif pt-1">
-            {mode === 'signin' ? 'Enter Executive Suite' : 'Create Sovereign Account'}
+            {mode === 'signin' ? 'Sign In to Chroniq' : 'Create an Account'}
           </h1>
           <p className="text-xs text-[#7A746E] max-w-xs mx-auto leading-relaxed">
             {mode === 'signin'
-              ? 'Access synchronized reminders, multi-device web push, and encrypted mandate history.'
-              : 'Join the horological cadence of precision personal productivity.'}
+              ? 'Access synced reminders, notifications, and task history across devices.'
+              : 'Stay on top of your daily schedule with smart reminders.'}
           </p>
         </div>
 
@@ -274,7 +274,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="executive@chroniq.io"
+              placeholder="you@example.com"
               className="w-full px-3.5 py-2 rounded-xl bg-[#EFECE3] border border-[rgba(45,41,38,0.12)] text-xs text-[#181615] placeholder-[#7A746E] focus:outline-none focus:bg-[#FAF7F2] focus:border-[#C2A26F] transition"
             />
           </div>
@@ -300,9 +300,9 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
             className="btn-primary w-full py-2.5 rounded-md font-semibold text-xs uppercase tracking-wider cursor-pointer disabled:opacity-50"
           >
             {isSubmitting
-              ? 'Calibrating...'
+              ? 'Signing in...'
               : mode === 'signin'
-              ? 'Sign In to Suite'
+              ? 'Sign In'
               : 'Create Account'}
           </button>
         </form>
@@ -314,11 +314,11 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
             onClick={onContinueOffline}
             className="text-xs text-[#7A746E] hover:text-[#181615] transition cursor-pointer flex items-center gap-1.5"
           >
-            <span>Continue in Local Vault (Guest Mode)</span>
+            <span>Continue as Guest (Offline Mode)</span>
             <span className="material-symbols-outlined text-sm">arrow_forward</span>
           </button>
           <span className="text-[10px] text-[#7A746E] uppercase font-mono">
-            Local data preserved on device
+            Local data saved on device
           </span>
         </div>
       </div>

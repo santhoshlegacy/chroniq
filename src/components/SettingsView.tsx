@@ -31,7 +31,7 @@ export const SettingsView: React.FC = () => {
   const [isSaved, setIsSaved] = useState(false)
   const [phoneInput, setPhoneInput] = useState(voicePreferences.phone_number || '')
   const [phoneError, setPhoneError] = useState<string | null>(null)
-  const [selectedHarmonic, setSelectedHarmonic] = useState('528Hz Solfeggio')
+  const [selectedHarmonic, setSelectedHarmonic] = useState('Chime')
 
   const handleAddSlot = async () => {
     if (!newSlotInput) return
@@ -60,33 +60,33 @@ export const SettingsView: React.FC = () => {
       <section className="flex flex-col gap-1 mb-8">
         <div className="flex items-center gap-2">
           <span className="text-[10px] uppercase font-mono tracking-widest text-[#745A2E] font-semibold">
-            Folio Configuration
+            App Settings
           </span>
           <span className="w-1 h-1 rounded-full bg-[#745A2E]" />
           <span className="text-[10px] uppercase tracking-wider text-[#7A746E]">
-            Archival Synk
+            Cloud Sync
           </span>
         </div>
         <h1 className="font-serif text-3xl sm:text-4xl text-[#181615]">
           Settings &amp; Delivery Preferences
         </h1>
         <p className="text-xs sm:text-sm text-[#7A746E] max-w-lg mt-1 leading-relaxed">
-          Fine-tune acoustic cadences, horizon reminders, and inspect the ledger of recent intentional dispatches.
+          Configure notification sounds, reminder schedules, and view delivery history.
         </p>
       </section>
 
-      {/* Atmospheric Telemetry Mode Banner */}
+      {/* Atmospheric Notification Banner */}
       <section className="relative w-full rounded-2xl overflow-hidden bg-[#F4EFEB] border border-[rgba(45,41,38,0.08)] p-5 sm:p-6 shadow-xs mb-8">
         <div className="flex items-center justify-between gap-4">
           <div className="flex flex-col gap-1 min-w-0">
             <span className="text-[10px] uppercase tracking-widest text-[#745A2E] font-mono font-semibold">
-              Telemetry Mode
+              Notification Mode
             </span>
             <span className="font-serif text-lg sm:text-xl text-[#181615]">
-              Unobtrusive &amp; Resonant
+              Gentle &amp; Clear
             </span>
             <p className="text-xs text-[#7A746E]">
-              Alerts are shaped with harmonic acoustics to honor uninterrupted executive presence.
+              Alerts are designed to keep you focused without unnecessary disruption.
             </p>
           </div>
           <div className="w-12 h-12 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] flex items-center justify-center text-[#745A2E] flex-shrink-0 shadow-xs">
@@ -137,15 +137,15 @@ export const SettingsView: React.FC = () => {
         {/* ──────── TAB 1: DAILY SCHEDULE & SLOTS ──────── */}
         {activeTab === 'schedule' && (
           <div className="space-y-6">
-            {/* Proactive Push & Archival Rules */}
+            {/* Advance Push & Archival Rules */}
             <div className="p-5 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] space-y-3">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-xs font-semibold text-[#181615] block">
-                    10-Minute Advance Dispatch
+                    10-Minute Advance Reminders
                   </span>
                   <span className="text-[11px] text-[#7A746E]">
-                    Sends discrete notifications 10 minutes prior to scheduled task deadlines.
+                    Sends a notification 10 minutes before scheduled task deadlines.
                   </span>
                 </div>
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-[#FEDAA3] border border-[#745A2E]/25 text-[#745A2E]">
@@ -158,10 +158,10 @@ export const SettingsView: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-xs font-semibold text-[#181615] block">
-                    Automatic 30-Day Task Archival &amp; Deletion
+                    Auto-Delete Completed Tasks (30 Days)
                   </span>
                   <span className="text-[11px] text-[#7A746E]">
-                    Purges completed tasks after 30 days to preserve database minimalism.
+                    Deletes completed tasks after 30 days to keep your list clean.
                   </span>
                 </div>
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-[#FEDAA3] border border-[#745A2E]/25 text-[#745A2E]">
@@ -266,7 +266,7 @@ export const SettingsView: React.FC = () => {
 
             {/* Timezone */}
             <div className="p-5 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] space-y-2">
-              <span className="text-xs font-semibold text-[#181615] block">Timezone Horizon</span>
+              <span className="text-xs font-semibold text-[#181615] block">Timezone</span>
               <select
                 value={preferences.timezone}
                 onChange={(e) => updatePreferences({ timezone: e.target.value })}
@@ -285,23 +285,23 @@ export const SettingsView: React.FC = () => {
         {/* ──────── TAB 2: VOICE & AUDIO ──────── */}
         {activeTab === 'voice' && (
           <div className="space-y-6">
-            {/* Acoustic Harmonics Selector */}
+            {/* Alert Tone Selector */}
             <div className="p-5 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] space-y-3">
               <div className="flex justify-between items-baseline">
-                <span className="text-xs font-semibold text-[#181615]">Acoustic Harmonics</span>
+                <span className="text-xs font-semibold text-[#181615]">Alert Tone</span>
                 <span className="text-[10px] font-mono uppercase text-[#745A2E] font-semibold">
                   {selectedHarmonic}
                 </span>
               </div>
               <p className="text-[11px] text-[#7A746E]">
-                Subtle frequency resonance sounded at each delivery threshold.
+                Choose the sound played when a reminder arrives.
               </p>
 
               <div className="grid grid-cols-3 gap-2.5 pt-1">
                 {[
-                  { name: '528Hz Solfeggio', sub: 'Resonant Chime', icon: 'music_note' },
-                  { name: 'Venetian Bell', sub: 'Warm Patina', icon: 'notifications' },
-                  { name: 'Silent Ripple', sub: 'Haptic Only', icon: 'vibration' },
+                  { name: 'Chime', sub: 'Gentle Bell', icon: 'music_note' },
+                  { name: 'Classic Bell', sub: 'Standard Tone', icon: 'notifications' },
+                  { name: 'Vibration Only', sub: 'Muted', icon: 'vibration' },
                 ].map((item) => {
                   const isSel = selectedHarmonic === item.name
                   return (
@@ -344,15 +344,15 @@ export const SettingsView: React.FC = () => {
               </div>
             </div>
 
-            {/* Automated Telephony Phone Calls */}
+            {/* Automated Phone Call Reminders */}
             <div className="p-5 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] space-y-3">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-xs font-semibold text-[#181615] block">
-                    Automated Telephony Check-in Call
+                    Phone Call Reminders
                   </span>
                   <span className="text-[11px] text-[#7A746E]">
-                    Receives a concise voice briefing via twilio/telephony for high priority tasks
+                    Receive automated phone call alerts for urgent tasks.
                   </span>
                 </div>
                 <input
@@ -397,7 +397,7 @@ export const SettingsView: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-1">
               <span className="text-xs font-mono uppercase tracking-wider text-[#745A2E] font-semibold">
-                Recent Dispatches &amp; Transmissions
+                Recent Notifications
               </span>
               <span className="text-[10px] text-[#7A746E] font-mono">
                 {events.length} Recorded
@@ -409,7 +409,7 @@ export const SettingsView: React.FC = () => {
                 <span className="material-symbols-outlined text-[24px] text-[#7A746E] mb-1">
                   history_toggle_off
                 </span>
-                <p className="text-xs text-[#7A746E]">No reminder dispatches logged yet.</p>
+                <p className="text-xs text-[#7A746E]">No notifications sent yet.</p>
               </div>
             ) : (
               <div className="space-y-2">

@@ -3,6 +3,14 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 
+// Early capture of PWA beforeinstallprompt event to guarantee it is never missed
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault()
+    ;(window as any).__deferredInstallPrompt = e
+  })
+}
+
 // Register Service Worker for PWA & incoming Web Push notifications
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

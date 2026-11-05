@@ -93,10 +93,10 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
   }
 
   const priorityConfigs: Record<TaskPriority, { label: string; dot: string; border: string; bg: string }> = {
-    urgent: { label: 'Tier 1 Sovereign', dot: 'bg-[#BA1A1A]', border: 'border-[#BA1A1A]/40', bg: 'bg-[#FFDAD6] text-[#BA1A1A]' },
-    high: { label: 'Amber Horizon', dot: 'bg-[#745A2E]', border: 'border-[#745A2E]/40', bg: 'bg-[#FEDAA3] text-[#745A2E]' },
-    medium: { label: 'Champagne', dot: 'bg-[#C2A26F]', border: 'border-[rgba(45,41,38,0.2)]', bg: 'bg-[#EFECE3] text-[#181615]' },
-    low: { label: 'Sage Ritual', dot: 'bg-[#7A746E]', border: 'border-[rgba(45,41,38,0.15)]', bg: 'bg-[#FAF7F2] text-[#7A746E]' },
+    urgent: { label: 'Urgent', dot: 'bg-[#BA1A1A]', border: 'border-[#BA1A1A]/40', bg: 'bg-[#FFDAD6] text-[#BA1A1A]' },
+    high: { label: 'High', dot: 'bg-[#745A2E]', border: 'border-[#745A2E]/40', bg: 'bg-[#FEDAA3] text-[#745A2E]' },
+    medium: { label: 'Medium', dot: 'bg-[#C2A26F]', border: 'border-[rgba(45,41,38,0.2)]', bg: 'bg-[#EFECE3] text-[#181615]' },
+    low: { label: 'Low', dot: 'bg-[#7A746E]', border: 'border-[rgba(45,41,38,0.15)]', bg: 'bg-[#FAF7F2] text-[#7A746E]' },
   }
 
   return (
@@ -107,10 +107,10 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
         <div className="flex items-center justify-between pb-3.5 border-b border-[rgba(45,41,38,0.08)]">
           <div>
             <span className="text-[10px] font-mono uppercase tracking-widest text-[#745A2E] font-semibold">
-              Mandate Inscription
+              Task Details
             </span>
             <h2 className="text-base font-semibold text-[#181615] tracking-tight font-serif mt-0.5">
-              {taskToEdit ? 'Modify Mandate Dossier' : 'Inscribe New Mandate'}
+              {taskToEdit ? 'Edit Task' : 'New Task'}
             </h2>
           </div>
           <button
@@ -127,7 +127,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
           {/* Title */}
           <div>
             <label className="block text-xs font-mono uppercase tracking-wider text-[#745A2E] mb-1 font-semibold">
-              Mandate Title <span className="text-[#BA1A1A]">*</span>
+              Task Title <span className="text-[#BA1A1A]">*</span>
             </label>
             <input
               type="text"
@@ -135,7 +135,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
               maxLength={255}
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              placeholder="e.g., Fiduciary Trust Agreement Execution"
+              placeholder="e.g., Prepare quarterly presentation"
               className="w-full px-3.5 py-2 rounded-xl bg-[#EFECE3] border border-[rgba(45,41,38,0.12)] text-xs text-[#181615] placeholder-[#7A746E] focus:outline-none focus:bg-[#FAF7F2] focus:border-[#C2A26F] transition"
             />
           </div>
@@ -143,14 +143,14 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
           {/* Description */}
           <div>
             <label className="block text-xs font-mono uppercase tracking-wider text-[#745A2E] mb-1 font-semibold">
-              Confidential Instructions (Optional)
+              Description (Optional)
             </label>
             <textarea
               rows={2}
               maxLength={2000}
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              placeholder="Key notes, context, or deliverables..."
+              placeholder="Add notes, context, or links..."
               className="w-full px-3.5 py-2 rounded-xl bg-[#EFECE3] border border-[rgba(45,41,38,0.12)] text-xs text-[#181615] placeholder-[#7A746E] focus:outline-none focus:bg-[#FAF7F2] focus:border-[#C2A26F] transition resize-none"
             />
           </div>
@@ -158,7 +158,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
           {/* Priority Selector */}
           <div>
             <label className="block text-xs font-mono uppercase tracking-wider text-[#745A2E] mb-1.5 font-semibold">
-              Urgency Tier
+              Priority
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {(['urgent', 'high', 'medium', 'low'] as TaskPriority[]).map((p) => {
@@ -259,7 +259,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
               disabled={isSubmitting || !form.title.trim()}
               className="btn-primary px-4 py-1.5 rounded-md text-xs uppercase tracking-wider disabled:opacity-40 cursor-pointer shadow-xs"
             >
-              {taskToEdit ? 'Save Dossier' : 'Inscribe Mandate'}
+              {taskToEdit ? 'Save Changes' : 'Add Task'}
             </button>
           </div>
         </form>

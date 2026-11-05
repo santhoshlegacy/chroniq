@@ -208,7 +208,7 @@ export function App() {
 
   const handleImportLocalTasks = async () => {
     const res = await importLocalTasksToCloud()
-    setImportStatus(`Successfully migrated ${res.imported} mandate${res.imported === 1 ? '' : 's'} to your cloud vault!`)
+    setImportStatus(`Successfully migrated ${res.imported} task${res.imported === 1 ? '' : 's'} to your cloud storage!`)
     setTimeout(() => setImportStatus(null), 5000)
   }
 
@@ -239,7 +239,7 @@ export function App() {
             <div className="editorial-container flex items-center space-x-2">
               <WifiOff className="w-3.5 h-3.5 text-[#745A2E] flex-shrink-0" />
               <span>
-                Offline vault active. Your mandates remain saved securely on this device. Cloud sync and scheduler triggers will resume once connection is restored.
+                Offline mode active. Your tasks remain saved securely on this device. Cloud sync will resume once connection is restored.
               </span>
             </div>
           </div>
@@ -288,7 +288,7 @@ export function App() {
               <div className="flex items-center space-x-2">
                 <CloudUpload className="w-4 h-4 text-[#745A2E] flex-shrink-0" />
                 <span>
-                  You have <strong className="text-[#181615] font-semibold">{unmigratedLocalCount} offline mandates</strong> saved on this device. Migrate them into your authenticated cloud vault?
+                  You have <strong className="text-[#181615] font-semibold">{unmigratedLocalCount} offline tasks</strong> saved on this device. Sync them to your cloud storage?
                 </span>
               </div>
               <div className="flex items-center space-x-2">
@@ -319,7 +319,7 @@ export function App() {
               <div className="flex items-center space-x-2 text-[#7A746E]">
                 <Download className="w-3.5 h-3.5 text-[#745A2E] flex-shrink-0" />
                 <span>
-                  Install Chroniq as a Progressive Web App for offline horological access and native home screen integration.
+                  Install Chroniq for quick home screen access and offline support.
                 </span>
               </div>
               <div className="flex items-center space-x-2 flex-shrink-0">
@@ -370,20 +370,20 @@ export function App() {
           {/* VIEW 1: TASKS / FOCUS */}
           {activeTab === 'tasks' && (
             <div className="animate-in fade-in duration-200">
-              {/* Studio Provenance Editorial Header */}
+              {/* Editorial Header */}
               <div className="mb-8 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-[rgba(45,41,38,0.08)] pb-5">
                 <div>
                   <div className="flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-[#745A2E] mb-1 font-semibold">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#745A2E]" />
-                    <span>A True Synk Product</span>
+                    <span>True Synk</span>
                     <span className="text-[#7A746E]">•</span>
-                    <span className="text-[#7A746E]">Horological Series IX</span>
+                    <span className="text-[#7A746E]">Smart Reminders &amp; Focus</span>
                   </div>
                   <h1 className="text-3xl sm:text-4xl font-serif text-[#181615] tracking-tight">
                     Focus on What Matters.
                   </h1>
                   <p className="text-xs sm:text-sm text-[#7A746E] mt-1 max-w-xl">
-                    Your daily focus window. Inspect confidential instructions or honor completion with deliberate precision.
+                    Manage your daily tasks, view details, and track your progress.
                   </p>
                 </div>
               </div>
@@ -403,10 +403,10 @@ export function App() {
             </div>
           )}
 
-          {/* VIEW 2: SCHEDULE & CADENCE */}
+          {/* VIEW 2: SCHEDULE */}
           {activeTab === 'schedule' && (
             <div className="animate-in fade-in duration-200 space-y-8">
-              {/* Reminder Hero & Cadence Strip */}
+              {/* Reminder Hero & Schedule Strip */}
               <ReminderHero />
 
               {/* Executive Productivity Summary */}
@@ -471,7 +471,7 @@ export function App() {
         isStandalone={isStandalone}
       />
 
-      {/* Editorial Horological Footer */}
+      {/* Footer */}
       <footer className="relative z-10 border-t border-[rgba(45,41,38,0.08)] py-8 text-xs text-[#7A746E] bg-[#FAF7F2] mb-16 sm:mb-0">
         <div className="editorial-container flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-2.5">
@@ -480,20 +480,20 @@ export function App() {
             </div>
             <span className="font-semibold text-[#181615] font-serif">Chroniq</span>
             <span>—</span>
-            <span>The Architecture of Time &amp; Precision Productivity</span>
+            <span>Smart Reminders &amp; Precision Task Management</span>
           </div>
 
           <div className="flex items-center space-x-4 text-[11px] font-mono text-[#7A746E]">
             <span className="flex items-center space-x-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#745A2E]" />
-              <span>Multi-User RLS • 10m Push Dispatch</span>
+              <span>Cloud Synced • 10m Push Alerts</span>
             </span>
             <span>•</span>
             <button
               onClick={() => setShowSplash(true)}
               className="hover:text-[#181615] transition cursor-pointer"
             >
-              Replay Cinematic Entry
+              Splash Screen
             </button>
             <span>•</span>
             <button

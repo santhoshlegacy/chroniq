@@ -15,25 +15,25 @@ const priorityBadges: Record<
   { label: string; text: string; bg: string; dot: string }
 > = {
   urgent: {
-    label: 'Crimson VIP',
+    label: 'Urgent',
     text: 'text-[#BA1A1A]',
     bg: 'bg-[#FFDAD6] border-[rgba(186,26,26,0.25)]',
     dot: 'bg-[#BA1A1A]',
   },
   high: {
-    label: 'Amber Horizon',
+    label: 'High',
     text: 'text-[#745A2E]',
     bg: 'bg-[#FEDAA3] border-[rgba(116,90,46,0.25)]',
     dot: 'bg-[#C2A26F]',
   },
   medium: {
-    label: 'Geneva Calibre',
+    label: 'Medium',
     text: 'text-[#4D4541]',
     bg: 'bg-[#EFECE3] border-[rgba(45,41,38,0.08)]',
     dot: 'bg-[#8C7654]',
   },
   low: {
-    label: 'Sage Ritual',
+    label: 'Low',
     text: 'text-[#7A746E]',
     bg: 'bg-[#EFECE3] border-[rgba(45,41,38,0.06)]',
     dot: 'bg-[#7A746E]',
@@ -134,7 +134,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) =>
             type="button"
             onClick={() => onSelect?.(task)}
             className="p-1.5 rounded bg-[#EFECE3] text-[#7A746E] hover:text-[#181615] hover:bg-[#E5E2DB] transition-colors cursor-pointer"
-            title="Inspect dossier"
+            title="View details"
           >
             <span className="material-symbols-outlined text-[17px]">open_in_new</span>
           </button>
@@ -165,7 +165,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) =>
                     className="w-full px-3 py-1.5 text-left text-xs text-[#2D2926] hover:bg-[#EFECE3] flex items-center gap-2 cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-sm text-[#745A2E]">edit</span>
-                    <span>Edit Mandate</span>
+                    <span>Edit Task</span>
                   </button>
                   <button
                     type="button"
@@ -197,7 +197,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) =>
         </div>
       </div>
 
-      {/* Dossier Bottom Framing Strip */}
+      {/* Task Bottom Framing Strip */}
       <div className="flex items-center justify-between pt-2 mt-1 border-t border-[rgba(45,41,38,0.06)] text-[11px] text-[#7A746E]">
         <div className="flex items-center gap-3">
           {formattedDue ? (
@@ -213,20 +213,20 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) =>
           ) : (
             <span className="flex items-center gap-1 font-mono">
               <span className="material-symbols-outlined text-[13px]">hourglass_empty</span>
-              <span>Continuous Cadence</span>
+              <span>No Due Date</span>
             </span>
           )}
 
           {task.estimated_duration_minutes && (
             <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-[#EFECE3] text-[#745A2E]">
-              {task.estimated_duration_minutes}m deep focus
+              {task.estimated_duration_minutes}m est.
             </span>
           )}
         </div>
 
         <div className="flex items-center gap-1 text-[#745A2E] text-[10px] uppercase font-mono tracking-wider">
           <span className="material-symbols-outlined text-[12px]">lock</span>
-          <span className="hidden sm:inline">Vault Protected</span>
+          <span className="hidden sm:inline">Encrypted</span>
         </div>
       </div>
     </div>

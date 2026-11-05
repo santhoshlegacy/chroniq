@@ -24,14 +24,14 @@ export const StatsGrid: React.FC = () => {
 
   return (
     <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      {/* Metric 1: Intended Cadence */}
+      {/* Metric 1: Daily Progress & Task Stats */}
       <div className="bg-[#F4EFEB] border border-[rgba(45,41,38,0.08)] p-5 rounded-2xl shadow-xs flex flex-col justify-between relative overflow-hidden group hover:border-[#C2A26F]/40 transition-all">
         <div className="flex items-start justify-between">
           <div className="flex flex-col">
             <span className="text-[10px] font-mono uppercase text-[#745A2E] tracking-wider font-semibold">
-              Intended Cadence
+              Daily Progress
             </span>
-            <span className="text-xs text-[#7A746E]">Cognitive reserve index</span>
+            <span className="text-xs text-[#7A746E]">Task Stats</span>
           </div>
           <div className="w-8 h-8 rounded-full bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] flex items-center justify-center text-[#745A2E]">
             <span className="material-symbols-outlined text-[16px]">timelapse</span>
@@ -46,7 +46,7 @@ export const StatsGrid: React.FC = () => {
             <span className="text-xs text-[#7A746E] font-normal">hrs</span>
           </div>
 
-          {/* Tactile Mini Circular Dial / Gauge */}
+          {/* Mini Circular Progress Gauge */}
           <div className="relative w-11 h-11 flex items-center justify-center">
             <svg className="w-11 h-11 -rotate-90" viewBox="0 0 48 48">
               <circle
@@ -78,37 +78,37 @@ export const StatsGrid: React.FC = () => {
         </div>
 
         <div className="mt-3 pt-2.5 border-t border-[rgba(45,41,38,0.08)] flex items-center justify-between text-[#7A746E] text-[10px] uppercase font-mono">
-          <span>{stats.completedToday}/{stats.totalToday} Honored</span>
+          <span>{stats.completedToday}/{stats.totalToday} Completed</span>
           <span className="text-[#745A2E] flex items-center gap-0.5">
-            <span className="material-symbols-outlined text-[12px]">spa</span> Calm Steady
+            <span className="material-symbols-outlined text-[12px]">spa</span> On Track
           </span>
         </div>
       </div>
 
-      {/* Metric 2: Impending Milestone */}
+      {/* Metric 2: Next Reminder */}
       <div className="bg-[#F4EFEB] border border-[rgba(45,41,38,0.08)] p-5 rounded-2xl shadow-xs flex flex-col justify-between group hover:border-[#C2A26F]/40 transition-all">
         <div className="flex items-start justify-between">
           <div className="flex flex-col">
             <span className="text-[10px] font-mono uppercase text-[#745A2E] tracking-wider font-semibold">
-              Impending Milestone
+              Next Reminder
             </span>
-            <span className="text-xs text-[#7A746E]">Prioritized focus session</span>
+            <span className="text-xs text-[#7A746E]">Upcoming alert window</span>
           </div>
           <span className="px-2 py-0.5 rounded bg-[#FEDAA3] border border-[#745A2E]/25 text-[#745A2E] text-[9px] uppercase font-mono tracking-wider font-semibold">
-            Armed
+            Active
           </span>
         </div>
 
         <div className="mt-4 flex flex-col">
           <span className="font-serif text-base text-[#181615] leading-tight truncate">
             {stats.urgentPending > 0
-              ? `${stats.urgentPending} High-Tier Mandates`
+              ? `${stats.urgentPending} Urgent Tasks`
               : stats.remainingToday > 0
-              ? `${stats.remainingToday} Mandates Queued`
-              : 'Ledger Clear'}
+              ? `${stats.remainingToday} Tasks Remaining`
+              : 'All Tasks Completed'}
           </span>
           <span className="text-xs text-[#7A746E] truncate mt-0.5 font-mono">
-            {preferences.timezone} Horizon
+            {preferences.timezone}
           </span>
         </div>
 
@@ -123,14 +123,14 @@ export const StatsGrid: React.FC = () => {
         </div>
       </div>
 
-      {/* Metric 3: Proactive Telemetry & Haptics */}
+      {/* Metric 3: Push Notifications */}
       <div className="bg-[#F4EFEB] border border-[rgba(45,41,38,0.08)] p-5 rounded-2xl shadow-xs flex flex-col justify-between group hover:border-[#C2A26F]/40 transition-all">
         <div className="flex items-start justify-between">
           <div className="flex flex-col">
             <span className="text-[10px] font-mono uppercase text-[#745A2E] tracking-wider font-semibold">
-              Proactive Telemetry
+              Push Notifications
             </span>
-            <span className="text-xs text-[#7A746E]">Synchronized dispatch engine</span>
+            <span className="text-xs text-[#7A746E]">10-min & on-time alerts</span>
           </div>
           <div className="w-8 h-8 rounded-full bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] flex items-center justify-center text-[#745A2E]">
             <span className="material-symbols-outlined text-[16px]">sensors</span>
@@ -141,10 +141,10 @@ export const StatsGrid: React.FC = () => {
           <div className="flex items-baseline gap-1">
             <span className="font-serif text-3xl sm:text-4xl text-[#181615] font-light tabular-nums">10</span>
             <span className="text-xs text-[#7A746E] font-normal">min</span>
-            <span className="text-xs text-[#745A2E] ml-1.5 font-mono font-medium">Advance Push</span>
+            <span className="text-xs text-[#745A2E] ml-1.5 font-mono font-medium">Early Warning</span>
           </div>
           <span className="text-xs text-[#7A746E] truncate mt-0.5">
-            528Hz Solfeggio acoustic armed
+            10-min & on-time push reminders
           </span>
         </div>
 
@@ -152,18 +152,18 @@ export const StatsGrid: React.FC = () => {
           <span className="flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-[#745A2E]" /> Multi-Device
           </span>
-          <span className="text-[#181615] font-medium">Active SW</span>
+          <span className="text-[#181615] font-medium">Active</span>
         </div>
       </div>
 
-      {/* Metric 4: Cadence Purge & Archival */}
+      {/* Metric 4: Auto-Delete */}
       <div className="bg-[#F4EFEB] border border-[rgba(45,41,38,0.08)] p-5 rounded-2xl shadow-xs flex flex-col justify-between group hover:border-[#C2A26F]/40 transition-all">
         <div className="flex items-start justify-between">
           <div className="flex flex-col">
             <span className="text-[10px] font-mono uppercase text-[#745A2E] tracking-wider font-semibold">
-              Cadence Purge
+              Auto-Delete
             </span>
-            <span className="text-xs text-[#7A746E]">Autonomous clutter governance</span>
+            <span className="text-xs text-[#7A746E]">Clears completed tasks</span>
           </div>
           <div className="w-8 h-8 rounded-full bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] flex items-center justify-center text-[#7A746E]">
             <span className="material-symbols-outlined text-[16px]">auto_delete</span>
@@ -176,7 +176,7 @@ export const StatsGrid: React.FC = () => {
               <span className="font-serif text-3xl sm:text-4xl text-[#181615] font-light tabular-nums">30</span>
               <span className="text-xs text-[#7A746E]">days</span>
             </div>
-            <span className="text-xs text-[#745A2E] mt-0.5 font-mono">Purge rule enforced</span>
+            <span className="text-xs text-[#745A2E] mt-0.5 font-mono">Keeps list tidy</span>
           </div>
           <span className="px-2 py-0.5 rounded bg-[#EFECE3] border border-[rgba(45,41,38,0.1)] text-[10px] font-mono text-[#2D2926]">
             Automated
@@ -184,8 +184,8 @@ export const StatsGrid: React.FC = () => {
         </div>
 
         <div className="mt-3 pt-2.5 border-t border-[rgba(45,41,38,0.08)] flex items-center justify-between text-[10px] text-[#7A746E] font-mono">
-          <span>Scheduled Sweep</span>
-          <span className="text-[#181615] font-medium">Midnight Meridian</span>
+          <span>Cleanup Schedule</span>
+          <span className="text-[#181615] font-medium">Daily</span>
         </div>
       </div>
     </section>

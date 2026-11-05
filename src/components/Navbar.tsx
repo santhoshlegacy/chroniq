@@ -59,7 +59,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       } else if (secs === 0) {
         setCountdownStr('Due now')
       } else {
-        setCountdownStr('Off window')
+        setCountdownStr('Idle')
       }
     }
 
@@ -100,16 +100,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#745A2E] animate-pulse" />
-              <span className="text-[9px] uppercase tracking-widest text-[#7A746E] font-mono">
-                Synchronized &amp; Calm
+              <span className="w-1.5 h-1.5 rounded-full bg-[#4A6B56]" />
+              <span className="text-[10px] tracking-wider text-[#7A746E]">
+                All Synced
               </span>
             </div>
           </div>
         </div>
 
-        {/* Desktop Tab Navigation */}
-        <nav className="hidden md:flex items-center gap-1 p-1 rounded-xl bg-[#EFECE3] border border-[rgba(45,41,38,0.08)]">
+        {/* Desktop Tab Navigation with Clean Underline Indicator */}
+        <nav className="hidden md:flex items-center gap-2">
           {(['tasks', 'schedule', 'settings', 'account'] as NavTab[]).map((tab) => {
             const isActive = activeTab === tab
             return (
@@ -117,13 +117,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                 key={tab}
                 type="button"
                 onClick={() => onSelectTab(tab)}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs uppercase tracking-wider font-semibold transition-all cursor-pointer ${
+                className={`relative px-3.5 py-2 text-xs uppercase tracking-wider font-medium transition-colors cursor-pointer ${
                   isActive
-                    ? 'bg-[#181615] text-[#FAF7F2] shadow-xs'
-                    : 'text-[#7A746E] hover:text-[#181615] hover:bg-[#FAF7F2]/60'
+                    ? 'text-[#181615] font-semibold'
+                    : 'text-[#7A746E] hover:text-[#181615]'
                 }`}
               >
                 <span>{tab === 'account' ? (user ? 'Account' : 'Sign In') : tabLabels[tab]}</span>
+                {isActive && (
+                  <span className="absolute bottom-0 inset-x-2 h-0.5 rounded-full bg-[#181615]" />
+                )}
               </button>
             )
           })}
@@ -142,7 +145,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <span className="text-[rgba(45,41,38,0.2)]">•</span>
           <div
             className="flex items-center gap-1"
-            title={user ? 'Connected to cloud ledger' : 'Operating in local vault storage'}
+            title={user ? 'Connected to cloud storage' : 'Saved on this device'}
           >
             <span className={`w-1.5 h-1.5 rounded-full ${user ? 'bg-[#4A6B56]' : 'bg-[#745A2E]'}`} />
             <span className="text-[10px] uppercase text-[#7A746E]">
@@ -162,7 +165,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               title="Push notifications active. Click to configure."
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#4A6B56]" />
-              <span className="hidden sm:inline text-[11px] font-mono">Push Armed</span>
+              <span className="hidden sm:inline text-[11px]">Push Active</span>
             </button>
           ) : (
             <button
@@ -185,7 +188,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {isStandalone ? (
             <div
               className="px-2.5 py-1.5 rounded-lg bg-[#EFECE3] border border-[rgba(45,41,38,0.1)] text-[#745A2E] text-xs flex items-center gap-1"
-              title="Running in standalone PWA mode"
+              title="Running in standalone app mode"
             >
               <span className="material-symbols-outlined text-sm">verified</span>
               <span className="hidden sm:inline text-[10px] uppercase font-mono font-semibold">Installed</span>
@@ -195,14 +198,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={onOpenInstall}
               type="button"
               className="px-2.5 py-1.5 text-xs rounded-lg bg-[#EFECE3] hover:bg-[#FAF7F2] text-[#181615] border border-[rgba(45,41,38,0.12)] transition flex items-center gap-1 cursor-pointer"
-              title="Install Chroniq as a Progressive Web App"
+              title="Install Chroniq on your device"
             >
               <span className="material-symbols-outlined text-sm text-[#745A2E]">download</span>
               <span className="hidden sm:inline text-[11px]">Install</span>
             </button>
           )}
 
-          {/* Primary Action: New Task (Architectural Primary Button) */}
+          {/* Primary Action: New Task */}
           <button
             onClick={onOpenNewTask}
             type="button"
@@ -237,7 +240,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => onSelectTab('account')}
               type="button"
               className="px-2.5 py-1.5 text-xs rounded-lg bg-[#EFECE3] hover:bg-[#FAF7F2] text-[#181615] border border-[rgba(45,41,38,0.12)] transition flex items-center gap-1 cursor-pointer"
-              title="Sign in to sync mandates"
+              title="Sign in to sync tasks"
             >
               <span className="material-symbols-outlined text-sm text-[#745A2E]">login</span>
               <span className="hidden sm:inline text-[11px]">Sign In</span>

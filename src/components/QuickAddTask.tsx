@@ -77,25 +77,25 @@ export const QuickAddTask: React.FC = () => {
   }[] = [
     {
       priority: 'urgent',
-      title: 'Crimson Sovereign / VIP',
+      title: 'Urgent Priority',
       colorClass: 'bg-[#BA1A1A]',
       activeClass: 'ring-2 ring-[#BA1A1A] ring-offset-2 ring-offset-[#F4EFEB] scale-125',
     },
     {
       priority: 'high',
-      title: 'Amber Horizon / High',
+      title: 'High Priority',
       colorClass: 'bg-[#C2A26F]',
       activeClass: 'ring-2 ring-[#C2A26F] ring-offset-2 ring-offset-[#F4EFEB] scale-125',
     },
     {
       priority: 'medium',
-      title: 'Polished Bronze / Medium',
+      title: 'Medium Priority',
       colorClass: 'bg-[#8C7654]',
       activeClass: 'ring-2 ring-[#8C7654] ring-offset-2 ring-offset-[#F4EFEB] scale-125',
     },
     {
       priority: 'low',
-      title: 'Sage Ritual / Standard',
+      title: 'Low Priority',
       colorClass: 'bg-[#7A746E]',
       activeClass: 'ring-2 ring-[#7A746E] ring-offset-2 ring-offset-[#F4EFEB] scale-125',
     },
@@ -116,7 +116,7 @@ export const QuickAddTask: React.FC = () => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           maxLength={255}
-          placeholder="Inscribe new mandate or focus block..."
+          placeholder="Add a new task..."
           className="bg-transparent flex-1 text-sm text-[#181615] placeholder-[#7A746E]/70 focus:outline-none"
         />
         <button
@@ -133,11 +133,11 @@ export const QuickAddTask: React.FC = () => {
         </button>
       </div>
 
-      {/* Urgency Pips & Inscribe Action */}
+      {/* Priority Pips & Add Task Action */}
       <div className="flex items-center justify-between pt-2 border-t border-[rgba(45,41,38,0.06)]">
         <div className="flex items-center gap-3">
           <span className="text-[10px] font-semibold uppercase tracking-widest text-[#7A746E]">
-            Urgency
+            Priority
           </span>
           <div className="flex items-center gap-2.5">
             {urgencyPips.map((item) => {
@@ -163,10 +163,10 @@ export const QuickAddTask: React.FC = () => {
         <button
           type="submit"
           disabled={!title.trim() || isSubmitting}
-          className="px-4 py-1.5 rounded-md bg-[#181615] text-[#FAF7F2] font-semibold text-xs uppercase tracking-wider hover:bg-[#2D2926] active:scale-95 transition-all shadow-xs disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex items-center gap-1.5"
+          className="btn-primary px-4 py-1.5 rounded-md text-xs uppercase tracking-wider flex items-center gap-1.5 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
         >
           <span className="material-symbols-outlined text-sm font-bold">add</span>
-          <span>Inscribe</span>
+          <span>Add Task</span>
         </button>
       </div>
     </form>

@@ -12,13 +12,35 @@ interface InstallModalProps {
 export const InstallModal: React.FC<InstallModalProps> = ({
   isOpen,
   onClose,
-  deferredPrompt,
+  deferredPrompt: propDeferredPrompt,
   onInstallPwa,
   isStandalone = false,
 }) => {
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(
+    propDeferredPrompt || (typeof window !== 'undefined' ? (window as any).__deferredInstallPrompt : null)
+  )
   const [isInstalling, setIsInstalling] = useState(false)
   const [isIos, setIsIos] = useState(false)
   const [isAndroid, setIsAndroid] = useState(false)
+
+  // Sync prop changes
+  useEffect(() => {
+    if (propDeferredPrompt) {
+      setDeferredPrompt(propDeferredPrompt)
+    }
+  }, [propDeferredPrompt])
+
+  // Listen for beforeinstallprompt directly in window as well
+  useEffect(() => {
+    const handlePrompt = (e: Event) => {
+      e.preventDefault()
+      ;(window as any).__deferredInstallPrompt = e
+      setDeferredPrompt(e)
+    }
+
+    window.addEventListener('beforeinstallprompt', handlePrompt)
+    return () => window.removeEventListener('beforeinstallprompt', handlePrompt)
+  }, [])
 
   useEffect(() => {
     const ua = navigator.userAgent.toLowerCase()
@@ -28,8 +50,26 @@ export const InstallModal: React.FC<InstallModalProps> = ({
 
   if (!isOpen) return null
 
+  // 1-Click Native Install Prompt Handler
   const handleInstallClick = async () => {
-    if (onInstallPwa && deferredPrompt) {
+    const promptEvent = deferredPrompt || (typeof window !== 'undefined' ? (window as any).__deferredInstallPrompt : null)
+
+    if (promptEvent && typeof promptEvent.prompt === 'function') {
+      setIsInstalling(true)
+      try {
+        promptEvent.prompt()
+        const choice = await promptEvent.userChoice
+        if (choice && choice.outcome === 'accepted') {
+          setDeferredPrompt(null)
+          ;(window as any).__deferredInstallPrompt = null
+          onClose()
+        }
+      } catch (err) {
+        console.warn('Install prompt failed:', err)
+      } finally {
+        setIsInstalling(false)
+      }
+    } else if (onInstallPwa) {
       setIsInstalling(true)
       try {
         await onInstallPwa()
@@ -39,6 +79,8 @@ export const InstallModal: React.FC<InstallModalProps> = ({
       }
     }
   }
+
+  const hasNativePrompt = Boolean(deferredPrompt || (typeof window !== 'undefined' && (window as any).__deferredInstallPrompt))
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#181615]/40 backdrop-blur-sm animate-in fade-in duration-150">
@@ -52,10 +94,10 @@ export const InstallModal: React.FC<InstallModalProps> = ({
             </div>
             <div>
               <h2 className="text-base font-semibold text-[#181615] tracking-tight font-serif">
-                Install Chroniq Suite
+                Install Chroniq
               </h2>
-              <p className="text-xs text-[#7A746E] font-mono">
-                Native Progressive Web Application
+              <p className="text-xs text-[#7A746E]">
+                Add to your home screen or desktop
               </p>
             </div>
           </div>
@@ -74,7 +116,7 @@ export const InstallModal: React.FC<InstallModalProps> = ({
           {isStandalone ? (
             <div className="p-3.5 rounded-xl bg-[#FEDAA3]/40 border border-[#745A2E]/25 text-[#745A2E] text-xs flex items-center gap-2.5">
               <span className="material-symbols-outlined text-lg text-[#745A2E]">verified</span>
-              <span>Chroniq is currently installed and operating as a standalone application!</span>
+              <span>Chroniq is installed and running as a standalone app!</span>
             </div>
           ) : (
             <>
@@ -85,9 +127,9 @@ export const InstallModal: React.FC<InstallModalProps> = ({
                     fullscreen
                   </span>
                   <div>
-                    <span className="font-semibold text-[#181615]">Full-Screen Productivity</span>
+                    <span className="font-semibold text-[#181615]">Full-Screen Experience</span>
                     <p className="text-[11px] text-[#7A746E] mt-0.5">
-                      Runs directly from your Home Screen or Desktop without browser address bars.
+                      Launch instantly from your home screen or taskbar without browser toolbars.
                     </p>
                   </div>
                 </div>
@@ -97,47 +139,47 @@ export const InstallModal: React.FC<InstallModalProps> = ({
                     offline_bolt
                   </span>
                   <div>
-                    <span className="font-semibold text-[#181615]">Zero App Store Overhead</span>
+                    <span className="font-semibold text-[#181615]">Works Offline</span>
                     <p className="text-[11px] text-[#7A746E] mt-0.5">
-                      Installs cleanly in seconds through modern web standards. Always synchronized.
+                      View and manage your tasks anytime, even with poor or no internet connection.
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* 1-Tap Native Install Button */}
-              {deferredPrompt ? (
+              {/* 1-Click Native Install Action Button */}
+              {hasNativePrompt ? (
                 <div className="space-y-2 pt-1">
                   <button
                     onClick={handleInstallClick}
                     disabled={isInstalling}
-                    className="btn-primary w-full py-2.5 px-4 rounded-md text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                    className="w-full py-3 px-4 rounded-xl bg-[#1C1917] hover:bg-[#2D2926] text-[#FAF7F2] text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all active:scale-[0.98]"
                   >
-                    <span className="material-symbols-outlined text-base">download</span>
-                    <span>{isInstalling ? 'Opening Installer...' : 'Install Chroniq App'}</span>
+                    <span className="material-symbols-outlined text-base text-[#C2A26F]">download</span>
+                    <span>{isInstalling ? 'Opening Installer...' : 'Install App'}</span>
                   </button>
                   <p className="text-[11px] text-center text-[#7A746E]">
-                    Browser will prompt you to confirm adding Chroniq to your device.
+                    Click above to add Chroniq to your device in one step.
                   </p>
                 </div>
               ) : (
-                /* Fallback Instructions */
+                /* Fallback Instructions when beforeinstallprompt is unavailable (e.g. iOS Safari) */
                 <div className="space-y-2.5 pt-1">
                   <h4 className="text-xs font-semibold text-[#181615] flex items-center gap-1.5">
                     {isAndroid ? (
                       <>
                         <span className="material-symbols-outlined text-sm text-[#745A2E]">smartphone</span>
-                        <span>How to Install in Chrome for Android</span>
+                        <span>How to Install on Android</span>
                       </>
                     ) : isIos ? (
                       <>
                         <span className="material-symbols-outlined text-sm text-[#745A2E]">ios_share</span>
-                        <span>How to Install in Safari for iOS</span>
+                        <span>How to Install on iPhone / iPad</span>
                       </>
                     ) : (
                       <>
                         <span className="material-symbols-outlined text-sm text-[#745A2E]">desktop_windows</span>
-                        <span>How to Install in Chrome / Edge</span>
+                        <span>How to Install on Desktop</span>
                       </>
                     )}
                   </h4>
@@ -163,7 +205,7 @@ export const InstallModal: React.FC<InstallModalProps> = ({
                         Select <strong className="text-[#181615]">"Install app"</strong> or <strong className="text-[#181615]">"Add to Home screen"</strong>.
                       </li>
                       <li>
-                        Confirm <strong className="text-[#181615]">Install</strong>. Chroniq will appear on your device.
+                        Confirm <strong className="text-[#181615]">Install</strong>.
                       </li>
                     </ol>
                   )}
@@ -174,8 +216,8 @@ export const InstallModal: React.FC<InstallModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="mt-4 pt-3 border-t border-[rgba(45,41,38,0.08)] flex items-center justify-between text-[11px] text-[#7A746E] font-mono">
-          <span>Horological Series IX</span>
+        <div className="mt-4 pt-3 border-t border-[rgba(45,41,38,0.08)] flex items-center justify-between text-[11px] text-[#7A746E]">
+          <span>Chroniq App</span>
           <button
             onClick={onClose}
             className="hover:text-[#181615] transition cursor-pointer"

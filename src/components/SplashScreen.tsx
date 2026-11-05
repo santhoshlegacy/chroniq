@@ -56,17 +56,17 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F4EFEB] border border-[rgba(45,41,38,0.08)] shadow-xs">
           <span className="w-1.5 h-1.5 rounded-full bg-[#745A2E]" />
           <p className="text-[11px] font-semibold uppercase tracking-widest text-[#745A2E]">
-            A True Synk Product
+            True Synk
           </p>
         </div>
         <div className="mt-2">
           <span className="text-[10px] uppercase tracking-widest text-[#7A746E]">
-            Horological Series IX • Folio Edition
+            Smart Reminders &amp; Focus
           </span>
         </div>
       </header>
 
-      {/* Central Emblem & Horological Calibration Dial */}
+      {/* Central Emblem & Calibration Dial */}
       <section className="w-full flex flex-col items-center my-8 relative z-10 max-w-sm">
         {/* Concentric Calibration Rings */}
         <div className="relative w-64 h-64 flex items-center justify-center">
@@ -137,14 +137,14 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
             Chroniq
           </h1>
           <p className="text-[11px] font-semibold uppercase tracking-widest text-[#745A2E] mt-1">
-            The Architecture of Time &amp; Precision Productivity
+            Smart Reminders &amp; Precision Task Management
           </p>
         </div>
 
-        {/* Editorial Architectural Quotation */}
+        {/* Editorial Quotation */}
         <div className="mt-4 max-w-xs text-center px-2">
           <p className="font-serif italic text-sm text-[#4D4541] leading-relaxed">
-            “Time is the rarest luxury; master its cadence.”
+            “Focus on what matters most, every day.”
           </p>
         </div>
       </section>
@@ -157,7 +157,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
             <div className="flex items-center gap-2">
               <span className={`w-2 h-2 rounded-full ${isSynchronized ? 'bg-[#745A2E]' : 'bg-[#C2A26F] animate-ping'}`} />
               <span className="text-[11px] font-semibold uppercase tracking-widest text-[#181615]">
-                {isSynchronized ? 'Harmonic Cadence Synchronized' : 'Calibrating Celestial Cadence...'}
+                {isSynchronized ? 'Ready to Focus' : 'Loading Chroniq...'}
               </span>
             </div>
             <span className="text-xs font-mono font-semibold text-[#745A2E] tabular-nums">
@@ -175,17 +175,17 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
 
           <div className="flex items-center justify-between pt-0.5 text-[10px]">
             <span className="uppercase tracking-wider text-[#7A746E]">
-              Geneva Atomic Meridian
+              Precision Scheduling
             </span>
             <span className="uppercase tracking-wider text-[#745A2E] font-semibold">
-              {isSynchronized ? 'Synchronized' : 'Locking Phase'}
+              {isSynchronized ? 'Ready' : 'Syncing...'}
             </span>
           </div>
         </div>
 
-        {/* Biometric Authentication Button */}
+        {/* Action Button */}
         <button
-          aria-label="Touch ID / Face ID Authentication - Enter Executive Suite"
+          aria-label="Open Chroniq"
           onClick={handleEnterSuite}
           type="button"
           className="w-full group bg-[#181615] text-[#FAF7F2] active:scale-[0.98] rounded-xl p-3.5 flex items-center justify-between shadow-lg transition-all duration-300 hover:bg-[#2D2926] cursor-pointer"
@@ -198,13 +198,13 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
             </div>
             <div className="text-left">
               <div className="text-sm font-semibold text-[#FAF7F2] flex items-center gap-1.5">
-                <span>Enter Executive Suite</span>
+                <span>Open Chroniq</span>
                 <span className="material-symbols-outlined text-xs text-[#FEDAA3]">
                   verified_user
                 </span>
               </div>
               <div className="text-[10px] text-[rgba(250,247,242,0.7)] tracking-wider uppercase font-medium">
-                {isUnlocked ? 'Signature Verified' : 'Touch ID / Face ID Authenticated'}
+                {isUnlocked ? 'Opening...' : 'Tap to continue'}
               </div>
             </div>
           </div>
@@ -216,24 +216,24 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
           </div>
         </button>
 
-        {/* Quick Ingress */}
+        {/* Quick Skip */}
         <div className="mt-3.5 flex items-center gap-3 text-[10px] uppercase tracking-wider text-[#7A746E]">
           <button
             onClick={onEnter}
             type="button"
             className="hover:text-[#181615] transition-colors cursor-pointer font-medium"
           >
-            Direct Ingress
+            Skip
           </button>
           <span>•</span>
-          <span>Calibre 4130</span>
+          <span>Chroniq</span>
         </div>
       </section>
 
-      {/* Editorial Footnote */}
+      {/* Footnote */}
       <footer className="mt-4 text-center z-10">
         <p className="text-[10px] tracking-widest uppercase text-[#7A746E]/70 font-mono">
-          Archival Edition • Chroniq OS 4.1.0 • Private Suite
+          Chroniq • Smart Task Management
         </p>
       </footer>
     </div>
