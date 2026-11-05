@@ -33,6 +33,9 @@ export interface Task {
   archived_at: string | null
   carried_from_date: string | null // ISO date 'YYYY-MM-DD'
   category: string | null
+  warning_sent?: boolean
+  overdue_sent?: boolean
+  last_reminded_at?: string | null
 }
 
 export interface Profile {

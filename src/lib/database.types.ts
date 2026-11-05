@@ -56,6 +56,9 @@ export type Database = {
           archived_at: string | null
           carried_from_date: string | null
           category: string | null
+          warning_sent: boolean
+          overdue_sent: boolean
+          last_reminded_at: string | null
         }
         Insert: {
           id?: string
@@ -73,6 +76,9 @@ export type Database = {
           archived_at?: string | null
           carried_from_date?: string | null
           category?: string | null
+          warning_sent?: boolean
+          overdue_sent?: boolean
+          last_reminded_at?: string | null
         }
         Update: {
           title?: string
@@ -87,6 +93,9 @@ export type Database = {
           archived_at?: string | null
           carried_from_date?: string | null
           category?: string | null
+          warning_sent?: boolean
+          overdue_sent?: boolean
+          last_reminded_at?: string | null
         }
       }
       notification_preferences: {

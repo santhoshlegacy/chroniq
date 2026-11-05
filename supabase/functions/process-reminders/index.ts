@@ -458,6 +458,27 @@ function buildOccurrenceKey(userId: string, slotUtc: Date, timezone: string): st
   return `${userId}:${local.dateStr}T${local.currentSlot}`
 }
 
+/**
+ * Robustly parses a task timestamp (due_at, last_reminded_at, created_at).
+ * - If timestamp contains timezone offset (Z, +05:30, etc.), parses standard ISO UTC epoch.
+ * - If timestamp is local/unoffset (e.g. from local datepicker), parses using the user's timezone (Asia/Kolkata default).
+ */
+function parseTaskTimestamp(dateStr: string | null | undefined, userTimezone: string = 'Asia/Kolkata'): number {
+  if (!dateStr) return NaN
+  const trimmed = dateStr.trim()
+  // Check if string contains timezone info (ends with Z, +HH:MM, or -HH:MM)
+  if (/Z$/i.test(trimmed) || /[+-]\d{2}(?::?\d{2})?$/.test(trimmed)) {
+    return new Date(trimmed).getTime()
+  }
+  // Otherwise interpret in user's timezone (e.g., Asia/Kolkata / IST)
+  try {
+    const zoned = fromZonedTime(trimmed, userTimezone || 'Asia/Kolkata')
+    return zoned.getTime()
+  } catch {
+    return new Date(trimmed).getTime()
+  }
+}
+
 function isQuietHours(currentMinutes: number, enabled?: boolean, start?: string, end?: string): boolean {
   if (!enabled || !start || !end) return false
   const s = hhmmToMinutes(start)
@@ -837,33 +858,35 @@ Deno.serve(async (req: Request) => {
   for (const pref of prefs as NotificationPreference[]) {
     processed++
 
-    // ── 2. Smart Task Deadline Reminders (10m Before & Exact Deadline) ──
+    // ── Task 1: 10-15 Minute Advance Window Warning (Checked via warning_sent = false) ──
     try {
-      const { data: userDueTasks } = await supabase
+      const { data: warningTasks } = await supabase
         .from('tasks')
-        .select('id, title, priority, status, due_at')
+        .select('id, title, priority, status, due_at, warning_sent')
         .eq('user_id', pref.user_id)
         .neq('status', 'completed')
         .is('archived_at', null)
         .not('due_at', 'is', null)
+        .eq('warning_sent', false)
 
-      if (userDueTasks && userDueTasks.length > 0) {
-        for (const t of userDueTasks) {
+      if (warningTasks && warningTasks.length > 0) {
+        for (const t of warningTasks) {
           if (!t.due_at) continue
-          const dueTime = new Date(t.due_at).getTime()
+          const dueTime = parseTaskTimestamp(t.due_at, pref.timezone || 'Asia/Kolkata')
           if (isNaN(dueTime)) continue
+
           const diffMs = dueTime - nowUtc.getTime()
           const diffMins = diffMs / 60000
 
-          // Exactly 10 minutes BEFORE task deadline (diffMins within [8.5, 11.0])
-          if (diffMins >= 8.5 && diffMins <= 11.0) {
-            const t10Key = `${pref.user_id}:deadline_10m:${t.id}:${dueTime}`
+          // Window: Due within the next 15 minutes (diffMins in (0, 15])
+          if (diffMins > 0 && diffMins <= 15) {
+            const t10Key = `${pref.user_id}:warning_10m:${t.id}`
             const { data: claimed10 } = await supabase
               .from('notification_events')
               .insert({
                 user_id: pref.user_id,
                 schedule_occurrence_key: t10Key,
-                scheduled_at: new Date(dueTime - 10 * 60 * 1000).toISOString(),
+                scheduled_at: nowUtc.toISOString(),
                 result: 'pending',
                 delivery_mode: 'push',
               })
@@ -871,13 +894,15 @@ Deno.serve(async (req: Request) => {
               .maybeSingle()
 
             if (claimed10) {
+              const minutesLeft = Math.max(1, Math.round(diffMins))
               const payload10 = JSON.stringify({
-                title: 'Chroniq — Due in 10 Minutes',
-                body: `"${t.title}" is due in 10 minutes.`,
+                title: 'Chroniq — Due Soon',
+                body: `"${t.title}" is due in ${minutesLeft} minute${minutesLeft === 1 ? '' : 's'}!`,
                 url: '/',
                 taskCount: 1,
                 urgentCount: t.priority === 'urgent' || t.priority === 'high' ? 1 : 0,
               })
+
               const res = await dispatchPushToSubscriber(
                 supabase,
                 appServer,
@@ -887,52 +912,159 @@ Deno.serve(async (req: Request) => {
                 1,
                 pref.push_enabled !== false,
               )
-              if (res.success) sent++
-              else errors++
-            }
-          }
 
-          // At the EXACT deadline: diffMins within [-0.5, 1.5]
-          // (Strict window prevents notifications from firing after the deadline has passed)
-          if (diffMins >= -0.5 && diffMins <= 1.5) {
-            const dueKey = `${pref.user_id}:deadline_due:${t.id}:${dueTime}`
-            const { data: claimedDue } = await supabase
-              .from('notification_events')
-              .insert({
-                user_id: pref.user_id,
-                schedule_occurrence_key: dueKey,
-                scheduled_at: new Date(dueTime).toISOString(),
-                result: 'pending',
-                delivery_mode: 'push',
-              })
-              .select('id')
-              .maybeSingle()
+              // Mark task warning_sent = true to permanently prevent duplicate pushes
+              await supabase
+                .from('tasks')
+                .update({ warning_sent: true, updated_at: nowUtc.toISOString() })
+                .eq('id', t.id)
 
-            if (claimedDue) {
-              const payloadDue = JSON.stringify({
-                title: 'Chroniq — Task Due Now',
-                body: `"${t.title}" is due now!`,
-                url: '/',
-                taskCount: 1,
-                urgentCount: t.priority === 'urgent' || t.priority === 'high' ? 1 : 0,
-              })
-              const res = await dispatchPushToSubscriber(
-                supabase,
-                appServer,
-                pref.user_id,
-                claimedDue.id,
-                payloadDue,
-                1,
-                pref.push_enabled !== false,
-              )
               if (res.success) sent++
               else errors++
             }
           }
         }
       }
-    } catch (deadlineErr: unknown) {
-      console.warn('[process-reminders] Task deadline check note:', deadlineErr)
+    } catch (warnErr: unknown) {
+      console.warn('[process-reminders] 10m advance window check note:', warnErr)
+    }
+
+    // ── Task 3: Overdue / Due Time Passed Notification (Checked via overdue_sent = false) ──
+    try {
+      const { data: overdueTasks } = await supabase
+        .from('tasks')
+        .select('id, title, priority, status, due_at, overdue_sent')
+        .eq('user_id', pref.user_id)
+        .neq('status', 'completed')
+        .is('archived_at', null)
+        .not('due_at', 'is', null)
+        .eq('overdue_sent', false)
+
+      if (overdueTasks && overdueTasks.length > 0) {
+        for (const t of overdueTasks) {
+          if (!t.due_at) continue
+          const dueTime = parseTaskTimestamp(t.due_at, pref.timezone || 'Asia/Kolkata')
+          if (isNaN(dueTime)) continue
+
+          // The moment the due time passes: nowUtc >= dueTime
+          if (nowUtc.getTime() >= dueTime) {
+            const overdueKey = `${pref.user_id}:overdue:${t.id}`
+            const { data: claimedOverdue } = await supabase
+              .from('notification_events')
+              .insert({
+                user_id: pref.user_id,
+                schedule_occurrence_key: overdueKey,
+                scheduled_at: nowUtc.toISOString(),
+                result: 'pending',
+                delivery_mode: 'push',
+              })
+              .select('id')
+              .maybeSingle()
+
+            if (claimedOverdue) {
+              const payloadOverdue = JSON.stringify({
+                title: 'Chroniq — Task Overdue',
+                body: `"${t.title}" is now overdue! Take action or reschedule.`,
+                url: '/',
+                taskCount: 1,
+                urgentCount: 1,
+              })
+
+              const res = await dispatchPushToSubscriber(
+                supabase,
+                appServer,
+                pref.user_id,
+                claimedOverdue.id,
+                payloadOverdue,
+                1,
+                pref.push_enabled !== false,
+              )
+
+              // Mark task overdue_sent = true to ensure it only sends once per task
+              await supabase
+                .from('tasks')
+                .update({ overdue_sent: true, updated_at: nowUtc.toISOString() })
+                .eq('id', t.id)
+
+              if (res.success) sent++
+              else errors++
+            }
+          }
+        }
+      }
+    } catch (overdueErr: unknown) {
+      console.warn('[process-reminders] Overdue check note:', overdueErr)
+    }
+
+    // ── Task 2: 3-Hour Recurring Schedule Reminders for Active Tasks ──
+    try {
+      const { data: activeTasks } = await supabase
+        .from('tasks')
+        .select('id, title, priority, status, created_at, last_reminded_at')
+        .eq('user_id', pref.user_id)
+        .neq('status', 'completed')
+        .is('archived_at', null)
+
+      if (activeTasks && activeTasks.length > 0) {
+        const THREE_HOURS_MS = 3 * 60 * 60 * 1000
+
+        for (const t of activeTasks) {
+          const baselineStr = t.last_reminded_at || t.created_at
+          const baselineTime = parseTaskTimestamp(baselineStr, pref.timezone || 'Asia/Kolkata')
+          if (isNaN(baselineTime)) continue
+
+          const elapsedMs = nowUtc.getTime() - baselineTime
+          if (elapsedMs >= THREE_HOURS_MS) {
+            // Block index for atomic occurrence key idempotency
+            const blockIndex = Math.floor(nowUtc.getTime() / THREE_HOURS_MS)
+            const recurringKey = `${pref.user_id}:recurring_3h:${t.id}:${blockIndex}`
+
+            const { data: claimedRecur } = await supabase
+              .from('notification_events')
+              .insert({
+                user_id: pref.user_id,
+                schedule_occurrence_key: recurringKey,
+                scheduled_at: nowUtc.toISOString(),
+                result: 'pending',
+                delivery_mode: 'push',
+              })
+              .select('id')
+              .maybeSingle()
+
+            if (claimedRecur) {
+              const hoursActive = Math.round((nowUtc.getTime() - parseTaskTimestamp(t.created_at, pref.timezone || 'Asia/Kolkata')) / (3600 * 1000))
+              const payloadRecur = JSON.stringify({
+                title: 'Chroniq — Schedule Reminder',
+                body: `Reminder: "${t.title}" is still pending (${Math.max(3, hoursActive)}h active). Own your time!`,
+                url: '/',
+                taskCount: 1,
+                urgentCount: t.priority === 'urgent' || t.priority === 'high' ? 1 : 0,
+              })
+
+              const res = await dispatchPushToSubscriber(
+                supabase,
+                appServer,
+                pref.user_id,
+                claimedRecur.id,
+                payloadRecur,
+                1,
+                pref.push_enabled !== false,
+              )
+
+              // Update last_reminded_at to nowUtc so next reminder fires in 3 hours (6h, 9h, etc.)
+              await supabase
+                .from('tasks')
+                .update({ last_reminded_at: nowUtc.toISOString(), updated_at: nowUtc.toISOString() })
+                .eq('id', t.id)
+
+              if (res.success) sent++
+              else errors++
+            }
+          }
+        }
+      }
+    } catch (recurErr: unknown) {
+      console.warn('[process-reminders] 3-hour recurring reminder check note:', recurErr)
     }
 
     // ── 3. Scheduled Daily Cadence Slot Check ──
@@ -989,7 +1121,8 @@ Deno.serve(async (req: Request) => {
     const eligibleTasks = (tasks ?? []).filter((t: any) => {
       if (pref.eligible_task_types === 'due_today_or_overdue') {
         const isScheduledToday = t.scheduled_date && t.scheduled_date <= localToday
-        const isDuePast = t.due_at && new Date(t.due_at) <= nowUtc
+        const dueTimestamp = t.due_at ? parseTaskTimestamp(t.due_at, pref.timezone || 'Asia/Kolkata') : NaN
+        const isDuePast = !isNaN(dueTimestamp) && dueTimestamp <= nowUtc.getTime()
         return isScheduledToday || isDuePast
       }
       return t.scheduled_date === null || t.scheduled_date <= localToday
