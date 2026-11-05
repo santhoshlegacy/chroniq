@@ -48,21 +48,27 @@ export const InstallModal: React.FC<InstallModalProps> = ({
     setIsAndroid(/android/.test(ua))
   }, [])
 
+  const [guideNotice, setGuideNotice] = useState<string | null>(null)
+
   if (!isOpen) return null
 
   // 1-Click Native Install Prompt Handler
   const handleInstallClick = async () => {
+    setGuideNotice(null)
     const promptEvent = deferredPrompt || (typeof window !== 'undefined' ? (window as any).__deferredInstallPrompt : null)
 
     if (promptEvent && typeof promptEvent.prompt === 'function') {
       setIsInstalling(true)
       try {
-        promptEvent.prompt()
+        await promptEvent.prompt()
         const choice = await promptEvent.userChoice
         if (choice && choice.outcome === 'accepted') {
           setDeferredPrompt(null)
-          ;(window as any).__deferredInstallPrompt = null
+          if (typeof window !== 'undefined') {
+            ;(window as any).__deferredInstallPrompt = null
+          }
           onClose()
+          return
         }
       } catch (err) {
         console.warn('Install prompt failed:', err)
@@ -74,9 +80,21 @@ export const InstallModal: React.FC<InstallModalProps> = ({
       try {
         await onInstallPwa()
         onClose()
+        return
+      } catch (err) {
+        console.warn('onInstallPwa failed:', err)
       } finally {
         setIsInstalling(false)
       }
+    }
+
+    // Contextual fallback advice when programmatic prompt is blocked by browser heuristics
+    if (isIos) {
+      setGuideNotice('Tap the Share icon at the bottom of Safari, then choose "Add to Home Screen".')
+    } else if (isAndroid) {
+      setGuideNotice('Tap the browser menu (⋮) in the top-right, then select "Install app" or "Add to Home screen".')
+    } else {
+      setGuideNotice('Click the install icon (⊕ or ⬇) in your browser address bar or menu (⋮) to install.')
     }
   }
 
@@ -161,42 +179,50 @@ export const InstallModal: React.FC<InstallModalProps> = ({
                 </div>
               </div>
 
-              {/* 1-Click Native Install Action Button */}
-              {hasNativePrompt ? (
-                <div className="space-y-2 pt-1">
-                  <button
-                    onClick={handleInstallClick}
-                    disabled={isInstalling}
-                    className="w-full py-3 px-4 rounded-xl bg-[#1C1917] hover:bg-[#2D2926] text-[#FAF7F2] text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all active:scale-[0.98]"
-                  >
-                    <span className="material-symbols-outlined text-base text-[#C2A26F]">download</span>
-                    <span>{isInstalling ? 'Opening Installer...' : 'Install App'}</span>
-                  </button>
-                  <p className="text-[11px] text-center text-[#7A746E]">
-                    Click above to add Chroniq to your device in one step.
-                  </p>
-                </div>
-              ) : (
-                /* Fallback Instructions when beforeinstallprompt is unavailable (e.g. iOS Safari) */
-                <div className="space-y-2.5 pt-1">
-                  <h4 className="text-xs font-semibold text-[#181615] flex items-center gap-1.5">
-                    {isAndroid ? (
-                      <>
-                        <span className="material-symbols-outlined text-sm text-[#745A2E]">smartphone</span>
-                        <span>How to Install on Android</span>
-                      </>
-                    ) : isIos ? (
-                      <>
-                        <span className="material-symbols-outlined text-sm text-[#745A2E]">ios_share</span>
-                        <span>How to Install on iPhone / iPad</span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="material-symbols-outlined text-sm text-[#745A2E]">desktop_windows</span>
-                        <span>How to Install on Desktop</span>
-                      </>
-                    )}
-                  </h4>
+              {/* Primary 1-Click Install Action Button - ALWAYS VISIBLE */}
+              <div className="space-y-2 pt-1">
+                <button
+                  type="button"
+                  onClick={handleInstallClick}
+                  disabled={isInstalling}
+                  className="w-full py-3 px-4 rounded-xl bg-[#1C1917] hover:bg-[#2D2926] text-[#FAF7F2] text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all active:scale-[0.98]"
+                >
+                  <span className="material-symbols-outlined text-base text-[#C2A26F]">download</span>
+                  <span>{isInstalling ? 'Opening Installer...' : 'Install App'}</span>
+                </button>
+                {guideNotice && (
+                  <div className="p-3 rounded-xl bg-[#FEDAA3]/40 border border-[#745A2E]/25 text-[#745A2E] text-xs flex items-center gap-2 animate-in fade-in duration-200">
+                    <span className="material-symbols-outlined text-base flex-shrink-0">info</span>
+                    <span>{guideNotice}</span>
+                  </div>
+                )}
+                <p className="text-[11px] text-center text-[#7A746E]">
+                  {hasNativePrompt
+                    ? 'Click above to add Chroniq to your device in one step.'
+                    : 'Click above to install, or follow the browser steps below.'}
+                </p>
+              </div>
+
+              {/* Step-by-Step Instructions Below */}
+              <div className="space-y-2.5 pt-2 border-t border-[rgba(45,41,38,0.08)]">
+                <h4 className="text-xs font-semibold text-[#181615] flex items-center gap-1.5">
+                  {isAndroid ? (
+                    <>
+                      <span className="material-symbols-outlined text-sm text-[#745A2E]">smartphone</span>
+                      <span>How to Install on Android</span>
+                    </>
+                  ) : isIos ? (
+                    <>
+                      <span className="material-symbols-outlined text-sm text-[#745A2E]">ios_share</span>
+                      <span>How to Install on iPhone / iPad</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-sm text-[#745A2E]">desktop_windows</span>
+                      <span>How to Install on Desktop (Chrome / Edge)</span>
+                    </>
+                  )}
+                </h4>
 
                   {isIos ? (
                     <ol className="space-y-2 text-xs text-[#7A746E] list-decimal list-inside bg-[#FAF7F2] p-3.5 rounded-xl border border-[rgba(45,41,38,0.08)]">
@@ -224,7 +250,6 @@ export const InstallModal: React.FC<InstallModalProps> = ({
                     </ol>
                   )}
                 </div>
-              )}
             </>
           )}
         </div>

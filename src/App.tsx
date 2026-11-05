@@ -47,9 +47,11 @@ export function App() {
   const [importStatus, setImportStatus] = useState<string | null>(null)
 
   // PWA & Installation states
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(
+    typeof window !== 'undefined' ? (window as any).__deferredInstallPrompt : null
+  )
   const [isStandalone, setIsStandalone] = useState(false)
-  const [isBannerDismissed, setIsBannerDismissed] = useState(true)
+  const [isBannerDismissed, setIsBannerDismissed] = useState(false)
   const [isOnline, setIsOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true)
 
   useEffect(() => {
@@ -326,16 +328,19 @@ export function App() {
               </div>
               <div className="flex items-center space-x-2 flex-shrink-0">
                 <button
+                  type="button"
                   onClick={() => {
-                    if (deferredPrompt) {
+                    const prompt = deferredPrompt || (typeof window !== 'undefined' ? (window as any).__deferredInstallPrompt : null)
+                    if (prompt) {
                       handleInstallPwa()
                     } else {
                       setIsInstallOpen(true)
                     }
                   }}
-                  className="px-2.5 py-1 rounded-md bg-[#EFECE3] hover:bg-[#FAF7F2] text-[#181615] font-medium border border-[rgba(45,41,38,0.12)] transition cursor-pointer text-[11px]"
+                  className="px-3 py-1 rounded-md bg-[#1C1917] hover:bg-[#2D2926] text-[#FAF7F2] font-semibold transition cursor-pointer text-[11px] shadow-xs flex items-center gap-1.5"
                 >
-                  {deferredPrompt ? 'Install Now' : 'Install Guide'}
+                  <Download className="w-3 h-3 text-[#C2A26F]" />
+                  <span>Install App</span>
                 </button>
                 <button
                   onClick={handleDismissBanner}
@@ -419,7 +424,10 @@ export function App() {
           {/* VIEW 3: SETTINGS */}
           {activeTab === 'settings' && (
             <div className="animate-in fade-in duration-200">
-              <SettingsView />
+              <SettingsView
+                onOpenInstall={() => setIsInstallOpen(true)}
+                isStandalone={isStandalone}
+              />
             </div>
           )}
 

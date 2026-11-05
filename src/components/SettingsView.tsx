@@ -13,7 +13,12 @@ const DAYS_OF_WEEK = [
   { id: 7, label: 'Sun' },
 ]
 
-export const SettingsView: React.FC = () => {
+interface SettingsViewProps {
+  onOpenInstall?: () => void
+  isStandalone?: boolean
+}
+
+export const SettingsView: React.FC<SettingsViewProps> = ({ onOpenInstall, isStandalone }) => {
   const {
     preferences,
     voicePreferences,
@@ -441,6 +446,39 @@ export const SettingsView: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Application Installation & Device Card */}
+      {onOpenInstall && (
+        <section className="mt-8 p-5 rounded-2xl bg-[#F4EFEB] border border-[rgba(45,41,38,0.12)] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-full bg-[#181615] text-[#FAF7F2] flex items-center justify-center flex-shrink-0 shadow-xs">
+              <span className="material-symbols-outlined text-lg text-[#C2A26F]">
+                {isStandalone ? 'verified' : 'download'}
+              </span>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-[#181615] font-serif">
+                {isStandalone ? 'Chroniq Installed' : 'Install Chroniq App'}
+              </h3>
+              <p className="text-xs text-[#7A746E]">
+                {isStandalone
+                  ? 'Running natively in standalone full-screen mode.'
+                  : 'Add to your Home Screen or Desktop for fast offline access.'}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onOpenInstall}
+            className="px-4 py-2 rounded-xl bg-[#1C1917] hover:bg-[#2D2926] text-[#FAF7F2] text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all active:scale-[0.98] flex-shrink-0"
+          >
+            <span className="material-symbols-outlined text-sm text-[#C2A26F]">
+              {isStandalone ? 'info' : 'download'}
+            </span>
+            <span>{isStandalone ? 'App Info' : 'Install App'}</span>
+          </button>
+        </section>
+      )}
     </div>
   )
 }

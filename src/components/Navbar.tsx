@@ -200,22 +200,24 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Standalone status / PWA Install */}
           {isStandalone ? (
-            <div
-              className="px-2.5 py-1.5 rounded-lg bg-[#EFECE3] border border-[rgba(45,41,38,0.1)] text-[#745A2E] text-xs flex items-center gap-1"
-              title="Running in standalone app mode"
+            <button
+              onClick={onOpenInstall}
+              type="button"
+              className="px-2.5 py-1.5 rounded-lg bg-[#EFECE3] border border-[rgba(45,41,38,0.1)] text-[#745A2E] text-xs flex items-center gap-1 hover:bg-[#FAF7F2] transition cursor-pointer"
+              title="Installed as standalone application. Click for details."
             >
               <span className="material-symbols-outlined text-sm">verified</span>
-              <span className="hidden sm:inline text-[10px] uppercase font-mono font-semibold">Installed</span>
-            </div>
+              <span className="text-[11px] font-medium">Installed</span>
+            </button>
           ) : (
             <button
               onClick={onOpenInstall}
               type="button"
-              className="px-2.5 py-1.5 text-xs rounded-lg bg-[#EFECE3] hover:bg-[#FAF7F2] text-[#181615] border border-[rgba(45,41,38,0.12)] transition flex items-center gap-1 cursor-pointer"
+              className="px-2.5 py-1.5 text-xs rounded-lg bg-[#EFECE3] hover:bg-[#FAF7F2] text-[#181615] border border-[rgba(45,41,38,0.12)] transition flex items-center gap-1.5 cursor-pointer shadow-xs"
               title="Install Chroniq on your device"
             >
               <span className="material-symbols-outlined text-sm text-[#745A2E]">download</span>
-              <span className="hidden sm:inline text-[11px]">Install</span>
+              <span className="text-[11px] font-medium">Install</span>
             </button>
           )}
 
