@@ -23,3 +23,4 @@ CREATE INDEX IF NOT EXISTS tasks_overdue_pending_idx
 CREATE INDEX IF NOT EXISTS tasks_recurring_remind_idx
   ON public.tasks (user_id, last_reminded_at)
   WHERE status != 'completed' AND archived_at IS NULL;
+
