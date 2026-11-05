@@ -11,7 +11,6 @@ import {
   Info,
 } from 'lucide-react'
 import { useSettingsStore } from '@/store/useSettingsStore'
-import { useTaskStore } from '@/store/useTaskStore'
 import { DEFAULT_REMINDER_SLOTS } from '@/lib/reminderUtils'
 import { isValidE164PhoneNumber } from '@/lib/voiceReminderClient'
 import { format, parseISO } from 'date-fns'
@@ -57,10 +56,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
     removeCustomSlot,
     toggleSlotActive,
     toggleDayActive,
-    testVoiceReminder,
     events,
   } = useSettingsStore()
-  const { tasks } = useTaskStore()
 
   const [activeTab, setActiveTab] = useState<'schedule' | 'voice' | 'history'>('schedule')
   const [newSlotInput, setNewSlotInput] = useState('14:00')
@@ -118,7 +115,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             </div>
             <div>
               <h2 className="text-base font-semibold text-white tracking-tight">Notification & Reminders</h2>
-              <p className="text-xs text-[#94A3B8]">Configurable cadence, custom slots, and voice delivery</p>
+              <p className="text-xs text-[#94A3B8]">Customize daily reminder times, voice check-ins, and notification preferences</p>
             </div>
           </div>
           <button
@@ -165,7 +162,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             }`}
           >
             <History className="w-3.5 h-3.5" />
-            <span>Audit History ({events.length})</span>
+            <span>Delivery History ({events.length})</span>
           </button>
         </div>
 
@@ -426,15 +423,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                     />
                   </div>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={() => testVoiceReminder(tasks)}
-                  className="px-3 py-1.5 rounded-lg bg-[#0E131F] hover:bg-[#1C2436] border border-white/[0.08] text-xs text-[#A78BFA] flex items-center space-x-1.5 cursor-pointer"
-                >
-                  <Volume2 className="w-3.5 h-3.5" />
-                  <span>Test Voice Check-In</span>
-                </button>
               </div>
 
               {/* Actual Phone Calls (Telephony Architecture) */}
@@ -518,7 +506,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             </div>
           )}
 
-          {/* ──────── TAB 3: AUDIT HISTORY ──────── */}
+          {/* ──────── TAB 3: DELIVERY HISTORY ──────── */}
           {activeTab === 'history' && (
             <div className="space-y-3">
               <div className="flex items-center justify-between text-xs text-[#94A3B8]">
@@ -528,7 +516,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
 
               {events.length === 0 ? (
                 <div className="p-6 text-center text-xs text-[#64748B] bg-[#151B28] rounded-xl border border-white/[0.06]">
-                  No delivery events recorded yet. Test reminders or wait for scheduled cycles.
+                  No delivery events recorded yet. Scheduled reminder cycles will appear here once executed.
                 </div>
               ) : (
                 <div className="space-y-2">

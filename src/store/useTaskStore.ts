@@ -12,86 +12,25 @@ function getLocalStoredTasks(): Task[] {
   const saved = localStorage.getItem(LOCAL_STORAGE_KEY)
   if (saved) {
     try {
-      return JSON.parse(saved) as Task[]
+      const parsed = JSON.parse(saved) as Task[]
+      // Auto-hide/purge completed tasks older than 30 days
+      const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000
+      const now = Date.now()
+      return parsed.filter((t) => {
+        if (t.status === 'completed' && t.completed_at) {
+          const compTime = new Date(t.completed_at).getTime()
+          if (!isNaN(compTime) && now - compTime > thirtyDaysMs) {
+            return false
+          }
+        }
+        return true
+      })
     } catch {
-      // Return empty fallback
+      return []
     }
   }
 
-  const todayStr = format(new Date(), 'yyyy-MM-dd')
-  const initial: Task[] = [
-    {
-      id: 'task-1',
-      user_id: 'local-user',
-      title: 'Review Q4 Architecture Plan & Service Worker sync',
-      description: 'Ensure Deno edge runtime and VAPID key exchange handles cron reminders reliably.',
-      priority: 'urgent',
-      status: 'pending',
-      scheduled_date: todayStr,
-      due_at: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-      estimated_duration_minutes: 45,
-      completed_at: null,
-      created_at: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-      updated_at: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-      archived_at: null,
-      carried_from_date: null,
-      category: 'Engineering',
-    },
-    {
-      id: 'task-2',
-      user_id: 'local-user',
-      title: 'Audit quiet hours and custom reminder intervals',
-      description: 'Verify 09:00, 12:00, 15:00, 18:00, 21:00 schedule cadence.',
-      priority: 'high',
-      status: 'pending',
-      scheduled_date: todayStr,
-      due_at: new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString(),
-      estimated_duration_minutes: 60,
-      completed_at: null,
-      created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      updated_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      archived_at: null,
-      carried_from_date: null,
-      category: 'Design',
-    },
-    {
-      id: 'task-3',
-      user_id: 'local-user',
-      title: 'Configure Web Push permission and test reminder ping',
-      description: 'Trigger simulated reminder to verify service worker notification display while browser is idle.',
-      priority: 'medium',
-      status: 'pending',
-      scheduled_date: todayStr,
-      due_at: null,
-      estimated_duration_minutes: 20,
-      completed_at: null,
-      created_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-      updated_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-      archived_at: null,
-      carried_from_date: null,
-      category: 'Productivity',
-    },
-    {
-      id: 'task-4',
-      user_id: 'local-user',
-      title: 'Initialize Chroniq database migrations & pg_cron schedule',
-      description: 'Verified 001_initial_schema and 002_cron_scheduler idempotency.',
-      priority: 'high',
-      status: 'completed',
-      scheduled_date: todayStr,
-      due_at: null,
-      estimated_duration_minutes: 30,
-      completed_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-      created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-      updated_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-      archived_at: null,
-      carried_from_date: null,
-      category: 'DevOps',
-    },
-  ]
-
-  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(initial))
-  return initial
+  return []
 }
 
 export type TaskFilter = 'today' | 'upcoming' | 'overdue' | 'completed' | 'all'
@@ -207,7 +146,22 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
         }
 
         if (data) {
-          set({ tasks: data as Task[] })
+          const thirtyDaysAgoIso = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+          const activeTasks = (data as Task[]).filter((t) => {
+            if (t.status === 'completed' && t.completed_at && t.completed_at < thirtyDaysAgoIso) {
+              return false
+            }
+            return true
+          })
+          set({ tasks: activeTasks })
+
+          // Asynchronously purge expired completed tasks (> 30 days) from cloud
+          void supabase
+            .from('tasks')
+            .delete()
+            .eq('user_id', session.user.id)
+            .eq('status', 'completed')
+            .lt('completed_at', thirtyDaysAgoIso)
         }
       } else {
         set({ isSupabaseConnected: false, unmigratedLocalCount: 0 })

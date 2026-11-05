@@ -14,6 +14,8 @@ interface AuthStore {
   // Actions
   initializeAuth: () => Promise<void>
   loginWithGoogle: () => Promise<void>
+  loginWithEmail: (email: string, password: string) => Promise<{ error: Error | null }>
+  signUpWithEmail: (email: string, password: string) => Promise<{ error: Error | null }>
   logout: () => Promise<void>
   clearAuthError: () => void
   refreshProfile: () => Promise<void>
@@ -113,6 +115,50 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     if (error) {
       set({ authError: error.message, isLoading: false })
     }
+  },
+
+  loginWithEmail: async (email: string, password: string) => {
+    set({ isLoading: true, authError: null })
+    if (!isSupabaseConfigured) {
+      const err = new Error('Supabase is not configured. Please supply VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY.')
+      set({ authError: err.message, isLoading: false })
+      return { error: err }
+    }
+    const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+    if (error) {
+      set({ authError: error.message, isLoading: false })
+      return { error }
+    }
+    set({ user: data.user, session: data.session, isLoading: false })
+    await get().refreshProfile()
+    return { error: null }
+  },
+
+  signUpWithEmail: async (email: string, password: string) => {
+    set({ isLoading: true, authError: null })
+    if (!isSupabaseConfigured) {
+      const err = new Error('Supabase is not configured. Please supply VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY.')
+      set({ authError: err.message, isLoading: false })
+      return { error: err }
+    }
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+      options: {
+        data: {
+          full_name: email.split('@')[0],
+        },
+      },
+    })
+    if (error) {
+      set({ authError: error.message, isLoading: false })
+      return { error }
+    }
+    set({ user: data.user, session: data.session, isLoading: false })
+    if (data.user) {
+      await get().refreshProfile()
+    }
+    return { error: null }
   },
 
   logout: async () => {

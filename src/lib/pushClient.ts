@@ -150,7 +150,9 @@ export async function setupPushNotifications(deviceLabel?: string): Promise<Push
       const keysMatch = existingKey ? arrayBuffersEqual(existingKey, appServerKey.buffer) : false
 
       if (!keysMatch) {
-        console.log('[Chroniq] Existing subscription bound to an old VAPID key. Unsubscribing...')
+        if (import.meta.env.DEV) {
+          console.log('[Chroniq] Existing subscription bound to an old VAPID key. Unsubscribing...')
+        }
         await existingSub.unsubscribe()
       }
     }

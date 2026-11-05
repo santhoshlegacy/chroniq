@@ -18,8 +18,7 @@
 
 import { createClient } from 'jsr:@supabase/supabase-js@^2'
 import { ApplicationServer } from 'jsr:@negrel/webpush@^0.5.0'
-import { addMinutes, format, isBefore, isEqual } from 'npm:date-fns@^3'
-import { fromZonedTime, toZonedTime } from 'npm:date-fns-tz@^3'
+import { fromZonedTime } from 'npm:date-fns-tz@^3'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -499,13 +498,241 @@ function getDueSlot(pref: NotificationPreference, nowUtc: Date): Date | null {
     const slotMinutes = hhmmToMinutes(timeStr)
     const diff = local.currentMinutes - slotMinutes
 
-    // 5-minute grace window: matches if current local time is within [slot, slot + 5 minutes)
-    if (diff >= 0 && diff < 5) {
+    // Strict 2-minute window: matches if current local time is within [slot, slot + 2 minutes)
+    // Never matches after the slot window has passed!
+    if (diff >= 0 && diff < 2) {
       return fromZonedTime(`${local.dateStr}T${timeStr}:00`, timeZone)
     }
   }
 
   return null
+}
+
+/**
+ * Dispatches a push notification payload to all active subscriptions of a user,
+ * sanitizes diagnostics, logs stages, and updates notification_events.
+ */
+async function dispatchPushToSubscriber(
+  supabase: any,
+  appServer: any,
+  userId: string,
+  eventId: string,
+  payload: string,
+  taskCountSnapshot: number,
+  pushEnabled: boolean = true,
+): Promise<{ success: boolean; outcome: any }> {
+  // Stage 1: Subscription retrieval
+  const { data: subscriptions, error: subError } = await supabase
+    .from('push_subscriptions')
+    .select('id, endpoint, p256dh, auth')
+    .eq('user_id', userId)
+    .is('revoked_at', null)
+
+  if (subError) {
+    console.error('[process-reminders] Subscription retrieval failed', {
+      stage: 'subscription_retrieval',
+      userId,
+      error: sanitizeDiagnostic(subError.message),
+    })
+  }
+
+  const subResults: SingleSubscriptionResult[] = []
+
+  if (appServer && subscriptions && subscriptions.length > 0 && pushEnabled) {
+    for (const sub of subscriptions as PushSubscription[]) {
+      // Stage 2: Subscription validation
+      const valRes = validatePushSubscription(sub)
+      if (!valRes.valid) {
+        console.warn('[process-reminders] Skipping subscription: validation failed', {
+          stage: 'subscription_validation',
+          subscriptionId: sub.id,
+          reason: valRes.reason,
+        })
+        subResults.push({
+          subscriptionId: sub.id,
+          success: false,
+          statusCode: null,
+          errorCategory: valRes.reason ?? 'invalid_subscription',
+          stage: 'subscription_validation',
+        })
+        continue
+      }
+
+      // Stage 3: appServer.subscribe()
+      let subscriber: any
+      try {
+        subscriber = appServer.subscribe({
+          endpoint: sub.endpoint,
+          keys: { p256dh: sub.p256dh, auth: sub.auth },
+        })
+      } catch (subErr: unknown) {
+        const classified = classifyPushException(subErr)
+        console.error('[process-reminders] Subscriber creation failed', {
+          stage: 'appServer_subscribe',
+          subscriptionId: sub.id,
+          errorName: classified.sanitizedName,
+          errorMessage: classified.sanitizedMessage,
+        })
+        subResults.push({
+          subscriptionId: sub.id,
+          success: false,
+          statusCode: null,
+          errorCategory: 'subscriber_init_exception',
+          stage: 'appServer_subscribe',
+        })
+        continue
+      }
+
+      // Stage 4, 5, 6: Payload encryption, Push dispatch & Response processing
+      try {
+        const pushResult = await subscriber.pushTextMessage(payload, {
+          ttl: 3600,
+          urgency: 'normal',
+        })
+
+        const acceptedStatus: number | null =
+          pushResult && typeof (pushResult as any).status === 'number'
+            ? (pushResult as any).status
+            : null
+
+        subResults.push({
+          subscriptionId: sub.id,
+          success: true,
+          statusCode: acceptedStatus,
+          errorCategory: null,
+          stage: 'response_processing',
+        })
+
+        const { error: tsError } = await supabase
+          .from('push_subscriptions')
+          .update({ last_successful_delivery_at: new Date().toISOString() })
+          .eq('id', sub.id)
+
+        if (tsError) {
+          console.warn('[process-reminders] Failed to update subscription timestamp:', {
+            subscriptionId: sub.id,
+            error: sanitizeDiagnostic(tsError.message),
+          })
+        }
+      } catch (pushErr: unknown) {
+        const httpResponse = (pushErr as any)?.response ?? ((pushErr as any)?.status ? pushErr : null)
+        const httpStatus: number | null =
+          httpResponse && typeof httpResponse.status === 'number'
+            ? httpResponse.status
+            : typeof (pushErr as any)?.statusCode === 'number'
+            ? (pushErr as any).statusCode
+            : null
+
+        let errBody: string | undefined
+        if (httpResponse && typeof httpResponse.text === 'function') {
+          try {
+            errBody = await httpResponse.clone().text()
+          } catch {
+            // Body unavailable
+          }
+        } else if ((pushErr as any)?.body) {
+          errBody = typeof (pushErr as any).body === 'string'
+            ? (pushErr as any).body
+            : JSON.stringify((pushErr as any).body)
+        }
+
+        if (httpStatus !== null && httpStatus > 0) {
+          console.error('[process-reminders] Push service error response:', {
+            subscriptionId: sub.id,
+            statusCode: httpStatus,
+            body: sanitizeDiagnostic(errBody ?? ''),
+          })
+
+          if (httpStatus === 410 || httpStatus === 404) {
+            console.warn(`[process-reminders] Removing dead subscription ${sub.id} (HTTP ${httpStatus})`)
+            subResults.push({
+              subscriptionId: sub.id,
+              success: false,
+              statusCode: httpStatus,
+              errorCategory: 'expired_sub',
+              stage: 'response_processing',
+            })
+
+            const { error: revokeError } = await supabase
+              .from('push_subscriptions')
+              .update({ revoked_at: new Date().toISOString() })
+              .eq('id', sub.id)
+
+            if (revokeError) {
+              console.warn('[process-reminders] Failed to mark subscription as revoked:', {
+                subscriptionId: sub.id,
+                error: sanitizeDiagnostic(revokeError.message),
+              })
+            }
+          } else if (httpStatus === 401 || httpStatus === 403) {
+            const isVapidMismatch =
+              (errBody && (errBody.includes('VapidPkHashMismatch') || errBody.includes('UnauthorizedRegistration') || errBody.includes('BadDeviceToken'))) ||
+              String(pushErr).includes('VapidPkHashMismatch')
+
+            subResults.push({
+              subscriptionId: sub.id,
+              success: false,
+              statusCode: httpStatus,
+              errorCategory: isVapidMismatch ? 'vapid_hash_mismatch' : `push_http_${httpStatus}`,
+              stage: 'response_processing',
+            })
+          } else {
+            subResults.push({
+              subscriptionId: sub.id,
+              success: false,
+              statusCode: httpStatus,
+              errorCategory: `push_http_${httpStatus}`,
+              stage: 'response_processing',
+            })
+          }
+        } else {
+          const classified = classifyPushException(pushErr)
+          console.error('[process-reminders] Push dispatch exception', {
+            stage: classified.stage,
+            subscriptionId: sub.id,
+            errorName: classified.sanitizedName,
+            errorMessage: classified.sanitizedMessage,
+            stack: classified.sanitizedStack,
+          })
+          subResults.push({
+            subscriptionId: sub.id,
+            success: false,
+            statusCode: null,
+            errorCategory: classified.category,
+            stage: classified.stage,
+          })
+        }
+      }
+    }
+  }
+
+  const outcome = aggregateSubscriptionResults(
+    subResults,
+    Boolean(subscriptions && subscriptions.length > 0)
+  )
+
+  const { error: updateEventError } = await supabase
+    .from('notification_events')
+    .update({
+      result: outcome.finalResult,
+      error_category: outcome.finalErrorCategory,
+      task_count_snapshot: taskCountSnapshot,
+      push_status_code: outcome.finalStatusCode,
+      attempted_at: new Date().toISOString(),
+    })
+    .eq('id', eventId)
+
+  if (updateEventError) {
+    console.error('[process-reminders] Failed to update notification event:', {
+      eventId,
+      error: sanitizeDiagnostic(updateEventError.message),
+    })
+  }
+
+  return {
+    success: outcome.finalResult === 'sent',
+    outcome,
+  }
 }
 
 // ─── Main Handler ─────────────────────────────────────────────────────────────
@@ -581,6 +808,18 @@ Deno.serve(async (req: Request) => {
   let skipped = 0
   let errors = 0
 
+  // 1. Auto-delete completed tasks older than 30 days
+  try {
+    const thirtyDaysAgoIso = new Date(nowUtc.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()
+    await supabase
+      .from('tasks')
+      .delete()
+      .eq('status', 'completed')
+      .lt('completed_at', thirtyDaysAgoIso)
+  } catch (purgeErr: unknown) {
+    console.warn('[process-reminders] Auto-purge 30d completed tasks note:', purgeErr)
+  }
+
   // Fetch enabled notification preferences in bounded batch
   const { data: prefs, error: prefsError } = await supabase
     .from('notification_preferences')
@@ -598,6 +837,105 @@ Deno.serve(async (req: Request) => {
   for (const pref of prefs as NotificationPreference[]) {
     processed++
 
+    // ── 2. Smart Task Deadline Reminders (10m Before & Exact Deadline) ──
+    try {
+      const { data: userDueTasks } = await supabase
+        .from('tasks')
+        .select('id, title, priority, status, due_at')
+        .eq('user_id', pref.user_id)
+        .neq('status', 'completed')
+        .is('archived_at', null)
+        .not('due_at', 'is', null)
+
+      if (userDueTasks && userDueTasks.length > 0) {
+        for (const t of userDueTasks) {
+          if (!t.due_at) continue
+          const dueTime = new Date(t.due_at).getTime()
+          if (isNaN(dueTime)) continue
+          const diffMs = dueTime - nowUtc.getTime()
+          const diffMins = diffMs / 60000
+
+          // Exactly 10 minutes BEFORE task deadline (diffMins within [8.5, 11.0])
+          if (diffMins >= 8.5 && diffMins <= 11.0) {
+            const t10Key = `${pref.user_id}:deadline_10m:${t.id}:${dueTime}`
+            const { data: claimed10 } = await supabase
+              .from('notification_events')
+              .insert({
+                user_id: pref.user_id,
+                schedule_occurrence_key: t10Key,
+                scheduled_at: new Date(dueTime - 10 * 60 * 1000).toISOString(),
+                result: 'pending',
+                delivery_mode: 'push',
+              })
+              .select('id')
+              .maybeSingle()
+
+            if (claimed10) {
+              const payload10 = JSON.stringify({
+                title: 'Chroniq — Due in 10 Minutes',
+                body: `"${t.title}" is due in 10 minutes.`,
+                url: '/',
+                taskCount: 1,
+                urgentCount: t.priority === 'urgent' || t.priority === 'high' ? 1 : 0,
+              })
+              const res = await dispatchPushToSubscriber(
+                supabase,
+                appServer,
+                pref.user_id,
+                claimed10.id,
+                payload10,
+                1,
+                pref.push_enabled !== false,
+              )
+              if (res.success) sent++
+              else errors++
+            }
+          }
+
+          // At the EXACT deadline: diffMins within [-0.5, 1.5]
+          // (Strict window prevents notifications from firing after the deadline has passed)
+          if (diffMins >= -0.5 && diffMins <= 1.5) {
+            const dueKey = `${pref.user_id}:deadline_due:${t.id}:${dueTime}`
+            const { data: claimedDue } = await supabase
+              .from('notification_events')
+              .insert({
+                user_id: pref.user_id,
+                schedule_occurrence_key: dueKey,
+                scheduled_at: new Date(dueTime).toISOString(),
+                result: 'pending',
+                delivery_mode: 'push',
+              })
+              .select('id')
+              .maybeSingle()
+
+            if (claimedDue) {
+              const payloadDue = JSON.stringify({
+                title: 'Chroniq — Task Due Now',
+                body: `"${t.title}" is due now!`,
+                url: '/',
+                taskCount: 1,
+                urgentCount: t.priority === 'urgent' || t.priority === 'high' ? 1 : 0,
+              })
+              const res = await dispatchPushToSubscriber(
+                supabase,
+                appServer,
+                pref.user_id,
+                claimedDue.id,
+                payloadDue,
+                1,
+                pref.push_enabled !== false,
+              )
+              if (res.success) sent++
+              else errors++
+            }
+          }
+        }
+      }
+    } catch (deadlineErr: unknown) {
+      console.warn('[process-reminders] Task deadline check note:', deadlineErr)
+    }
+
+    // ── 3. Scheduled Daily Cadence Slot Check ──
     const dueSlot = getDueSlot(pref, nowUtc)
     if (!dueSlot) continue
 
@@ -648,13 +986,12 @@ Deno.serve(async (req: Request) => {
       continue
     }
 
-    let eligibleTasks = (tasks ?? []).filter((t: any) => {
+    const eligibleTasks = (tasks ?? []).filter((t: any) => {
       if (pref.eligible_task_types === 'due_today_or_overdue') {
         const isScheduledToday = t.scheduled_date && t.scheduled_date <= localToday
         const isDuePast = t.due_at && new Date(t.due_at) <= nowUtc
         return isScheduledToday || isDuePast
       }
-      // all_pending default
       return t.scheduled_date === null || t.scheduled_date <= localToday
     }) as EligibleTask[]
 
@@ -689,201 +1026,20 @@ Deno.serve(async (req: Request) => {
       urgentCount,
     })
 
-    // Stage 1: Subscription retrieval
-    const { data: subscriptions, error: subError } = await supabase
-      .from('push_subscriptions')
-      .select('id, endpoint, p256dh, auth')
-      .eq('user_id', pref.user_id)
-      .is('revoked_at', null)
+    const pushRes = await dispatchPushToSubscriber(
+      supabase,
+      appServer,
+      pref.user_id,
+      eventId,
+      payload,
+      eligibleTasks.length,
+      pref.push_enabled !== false,
+    )
 
-    if (subError) {
-      console.error('[process-reminders] Subscription retrieval failed', {
-        stage: 'subscription_retrieval',
-        userId: pref.user_id,
-        error: sanitizeDiagnostic(subError.message),
-      })
-    }
-
-    const subResults: SingleSubscriptionResult[] = []
-
-    if (appServer && subscriptions && subscriptions.length > 0 && pref.push_enabled !== false) {
-      for (const sub of subscriptions as PushSubscription[]) {
-        // Stage 2: Subscription validation
-        const valRes = validatePushSubscription(sub)
-        if (!valRes.valid) {
-          console.warn('[process-reminders] Skipping subscription: validation failed', {
-            stage: 'subscription_validation',
-            subscriptionId: sub.id,
-            reason: valRes.reason,
-          })
-          subResults.push({
-            subscriptionId: sub.id,
-            success: false,
-            statusCode: null,
-            errorCategory: valRes.reason ?? 'invalid_subscription',
-            stage: 'subscription_validation',
-          })
-          continue
-        }
-
-        // Stage 3: appServer.subscribe()
-        let subscriber: any
-        try {
-          subscriber = appServer.subscribe({
-            endpoint: sub.endpoint,
-            keys: { p256dh: sub.p256dh, auth: sub.auth },
-          })
-        } catch (subErr: unknown) {
-          const classified = classifyPushException(subErr)
-          console.error('[process-reminders] Subscriber creation failed', {
-            stage: 'appServer_subscribe',
-            subscriptionId: sub.id,
-            errorName: classified.sanitizedName,
-            errorMessage: classified.sanitizedMessage,
-          })
-          subResults.push({
-            subscriptionId: sub.id,
-            success: false,
-            statusCode: null,
-            errorCategory: 'subscriber_init_exception',
-            stage: 'appServer_subscribe',
-          })
-          continue
-        }
-
-        // Stage 4, 5, 6: Payload encryption, Push dispatch & Response processing
-        try {
-          const pushResult = await subscriber.pushTextMessage(payload, {
-            ttl: 3600,
-            urgency: 'normal',
-          })
-
-          // Successful resolution: push accepted!
-          // Note: If pushResult has a numeric status (e.g. Response.status), preserve it; otherwise record null (never fabricate HTTP status codes)
-          const acceptedStatus: number | null =
-            pushResult && typeof (pushResult as any).status === 'number'
-              ? (pushResult as any).status
-              : null
-
-          subResults.push({
-            subscriptionId: sub.id,
-            success: true,
-            statusCode: acceptedStatus,
-            errorCategory: null,
-            stage: 'response_processing',
-          })
-
-          const { error: tsError } = await supabase
-            .from('push_subscriptions')
-            .update({ last_successful_delivery_at: new Date().toISOString() })
-            .eq('id', sub.id)
-
-          if (tsError) {
-            console.warn('[process-reminders] Failed to update subscription timestamp:', {
-              subscriptionId: sub.id,
-              error: sanitizeDiagnostic(tsError.message),
-            })
-          }
-        } catch (pushErr: unknown) {
-          // Check if error wraps an HTTP response (e.g. PushMessageError.response, err.response, err.status, err.statusCode)
-          const httpResponse = (pushErr as any)?.response ?? ((pushErr as any)?.status ? pushErr : null)
-          const httpStatus: number | null =
-            httpResponse && typeof httpResponse.status === 'number'
-              ? httpResponse.status
-              : typeof (pushErr as any)?.statusCode === 'number'
-              ? (pushErr as any).statusCode
-              : null
-
-          let errBody: string | undefined
-          if (httpResponse && typeof httpResponse.text === 'function') {
-            try {
-              errBody = await httpResponse.clone().text()
-            } catch {
-              // Body already consumed or unavailable
-            }
-          } else if ((pushErr as any)?.body) {
-            errBody = typeof (pushErr as any).body === 'string'
-              ? (pushErr as any).body
-              : JSON.stringify((pushErr as any).body)
-          }
-
-          if (httpStatus !== null && httpStatus > 0) {
-            console.error('[process-reminders] Push service error response:', {
-              subscriptionId: sub.id,
-              statusCode: httpStatus,
-              body: sanitizeDiagnostic(errBody ?? ''),
-            })
-
-            // Push service rejected with an HTTP response!
-            if (httpStatus === 410 || httpStatus === 404) {
-              console.warn(`[process-reminders] Removing dead subscription ${sub.id} (HTTP ${httpStatus})`)
-              subResults.push({
-                subscriptionId: sub.id,
-                success: false,
-                statusCode: httpStatus,
-                errorCategory: 'expired_sub',
-                stage: 'response_processing',
-              })
-
-              const { error: revokeError } = await supabase
-                .from('push_subscriptions')
-                .update({ revoked_at: new Date().toISOString() })
-                .eq('id', sub.id)
-
-              if (revokeError) {
-                console.warn('[process-reminders] Failed to mark subscription as revoked:', {
-                  subscriptionId: sub.id,
-                  error: sanitizeDiagnostic(revokeError.message),
-                })
-              }
-            } else if (httpStatus === 401 || httpStatus === 403) {
-              const isVapidMismatch =
-                (errBody && (errBody.includes('VapidPkHashMismatch') || errBody.includes('UnauthorizedRegistration') || errBody.includes('BadDeviceToken'))) ||
-                String(pushErr).includes('VapidPkHashMismatch')
-
-              console.error('[process-reminders] VAPID authentication failure (401/403):', {
-                subscriptionId: sub.id,
-                statusCode: httpStatus,
-                isVapidPkHashMismatch: Boolean(isVapidMismatch),
-                body: sanitizeDiagnostic(errBody ?? ''),
-              })
-
-              subResults.push({
-                subscriptionId: sub.id,
-                success: false,
-                statusCode: httpStatus,
-                errorCategory: isVapidMismatch ? 'vapid_hash_mismatch' : `push_http_${httpStatus}`,
-                stage: 'response_processing',
-              })
-            } else {
-              subResults.push({
-                subscriptionId: sub.id,
-                success: false,
-                statusCode: httpStatus,
-                errorCategory: `push_http_${httpStatus}`,
-                stage: 'response_processing',
-              })
-            }
-          } else {
-            // Pre-HTTP exception (status remains NULL)
-            const classified = classifyPushException(pushErr)
-            console.error('[process-reminders] Push dispatch exception', {
-              stage: classified.stage,
-              subscriptionId: sub.id,
-              errorName: classified.sanitizedName,
-              errorMessage: classified.sanitizedMessage,
-              stack: classified.sanitizedStack,
-            })
-            subResults.push({
-              subscriptionId: sub.id,
-              success: false,
-              statusCode: null,
-              errorCategory: classified.category,
-              stage: classified.stage,
-            })
-          }
-        }
-      }
+    if (pushRes.success) {
+      sent++
+    } else {
+      errors++
     }
 
     // Check optional telephony voice call preference
@@ -897,8 +1053,6 @@ Deno.serve(async (req: Request) => {
         .maybeSingle()
 
       if (voicePref && voicePref.phone_number && voicePref.phone_consent_given_at) {
-        // Telephony integration hook:
-        // Records call attempt; real calls invoke Twilio REST API via Edge Function secrets.
         await supabase
           .from('notification_events')
           .insert({
@@ -913,41 +1067,6 @@ Deno.serve(async (req: Request) => {
             telephony_cost_estimate: 0.014,
           })
       }
-    }
-
-    const outcome = aggregateSubscriptionResults(
-      subResults,
-      Boolean(subscriptions && subscriptions.length > 0)
-    )
-
-    // Pending-event reconciliation policy:
-    // If the database update fails after push dispatch, the event row remains with result = 'pending'.
-    // Important: Pending events must NEVER be automatically resent. The push service may have already
-    // accepted and delivered the notification to the user's device, so blind retries risk duplicate alerts.
-    // Because schedule_occurrence_key has a UNIQUE constraint, subsequent cron runs cannot claim the same slot,
-    // naturally preventing duplicate pushes. Any reconciliation job must inspect events manually rather than
-    // relying on timestamps as definitive proof of delivery.
-    const { error: updateEventError } = await supabase
-      .from('notification_events')
-      .update({
-        result: outcome.finalResult,
-        error_category: outcome.finalErrorCategory,
-        task_count_snapshot: eligibleTasks.length,
-        push_status_code: outcome.finalStatusCode,
-        attempted_at: new Date().toISOString(),
-      })
-      .eq('id', eventId)
-
-    if (updateEventError) {
-      console.error('[process-reminders] Failed to update notification event:', {
-        eventId,
-        error: sanitizeDiagnostic(updateEventError.message),
-      })
-      errors++
-    } else if (outcome.finalResult === 'sent') {
-      sent++
-    } else {
-      errors++
     }
   }
 

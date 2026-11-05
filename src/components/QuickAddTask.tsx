@@ -37,28 +37,29 @@ export const QuickAddTask: React.FC = () => {
   const priorityConfigs: Record<TaskPriority, { label: string; dot: string }> = {
     urgent: { label: 'Urgent', dot: 'bg-rose-400' },
     high: { label: 'High', dot: 'bg-amber-400' },
-    medium: { label: 'Medium', dot: 'bg-[#70DFFF]' },
+    medium: { label: 'Medium', dot: 'bg-[#5EEAD4]' },
     low: { label: 'Low', dot: 'bg-slate-400' },
   }
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-[#111827] border border-white/[0.06] rounded-xl p-2.5 sm:p-3 mb-6 flex flex-col sm:flex-row items-center gap-2.5 transition focus-within:border-white/[0.14]"
+      className="bg-[#121826] border border-white/[0.06] rounded-2xl p-2.5 sm:p-3 mb-6 flex flex-col sm:flex-row items-center gap-2.5 transition focus-within:border-white/[0.14] shadow-xs"
     >
       <div className="relative flex-1 w-full">
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          maxLength={255}
           placeholder="Add a task for today's focus window (Press Enter)..."
-          className="w-full px-3.5 py-2 rounded-lg bg-[#151B28] border border-white/[0.04] text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-[#70DFFF]/40 transition"
+          className="w-full px-3.5 py-2 rounded-xl bg-[#182233] border border-white/[0.04] text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-[#5EEAD4]/50 transition"
         />
       </div>
 
       <div className="flex items-center space-x-2 w-full sm:w-auto justify-between sm:justify-end">
         {/* Priority Selector (Subtle Dots + Label) */}
-        <div className="flex items-center space-x-1 bg-[#151B28] p-1 rounded-lg border border-white/[0.04]">
+        <div className="flex items-center space-x-1 bg-[#182233] p-1 rounded-xl border border-white/[0.04]">
           {(['urgent', 'high', 'medium', 'low'] as TaskPriority[]).map((p) => {
             const isSelected = priority === p
             return (
@@ -66,9 +67,9 @@ export const QuickAddTask: React.FC = () => {
                 key={p}
                 type="button"
                 onClick={() => setPriority(p)}
-                className={`flex items-center space-x-1.5 px-2 py-1 rounded-md text-[11px] font-medium capitalize transition cursor-pointer ${
+                className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium capitalize transition cursor-pointer ${
                   isSelected
-                    ? 'bg-[#1C2436] text-white border border-white/[0.08] shadow-xs'
+                    ? 'bg-[#1E2B40] text-white border border-white/[0.08] shadow-xs'
                     : 'text-[#94A3B8] hover:text-white'
                 }`}
               >

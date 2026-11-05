@@ -170,4 +170,17 @@ export function getLocalEndOfDay(localDate: string, timezone: string): Date {
   return fromZonedTime(`${localDate}T23:59:59`, timezone)
 }
 
+// ─── 30-Day Auto Retention ───────────────────────────────────────────────────
+
+export function isTaskOlderThan30Days(task: Task, nowUtc: Date = new Date()): boolean {
+  if (task.status !== 'completed' || !task.completed_at) return false
+  const completedDate = parseISO(task.completed_at)
+  const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000
+  return nowUtc.getTime() - completedDate.getTime() > thirtyDaysMs
+}
+
+export function filterActiveTasks(tasks: Task[], nowUtc: Date = new Date()): Task[] {
+  return tasks.filter((t) => !isTaskOlderThan30Days(t, nowUtc))
+}
+
 export { format, parseISO, isAfter, isBefore, startOfDay, endOfDay }

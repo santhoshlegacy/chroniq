@@ -96,17 +96,17 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
   const priorityConfigs: Record<TaskPriority, { label: string; dot: string }> = {
     urgent: { label: 'Urgent', dot: 'bg-rose-400' },
     high: { label: 'High', dot: 'bg-amber-400' },
-    medium: { label: 'Medium', dot: 'bg-[#70DFFF]' },
+    medium: { label: 'Medium', dot: 'bg-[#5EEAD4]' },
     low: { label: 'Low', dot: 'bg-slate-400' },
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#080B12]/80 backdrop-blur-md animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#0A0E17]/85 backdrop-blur-md animate-in fade-in duration-150">
       <div className="fixed inset-0" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-[#111827] border border-white/[0.08] rounded-2xl p-6 sm:p-7 shadow-2xl z-10 animate-in zoom-in-95 duration-150 text-[#E7ECF4]">
+      <div className="relative w-full max-w-lg bg-[#121826] border border-white/[0.08] rounded-2xl p-6 sm:p-7 shadow-2xl z-10 animate-in zoom-in-95 duration-150 text-[#F3F4F8]">
         {/* Header */}
         <div className="flex items-center justify-between pb-3.5 border-b border-white/[0.06]">
-          <h2 className="text-base font-semibold text-white tracking-tight">
+          <h2 className="text-base font-semibold text-white tracking-tight font-['Outfit']">
             {taskToEdit ? 'Edit Task' : 'Create New Task'}
           </h2>
           <button
@@ -123,15 +123,16 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
           {/* Title */}
           <div>
             <label className="block text-xs font-medium text-[#94A3B8] mb-1">
-              Task Title <span className="text-[#70DFFF]">*</span>
+              Task Title <span className="text-[#5EEAD4]">*</span>
             </label>
             <input
               type="text"
               required
+              maxLength={255}
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               placeholder="e.g., Finalize architecture review"
-              className="w-full px-3 py-2 rounded-lg bg-[#151B28] border border-white/[0.06] text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-[#70DFFF]/40 transition"
+              className="w-full px-3 py-2 rounded-xl bg-[#182233] border border-white/[0.06] text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-[#5EEAD4]/50 transition"
             />
           </div>
 
@@ -142,10 +143,11 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
             </label>
             <textarea
               rows={2}
+              maxLength={2000}
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               placeholder="Key notes, context, or deliverables..."
-              className="w-full px-3 py-2 rounded-lg bg-[#151B28] border border-white/[0.06] text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-[#70DFFF]/40 transition resize-none"
+              className="w-full px-3 py-2 rounded-xl bg-[#182233] border border-white/[0.06] text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-[#5EEAD4]/50 transition resize-none"
             />
           </div>
 
@@ -164,8 +166,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
                     onClick={() => setForm({ ...form, priority: p })}
                     className={`py-1.5 px-2 rounded-lg text-xs font-medium capitalize flex items-center justify-center space-x-1.5 border transition cursor-pointer ${
                       isSelected
-                        ? 'bg-[#151B28] border-white/[0.14] text-white shadow-xs'
-                        : 'bg-[#111827] border-white/[0.04] text-[#94A3B8] hover:text-white'
+                        ? 'bg-[#1E2B40] border-[#5EEAD4]/40 text-white shadow-xs'
+                        : 'bg-[#182233] border-white/[0.04] text-[#94A3B8] hover:text-white'
                     }`}
                   >
                     <span className={`w-1.5 h-1.5 rounded-full ${priorityConfigs[p].dot}`} />
@@ -187,7 +189,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
                 type="date"
                 value={form.scheduledDate}
                 onChange={(e) => setForm({ ...form, scheduledDate: e.target.value })}
-                className="w-full px-3 py-1.5 rounded-lg bg-[#151B28] border border-white/[0.06] text-xs text-white focus:outline-none focus:border-[#70DFFF]/40"
+                className="w-full px-3 py-1.5 rounded-xl bg-[#182233] border border-white/[0.06] text-xs text-white focus:outline-none focus:border-[#5EEAD4]/50"
               />
             </div>
 
@@ -200,7 +202,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
                 type="datetime-local"
                 value={form.dueAt}
                 onChange={(e) => setForm({ ...form, dueAt: e.target.value })}
-                className="w-full px-3 py-1.5 rounded-lg bg-[#151B28] border border-white/[0.06] text-xs text-white focus:outline-none focus:border-[#70DFFF]/40"
+                className="w-full px-3 py-1.5 rounded-xl bg-[#182233] border border-white/[0.06] text-xs text-white focus:outline-none focus:border-[#5EEAD4]/50"
               />
             </div>
           </div>
@@ -215,7 +217,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
               <select
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="w-full px-3 py-1.5 rounded-lg bg-[#151B28] border border-white/[0.06] text-xs text-white focus:outline-none focus:border-[#70DFFF]/40"
+                className="w-full px-3 py-1.5 rounded-xl bg-[#182233] border border-white/[0.06] text-xs text-white focus:outline-none focus:border-[#5EEAD4]/50"
               >
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
@@ -237,7 +239,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
                 step="5"
                 value={form.duration}
                 onChange={(e) => setForm({ ...form, duration: e.target.value })}
-                className="w-full px-3 py-1.5 rounded-lg bg-[#151B28] border border-white/[0.06] text-xs text-white focus:outline-none focus:border-[#70DFFF]/40 tabular-nums font-mono"
+                className="w-full px-3 py-1.5 rounded-xl bg-[#182233] border border-white/[0.06] text-xs text-white focus:outline-none focus:border-[#5EEAD4]/50 tabular-nums font-mono"
               />
             </div>
           </div>

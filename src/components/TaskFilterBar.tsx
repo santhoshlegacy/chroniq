@@ -44,20 +44,20 @@ export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
             <button
               key={tab.id}
               onClick={() => setFilter(tab.id)}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition cursor-pointer ${
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition cursor-pointer ${
                 isActive
-                  ? 'bg-[#151B28] text-white border border-white/[0.08] shadow-xs'
-                  : 'text-[#94A3B8] hover:text-white hover:bg-white/[0.03]'
+                  ? 'bg-[#182233] text-white border border-white/[0.1] shadow-xs'
+                  : 'text-[#94A3B8] hover:text-white hover:bg-white/[0.04]'
               }`}
             >
-              <span className={isActive ? 'text-[#70DFFF]' : 'text-[#64748B]'}>
+              <span className={isActive ? 'text-[#5EEAD4]' : 'text-[#64748B]'}>
                 {tab.icon}
               </span>
               <span>{tab.label}</span>
               <span
                 className={`tabular-nums font-mono text-[10px] px-1.5 py-0.2 rounded-md ${
                   isActive
-                    ? 'bg-[#111827] text-white'
+                    ? 'bg-[#121826] text-white font-medium'
                     : 'text-[#64748B]'
                 }`}
               >
@@ -78,7 +78,7 @@ export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search tasks..."
-            className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#111827] border border-white/[0.06] text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-[#70DFFF]/40 transition"
+            className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-[#121826] border border-white/[0.06] text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-[#5EEAD4]/50 transition"
           />
         </div>
 
@@ -87,7 +87,7 @@ export const TaskFilterBar: React.FC<TaskFilterBarProps> = () => {
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value as TaskPriority | 'all')}
-            className="appearance-none px-3 py-1.5 pr-7 rounded-lg bg-[#111827] border border-white/[0.06] text-xs text-[#94A3B8] hover:text-white font-medium focus:outline-none focus:border-[#70DFFF]/40 cursor-pointer transition"
+            className="appearance-none px-3 py-1.5 pr-7 rounded-xl bg-[#121826] border border-white/[0.06] text-xs text-[#94A3B8] hover:text-white font-medium focus:outline-none focus:border-[#5EEAD4]/50 cursor-pointer transition"
           >
             <option value="all">All Priorities</option>
             <option value="urgent">Urgent</option>

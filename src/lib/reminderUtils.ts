@@ -14,6 +14,22 @@ import type { ReminderSlot } from '@/types'
 // ─── Default 5-slot schedule (9:00 AM, 12:00 PM, 3:00 PM, 6:00 PM, 9:00 PM) ───
 export const DEFAULT_REMINDER_SLOTS: string[] = ['09:00', '12:00', '15:00', '18:00', '21:00']
 
+export const COMMON_TIMEZONES: string[] = [
+  'UTC',
+  'America/New_York',
+  'America/Chicago',
+  'America/Denver',
+  'America/Los_Angeles',
+  'Europe/London',
+  'Europe/Paris',
+  'Europe/Berlin',
+  'Asia/Dubai',
+  'Asia/Kolkata',
+  'Asia/Singapore',
+  'Asia/Tokyo',
+  'Australia/Sydney',
+]
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface ReminderScheduleConfig {

@@ -6,17 +6,19 @@
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-    /* Design Tokens */
-    --color-obsidian: #080B12;
-    --color-graphite-1: #111827;
-    --color-graphite-2: #151B28;
-    --color-graphite-3: #1C2436;
-    --color-text-primary: #E7ECF4;
+    /* Luxury Theme Tokens — Soft Warm Obsidian & Satin Slate */
+    --color-obsidian: #0A0E17;
+    --color-canvas-subtle: #0F1420;
+    --color-graphite-1: #131A27;
+    --color-graphite-2: #182233;
+    --color-graphite-3: #1E2B40;
+    --color-text-primary: #F3F4F8;
     --color-text-secondary: #94A3B8;
     --color-text-muted: #64748B;
-    --color-cyan: #70DFFF;
-    --color-cyan-hover: #8AE5FF;
-    --color-lavender: #A99AFF;
+    --color-cyan: #5EEAD4;
+    --color-cyan-hover: #7EFAF0;
+    --color-gold: #F5D08A;
+    --color-lavender: #C4B5FD;
     --border-subtle: rgba(255, 255, 255, 0.07);
     --border-refined: rgba(255, 255, 255, 0.12);
   }
@@ -24,6 +26,10 @@
   body {
     font-family: var(--font-sans);
     background-color: var(--color-obsidian);
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(94, 234, 212, 0.05), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 85% 15%, rgba(196, 181, 253, 0.03), transparent 60%);
+    background-attachment: fixed;
     color: var(--color-text-primary);
     overflow-x: hidden;
     padding-top: env(safe-area-inset-top);
@@ -34,7 +40,7 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
-    letter-spacing: -0.015em;
+    letter-spacing: -0.018em;
   }
 }
 
@@ -45,49 +51,60 @@
 
 /* ── Surface Architecture ─────────────────────────────────────────── */
 
-/* Primary Elevated Graphite Panel */
+/* Luxury Elevated Graphite Panel */
 .surface-panel {
-  background-color: #111827;
+  background-color: #121826;
   border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
 }
 
 /* Card item inside list */
 .surface-card {
-  background-color: #151B28;
+  background-color: #161F2E;
   border: 1px solid rgba(255, 255, 255, 0.06);
-  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+  transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease;
 }
 
 .surface-card:hover {
-  background-color: #192233;
-  border-color: rgba(255, 255, 255, 0.14);
+  background-color: #1B263B;
+  border-color: rgba(255, 255, 255, 0.13);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.25);
 }
 
-/* Selective Header Glass - applied only to sticky top header */
+/* Selective Header Glass - applied to sticky navigation */
 .header-glass {
-  background-color: rgba(8, 11, 18, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background-color: rgba(10, 14, 23, 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Bottom Floating Navigation Dock */
+.bottom-dock-glass {
+  background-color: rgba(15, 20, 32, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.55);
 }
 
 /* ── Premium Buttons ────────────────────────────────────────────── */
 
-/* Primary Action Button: Restrained Ice Cyan */
+/* Primary Action Button: Luminous Ice Mint / Cyan */
 .btn-primary {
-  background-color: #70DFFF;
-  color: #080B12;
+  background-color: #5EEAD4;
+  color: #0A0E17;
   font-weight: 600;
   border-radius: 0.625rem;
-  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 10px -2px rgba(112, 223, 255, 0.35);
+  transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 12px -2px rgba(94, 234, 212, 0.3);
 }
 
 .btn-primary:hover {
-  background-color: #8AE5FF;
+  background-color: #7EFAF0;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px -2px rgba(112, 223, 255, 0.45);
+  box-shadow: 0 4px 18px -2px rgba(94, 234, 212, 0.45);
 }
 
 .btn-primary:active {
@@ -96,16 +113,16 @@
 
 /* Secondary Button: Elevated Graphite */
 .btn-secondary {
-  background-color: #151B28;
+  background-color: #161F2E;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #E7ECF4;
+  color: #F3F4F8;
   font-weight: 500;
   border-radius: 0.625rem;
   transition: all 0.15s ease;
 }
 
 .btn-secondary:hover {
-  background-color: #1C2436;
+  background-color: #1D2A3E;
   border-color: rgba(255, 255, 255, 0.16);
   color: #ffffff;
 }
@@ -118,23 +135,23 @@
 }
 
 .btn-ghost:hover {
-  color: #E7ECF4;
+  color: #F3F4F8;
   background-color: rgba(255, 255, 255, 0.06);
 }
 
 /* ── Input Styling ──────────────────────────────────────────────── */
 
 .input-graphite {
-  background-color: #111827;
+  background-color: #121826;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #E7ECF4;
+  color: #F3F4F8;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .input-graphite:focus {
   outline: none;
-  border-color: rgba(112, 223, 255, 0.5);
-  box-shadow: 0 0 0 2px rgba(112, 223, 255, 0.15);
+  border-color: rgba(94, 234, 212, 0.5);
+  box-shadow: 0 0 0 2px rgba(94, 234, 212, 0.15);
 }
 
 /* ── Custom Scrollbar ───────────────────────────────────────────── */

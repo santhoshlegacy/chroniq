@@ -12,10 +12,14 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker
       .register(swUrl, { scope: base })
       .then((registration) => {
-        console.log('[Chroniq] Service Worker registered successfully with scope:', registration.scope)
+        if (import.meta.env.DEV) {
+          console.log('[Chroniq] Service Worker registered with scope:', registration.scope)
+        }
       })
       .catch((error) => {
-        console.error('[Chroniq] Service Worker registration failed:', error)
+        if (import.meta.env.DEV) {
+          console.error('[Chroniq] Service Worker registration failed:', error)
+        }
       })
   })
 }

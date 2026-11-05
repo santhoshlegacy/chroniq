@@ -17,7 +17,7 @@ export const StatsGrid: React.FC = () => {
   }, [tasks, preferences.timezone])
 
   return (
-    <div className="bg-[#111827] border border-white/[0.06] rounded-xl p-4 sm:p-5 mb-6">
+    <div className="bg-[#121826] border border-white/[0.06] rounded-2xl p-4 sm:p-5 mb-6 shadow-sm">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-0 md:divide-x md:divide-white/[0.06]">
         {/* 1. Completion Rate */}
         <div className="md:px-5 first:pl-0">
@@ -34,9 +34,9 @@ export const StatsGrid: React.FC = () => {
             </span>
           </div>
           {/* Subtle Progress Track */}
-          <div className="mt-2.5 w-full h-1.5 rounded-full bg-[#151B28] overflow-hidden">
+          <div className="mt-2.5 w-full h-1.5 rounded-full bg-[#182233] overflow-hidden">
             <div
-              className="h-full rounded-full bg-[#70DFFF] transition-all duration-300"
+              className="h-full rounded-full bg-[#5EEAD4] transition-all duration-300"
               style={{ width: `${Math.min(100, Math.max(0, stats.completionPercentage))}%` }}
             />
           </div>
@@ -45,7 +45,7 @@ export const StatsGrid: React.FC = () => {
         {/* 2. Pending Today */}
         <div className="md:px-5">
           <div className="flex items-center space-x-1.5 text-xs text-[#94A3B8] mb-1">
-            <Target className="w-3.5 h-3.5 text-[#70DFFF]" />
+            <Target className="w-3.5 h-3.5 text-[#5EEAD4]" />
             <span>Remaining Today</span>
           </div>
           <div className="flex items-baseline space-x-2">
@@ -93,7 +93,7 @@ export const StatsGrid: React.FC = () => {
               {stats.overdueCount}
             </span>
             <span className="text-[11px] text-[#64748B]">
-              {stats.overdueCount === 1 ? 'overdue' : 'overdue'}
+              {stats.overdueCount === 1 ? 'task overdue' : 'tasks overdue'}
             </span>
           </div>
           <div className={`mt-2.5 text-[11px] truncate ${stats.overdueCount > 0 ? 'text-rose-300 font-medium' : 'text-[#64748B]'}`}>

@@ -8,6 +8,7 @@ import { format, parseISO } from 'date-fns'
 interface TaskCardProps {
   task: Task
   onEdit: (task: Task) => void
+  onSelect?: (task: Task) => void
 }
 
 const priorityBadges: Record<TaskPriority, { label: string; dot: string; text: string }> = {
@@ -23,8 +24,8 @@ const priorityBadges: Record<TaskPriority, { label: string; dot: string; text: s
   },
   medium: {
     label: 'Medium',
-    dot: 'bg-[#70DFFF]',
-    text: 'text-[#70DFFF]',
+    dot: 'bg-[#5EEAD4]',
+    text: 'text-[#5EEAD4]',
   },
   low: {
     label: 'Low',
@@ -33,7 +34,7 @@ const priorityBadges: Record<TaskPriority, { label: string; dot: string; text: s
   },
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit }) => {
+export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onSelect }) => {
   const { toggleTaskComplete, deleteTask, archiveTask } = useTaskStore()
   const [showMenu, setShowMenu] = useState(false)
 
@@ -46,23 +47,27 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit }) => {
 
   return (
     <div
-      className={`rounded-xl p-4 border transition-all duration-150 ${
+      onClick={() => onSelect?.(task)}
+      className={`rounded-xl p-4 border transition-all duration-180 cursor-pointer ${
         isCompleted
-          ? 'bg-[#0E1320] border-white/[0.03] opacity-60'
+          ? 'bg-[#0E1420]/70 border-white/[0.03] opacity-60'
           : isOverdue
-          ? 'bg-[#141824] border-rose-500/25 hover:border-rose-500/40'
-          : 'bg-[#111827] border-white/[0.06] hover:border-white/[0.12] hover:bg-[#131B2C]'
+          ? 'bg-[#171E2D] border-rose-500/25 hover:border-rose-500/40 hover:bg-[#1B2436]'
+          : 'bg-[#131A27] border-white/[0.06] hover:border-white/[0.14] hover:bg-[#172132] shadow-xs'
       }`}
     >
       <div className="flex items-start justify-between gap-3.5">
         {/* Left: Custom Checkbox */}
         <button
           type="button"
-          onClick={() => toggleTaskComplete(task.id)}
+          onClick={(e) => {
+            e.stopPropagation()
+            toggleTaskComplete(task.id)
+          }}
           className={`flex-shrink-0 w-5 h-5 mt-0.5 rounded-md border flex items-center justify-center transition cursor-pointer ${
             isCompleted
-              ? 'bg-[#151B28] border-[#70DFFF]/60 text-[#70DFFF]'
-              : 'border-white/20 bg-[#151B28] hover:border-[#70DFFF]/60'
+              ? 'bg-[#182233] border-[#5EEAD4]/60 text-[#5EEAD4]'
+              : 'border-white/20 bg-[#182233] hover:border-[#5EEAD4]/60'
           }`}
           aria-label={isCompleted ? 'Mark as incomplete' : 'Mark as complete'}
         >
@@ -80,7 +85,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit }) => {
 
             {/* Category */}
             {task.category && (
-              <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] text-[#94A3B8] bg-[#151B28] border border-white/[0.04]">
+              <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] text-[#94A3B8] bg-[#182233] border border-white/[0.04]">
                 <Tag className="w-2.5 h-2.5 text-[#64748B]" />
                 <span>{task.category}</span>
               </span>
@@ -100,13 +105,13 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit }) => {
             className={`text-sm font-medium leading-snug transition ${
               isCompleted
                 ? 'line-through text-[#64748B]'
-                : 'text-[#E7ECF4]'
+                : 'text-[#F3F4F8]'
             }`}
           >
             {task.title}
           </h3>
 
-          {/* Task Description */}
+          {/* Task Description Snippet */}
           {task.description && (
             <p className={`mt-1 text-xs leading-relaxed line-clamp-2 ${isCompleted ? 'text-[#64748B]' : 'text-[#94A3B8]'}`}>
               {task.description}
@@ -128,7 +133,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit }) => {
               </span>
             )}
             {task.estimated_duration_minutes && (
-              <span className="tabular-nums font-mono text-[10px] px-1.5 py-0.2 rounded bg-[#151B28] text-[#94A3B8]">
+              <span className="tabular-nums font-mono text-[10px] px-1.5 py-0.2 rounded bg-[#182233] text-[#94A3B8]">
                 {task.estimated_duration_minutes}m
               </span>
             )}
@@ -136,7 +141,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit }) => {
         </div>
 
         {/* Right: Actions Menu */}
-        <div className="relative">
+        <div className="relative" onClick={(e) => e.stopPropagation()}>
           <button
             type="button"
             onClick={() => setShowMenu(!showMenu)}
@@ -152,7 +157,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit }) => {
                 className="fixed inset-0 z-20"
                 onClick={() => setShowMenu(false)}
               />
-              <div className="absolute right-0 mt-1 w-36 bg-[#151B28] border border-white/[0.08] rounded-xl py-1 z-30 shadow-2xl">
+              <div className="absolute right-0 mt-1 w-36 bg-[#182233] border border-white/[0.08] rounded-xl py-1 z-30 shadow-2xl">
                 <button
                   type="button"
                   onClick={() => {
@@ -161,7 +166,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit }) => {
                   }}
                   className="w-full px-3 py-1.5 text-left text-xs text-[#94A3B8] hover:text-white hover:bg-white/[0.04] flex items-center space-x-2 cursor-pointer"
                 >
-                  <Edit2 className="w-3.5 h-3.5 text-[#70DFFF]" />
+                  <Edit2 className="w-3.5 h-3.5 text-[#5EEAD4]" />
                   <span>Edit Task</span>
                 </button>
                 <button
@@ -172,7 +177,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit }) => {
                   }}
                   className="w-full px-3 py-1.5 text-left text-xs text-[#94A3B8] hover:text-white hover:bg-white/[0.04] flex items-center space-x-2 cursor-pointer"
                 >
-                  <Archive className="w-3.5 h-3.5 text-[#A99AFF]" />
+                  <Archive className="w-3.5 h-3.5 text-[#C4B5FD]" />
                   <span>Archive</span>
                 </button>
                 <div className="h-px bg-white/[0.06] my-1" />

@@ -108,7 +108,16 @@ self.addEventListener('notificationclick', (event: NotificationEvent) => {
 
   if (event.action === 'dismiss') return
 
-  const targetUrl: string = (event.notification.data as { url?: string })?.url ?? self.location.href
+  const rawTarget: string = (event.notification.data as { url?: string })?.url ?? self.location.origin
+  let safeUrl = self.location.origin + '/'
+  try {
+    const parsed = new URL(rawTarget, self.location.origin)
+    if (parsed.origin === self.location.origin && (parsed.protocol === 'http:' || parsed.protocol === 'https:')) {
+      safeUrl = parsed.href
+    }
+  } catch {
+    safeUrl = self.location.origin + '/'
+  }
 
   event.waitUntil(
     self.clients
@@ -117,7 +126,7 @@ self.addEventListener('notificationclick', (event: NotificationEvent) => {
         const existingClient = clients.find((c) => {
           try {
             const clientUrl = new URL(c.url)
-            const target = new URL(targetUrl)
+            const target = new URL(safeUrl)
             return clientUrl.origin === target.origin
           } catch {
             return false
@@ -126,11 +135,11 @@ self.addEventListener('notificationclick', (event: NotificationEvent) => {
 
         if (existingClient) {
           void existingClient.focus()
-          void existingClient.navigate(targetUrl)
+          void existingClient.navigate(safeUrl)
           return
         }
 
-        return self.clients.openWindow(targetUrl)
+        return self.clients.openWindow(safeUrl)
       }),
   )
 })
