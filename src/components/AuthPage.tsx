@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { ChroniqLogo } from './ChroniqLogo'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useTaskStore } from '@/store/useTaskStore'
 
@@ -166,7 +165,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
         {/* Brand Header */}
         <div className="text-center space-y-2">
           <div className="w-14 h-14 mx-auto rounded-2xl border border-[rgba(45,41,38,0.12)] bg-[#FAF7F2] flex items-center justify-center shadow-xs p-2">
-            <ChroniqLogo className="w-full h-full object-contain" />
+            <img src="/logo.png" alt="Chroniq" className="w-full h-full object-contain" />
           </div>
           <h1 className="text-2xl font-bold text-[#181615] tracking-tight font-serif pt-1">
             {mode === 'signin' ? 'Sign In to Chroniq' : 'Create an Account'}

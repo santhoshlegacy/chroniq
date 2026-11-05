@@ -369,8 +369,8 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
           if (reg) {
             await reg.showNotification(title, {
               body,
-              icon: 'icons/icon-192.png',
-              badge: 'icons/badge-72.png',
+              icon: '/logo.png',
+              badge: '/logo.png',
               tag: 'chroniq-test-reminder',
               data: { url: window.location.origin },
             })
@@ -379,7 +379,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
             return true
           }
         }
-        new Notification(title, { body, icon: 'icons/icon-192.png' })
+        new Notification(title, { body, icon: '/logo.png' })
         set({ testNotificationStatus: 'Browser notification shown!' })
         setTimeout(() => set({ testNotificationStatus: null }), 4000)
         return true

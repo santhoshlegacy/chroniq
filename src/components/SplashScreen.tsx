@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { ChroniqLogo } from './ChroniqLogo'
 
 interface SplashScreenProps {
   onEnter: () => void
@@ -125,7 +124,11 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
 
           {/* Emblem Artwork Container */}
           <div className="relative w-36 h-36 rounded-full bg-[#FFFFFF] border border-[rgba(45,41,38,0.1)] shadow-xl flex items-center justify-center p-3 z-20 group">
-            <ChroniqLogo className="w-full h-full object-contain filter drop-shadow-sm transition-transform duration-700 ease-out group-hover:scale-105" />
+            <img
+              src="/logo.png"
+              alt="Chroniq"
+              className="w-full h-full object-contain filter drop-shadow-sm transition-transform duration-700 ease-out group-hover:scale-105"
+            />
             {/* Center Horizon Bead */}
             <div className="absolute -bottom-1 w-2.5 h-2.5 rounded-full bg-[#745A2E] shadow-sm ring-2 ring-[#FFFFFF]" />
           </div>

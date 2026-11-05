@@ -14,7 +14,6 @@ import { AuthPage } from './components/AuthPage'
 import { InstallModal } from './components/InstallModal'
 import { SplashScreen } from './components/SplashScreen'
 import { InAppToast } from './components/InAppToast'
-import { ChroniqLogo } from './components/ChroniqLogo'
 import { useTaskStore } from './store/useTaskStore'
 import { useSettingsStore } from './store/useSettingsStore'
 import { useAuthStore } from './store/useAuthStore'
@@ -139,7 +138,8 @@ export function App() {
                 void navigator.serviceWorker.ready.then((reg) => {
                   void reg.showNotification('Chroniq — Due in 10 Minutes', {
                     body: `"${t.title}" is due in 10 minutes.`,
-                    icon: '/icons/icon-192.png',
+                    icon: '/logo.png',
+                    badge: '/logo.png',
                     tag: `chroniq-10m-${t.id}`,
                   })
                 })
@@ -161,7 +161,8 @@ export function App() {
                 void navigator.serviceWorker.ready.then((reg) => {
                   void reg.showNotification('Chroniq — Task Due Now', {
                     body: `"${t.title}" is due now!`,
-                    icon: '/icons/icon-192.png',
+                    icon: '/logo.png',
+                    badge: '/logo.png',
                     tag: `chroniq-due-${t.id}`,
                   })
                 })
@@ -476,7 +477,7 @@ export function App() {
         <div className="editorial-container flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-2.5">
             <div className="w-6 h-6 rounded-md overflow-hidden border border-[rgba(45,41,38,0.12)] bg-[#F4EFEB] flex-shrink-0 flex items-center justify-center p-0.5 shadow-xs">
-              <ChroniqLogo className="w-full h-full object-contain" />
+              <img src="/logo.png" alt="Chroniq" className="w-full h-full object-contain" />
             </div>
             <span className="font-semibold text-[#181615] font-serif">Chroniq</span>
             <span>—</span>

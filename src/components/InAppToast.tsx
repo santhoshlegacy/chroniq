@@ -1,5 +1,4 @@
 import React from 'react'
-import { ChroniqLogo } from './ChroniqLogo'
 import type { Task } from '@/types'
 
 interface InAppToastProps {
@@ -24,16 +23,16 @@ export const InAppToast: React.FC<InAppToastProps> = ({
       {/* Top Row: Monogram, Tag & Dismiss */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          {/* Chroniq Monogram Brand Logo */}
+          {/* Chroniq Brand Logo */}
           <div className="w-6 h-6 rounded-md overflow-hidden shadow-xs flex-shrink-0 bg-[#FFFFFF] border border-[rgba(45,41,38,0.12)] p-0.5">
-            <ChroniqLogo className="w-full h-full object-contain" />
+            <img src="/logo.png" alt="Chroniq" className="w-full h-full object-contain" />
           </div>
           <div className="flex items-center gap-1.5">
             <span className="text-[11px] font-bold text-[#181615] uppercase tracking-widest font-mono">
               CHRONIQ
             </span>
             <span className="text-[10px] font-bold text-[#745A2E] tracking-wider uppercase">
-              • {is10m ? '10M PROACTIVE DISPATCH' : 'IMPENDING HORIZON'}
+              • {is10m ? '10M REMINDER' : 'TASK DUE'}
             </span>
           </div>
         </div>

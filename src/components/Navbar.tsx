@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { ChroniqLogo } from './ChroniqLogo'
 import { useSettingsStore } from '@/store/useSettingsStore'
 import { useAuthStore } from '@/store/useAuthStore'
 import { secondsUntilNextReminder, formatCountdown, type CustomScheduleConfig } from '@/lib/reminderUtils'
@@ -88,7 +87,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           className="flex items-center gap-3 cursor-pointer group"
         >
           <div className="w-10 h-10 rounded-xl overflow-hidden border border-[rgba(45,41,38,0.12)] bg-[#F4EFEB] flex-shrink-0 flex items-center justify-center shadow-xs p-1 group-hover:border-[#C2A26F] transition-all">
-            <ChroniqLogo className="w-full h-full object-contain" />
+            <img src="/logo.png" alt="Chroniq" className="w-full h-full object-contain" />
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">

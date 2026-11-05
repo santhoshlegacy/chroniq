@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { ChroniqLogo } from './ChroniqLogo'
 
 interface InstallModalProps {
   isOpen: boolean
@@ -90,7 +89,7 @@ export const InstallModal: React.FC<InstallModalProps> = ({
         <div className="flex items-center justify-between pb-3.5 border-b border-[rgba(45,41,38,0.08)]">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl overflow-hidden border border-[rgba(45,41,38,0.12)] bg-[#FAF7F2] flex-shrink-0 flex items-center justify-center p-1 shadow-xs">
-              <ChroniqLogo className="w-full h-full object-contain" />
+              <img src="/logo.png" alt="Chroniq" className="w-full h-full object-contain" />
             </div>
             <div>
               <h2 className="text-base font-semibold text-[#181615] tracking-tight font-serif">
