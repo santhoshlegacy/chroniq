@@ -124,24 +124,26 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
           <div className="absolute inset-10 rounded-full bg-gradient-to-tr from-[#FEDAA3]/30 via-[#F4EFEB] to-[#E4C18C]/30 blur-md opacity-70" />
 
           {/* Emblem Artwork Container */}
-          <div className="relative w-36 h-36 rounded-full bg-[#FFFFFF] border border-[rgba(45,41,38,0.1)] shadow-xl flex items-center justify-center p-3 z-20 group">
-            <img
-              src={logoUrl}
-              alt="Chroniq"
-              className="w-full h-full object-contain filter drop-shadow-sm transition-transform duration-700 ease-out group-hover:scale-105"
-              onError={(e) => {
-                const target = e.currentTarget
-                const base = import.meta.env.BASE_URL || './'
-                const fallback = base.endsWith('/') ? `${base}logo.png` : `${base}/logo.png`
-                if (target.src !== fallback && !target.src.endsWith(fallback)) {
-                  target.src = fallback
-                } else if (!target.src.endsWith('logo.png')) {
-                  target.src = './logo.png'
-                }
-              }}
-            />
+          <div className="relative w-36 h-36 rounded-full bg-[#F4EFEB] border border-[rgba(45,41,38,0.12)] shadow-xl flex items-center justify-center z-20 group">
+            <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center p-1">
+              <img
+                src={logoUrl}
+                alt="Chroniq"
+                className="w-full h-full object-contain rounded-full filter drop-shadow-sm transition-transform duration-700 ease-out group-hover:scale-105"
+                onError={(e) => {
+                  const target = e.currentTarget
+                  const base = import.meta.env.BASE_URL || './'
+                  const fallback = base.endsWith('/') ? `${base}logo.png` : `${base}/logo.png`
+                  if (target.src !== fallback && !target.src.endsWith(fallback)) {
+                    target.src = fallback
+                  } else if (!target.src.endsWith('logo.png')) {
+                    target.src = './logo.png'
+                  }
+                }}
+              />
+            </div>
             {/* Center Horizon Bead */}
-            <div className="absolute -bottom-1 w-2.5 h-2.5 rounded-full bg-[#745A2E] shadow-sm ring-2 ring-[#FFFFFF]" />
+            <div className="absolute -bottom-1 w-2.5 h-2.5 rounded-full bg-[#745A2E] shadow-sm ring-2 ring-[#F4EFEB]" />
           </div>
         </div>
 

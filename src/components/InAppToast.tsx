@@ -25,11 +25,11 @@ export const InAppToast: React.FC<InAppToastProps> = ({
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           {/* Chroniq Brand Logo */}
-          <div className="w-6 h-6 rounded-md overflow-hidden shadow-xs flex-shrink-0 bg-[#FFFFFF] border border-[rgba(45,41,38,0.12)] p-0.5">
+          <div className="w-6 h-6 rounded-full overflow-hidden shadow-xs flex-shrink-0 bg-[#F4EFEB] border border-[rgba(45,41,38,0.12)] p-0.5">
             <img
               src={logoUrl}
               alt="Chroniq"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain rounded-full"
               onError={(e) => {
                 const target = e.currentTarget
                 const base = import.meta.env.BASE_URL || './'

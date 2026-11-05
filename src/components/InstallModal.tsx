@@ -89,11 +89,11 @@ export const InstallModal: React.FC<InstallModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between pb-3.5 border-b border-[rgba(45,41,38,0.08)]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl overflow-hidden border border-[rgba(45,41,38,0.12)] bg-[#FAF7F2] flex-shrink-0 flex items-center justify-center p-1 shadow-xs">
+            <div className="w-10 h-10 rounded-full overflow-hidden border border-[rgba(45,41,38,0.12)] bg-[#FAF7F2] flex-shrink-0 flex items-center justify-center p-1 shadow-xs">
               <img
                 src={logoUrl}
                 alt="Chroniq"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain rounded-full"
                 onError={(e) => {
                   const target = e.currentTarget
                   const base = import.meta.env.BASE_URL || './'

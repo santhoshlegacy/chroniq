@@ -165,11 +165,11 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
       <div className="bg-[#F4EFEB] border border-[rgba(45,41,38,0.08)] rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl relative overflow-hidden text-[#181615]">
         {/* Brand Header */}
         <div className="text-center space-y-2">
-          <div className="w-14 h-14 mx-auto rounded-2xl border border-[rgba(45,41,38,0.12)] bg-[#FAF7F2] flex items-center justify-center shadow-xs p-2">
+          <div className="w-14 h-14 mx-auto rounded-full overflow-hidden border border-[rgba(45,41,38,0.12)] bg-[#FAF7F2] flex items-center justify-center shadow-xs p-2">
             <img
               src={logoUrl}
               alt="Chroniq"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain rounded-full"
               onError={(e) => {
                 const target = e.currentTarget
                 const base = import.meta.env.BASE_URL || './'

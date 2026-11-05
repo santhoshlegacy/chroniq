@@ -477,11 +477,11 @@ export function App() {
       <footer className="relative z-10 border-t border-[rgba(45,41,38,0.08)] py-8 text-xs text-[#7A746E] bg-[#FAF7F2] mb-16 sm:mb-0">
         <div className="editorial-container flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-2.5">
-            <div className="w-6 h-6 rounded-md overflow-hidden border border-[rgba(45,41,38,0.12)] bg-[#F4EFEB] flex-shrink-0 flex items-center justify-center p-0.5 shadow-xs">
+            <div className="w-6 h-6 rounded-full overflow-hidden border border-[rgba(45,41,38,0.12)] bg-[#F4EFEB] flex-shrink-0 flex items-center justify-center p-0.5 shadow-xs">
               <img
                 src={logoUrl}
                 alt="Chroniq"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain rounded-full"
                 onError={(e) => {
                   const target = e.currentTarget
                   const base = import.meta.env.BASE_URL || './'

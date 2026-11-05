@@ -21,7 +21,7 @@ export const ChroniqLogo: React.FC<ChroniqLogoProps> = ({
       alt={alt}
       width={size}
       height={size}
-      className={`object-contain ${className}`}
+      className={`object-contain rounded-full ${className}`}
       onError={(e) => {
         const target = e.currentTarget
         if (target.src !== fallback && !target.src.endsWith(fallback)) {
