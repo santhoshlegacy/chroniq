@@ -81,7 +81,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-40 w-full header-silk">
-      <div className="editorial-container h-20 flex items-center justify-between">
+      <div className="editorial-container h-20 flex items-center justify-between gap-2 sm:gap-4">
         {/* Brand Monogram & Status */}
         <div
           onClick={() => onSelectTab('tasks')}
@@ -169,13 +169,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
           {/* Push Status Badge */}
           {permission === 'granted' ? (
             <button
               onClick={onOpenSettings}
               type="button"
-              className="p-1.5 px-2.5 text-xs text-[#2D2926] hover:text-[#181615] rounded-lg hover:bg-[#EFECE3] transition flex items-center gap-1.5 cursor-pointer border border-[rgba(45,41,38,0.1)] bg-[#F4EFEB]"
+              className="p-1.5 px-2.5 text-xs text-[#2D2926] hover:text-[#181615] rounded-lg hover:bg-[#EFECE3] transition flex items-center gap-1.5 cursor-pointer border border-[rgba(45,41,38,0.1)] bg-[#F4EFEB] shrink-0"
               title="Push notifications active. Click to configure."
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#4A6B56]" />
@@ -186,7 +186,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={enablePushNotifications}
               disabled={isSettingUpPush}
               type="button"
-              className="p-1.5 px-2.5 text-xs rounded-lg hover:bg-[#EFECE3] transition text-[#745A2E] flex items-center gap-1 cursor-pointer border border-[rgba(45,41,38,0.1)] bg-[#F4EFEB]"
+              className="p-1.5 px-2.5 text-xs rounded-lg hover:bg-[#EFECE3] transition text-[#745A2E] flex items-center gap-1 cursor-pointer border border-[rgba(45,41,38,0.1)] bg-[#F4EFEB] shrink-0"
               title="Enable push notifications"
             >
               <span className="material-symbols-outlined text-sm">
@@ -203,7 +203,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={onOpenInstall}
               type="button"
-              className="px-2.5 py-1.5 rounded-lg bg-[#EFECE3] border border-[rgba(45,41,38,0.1)] text-[#745A2E] text-xs flex items-center gap-1 hover:bg-[#FAF7F2] transition cursor-pointer"
+              className="px-2.5 py-1.5 rounded-lg bg-[#EFECE3] border border-[rgba(45,41,38,0.1)] text-[#745A2E] text-xs flex items-center gap-1 hover:bg-[#FAF7F2] transition cursor-pointer shrink-0"
               title="Installed as standalone application. Click for details."
             >
               <span className="material-symbols-outlined text-sm">verified</span>
@@ -213,7 +213,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={onOpenInstall}
               type="button"
-              className="px-2.5 py-1.5 text-xs rounded-lg bg-[#EFECE3] hover:bg-[#FAF7F2] text-[#181615] border border-[rgba(45,41,38,0.12)] transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+              className="px-2.5 py-1.5 text-xs rounded-lg bg-[#EFECE3] hover:bg-[#FAF7F2] text-[#181615] border border-[rgba(45,41,38,0.12)] transition flex items-center gap-1.5 cursor-pointer shadow-xs shrink-0"
               title="Install Chroniq on your device"
             >
               <span className="material-symbols-outlined text-sm text-[#745A2E]">download</span>
@@ -225,7 +225,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={onOpenNewTask}
             type="button"
-            className="btn-primary px-3.5 py-1.5 text-xs font-semibold rounded-md flex items-center gap-1 cursor-pointer"
+            className="btn-primary px-3 sm:px-3.5 py-1.5 text-xs font-semibold rounded-md flex items-center gap-1 cursor-pointer shrink-0"
           >
             <span className="material-symbols-outlined text-sm font-bold">add</span>
             <span>New Task</span>
@@ -236,17 +236,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={() => onSelectTab('account')}
               type="button"
-              className="p-0.5 rounded-lg hover:ring-2 hover:ring-[#C2A26F]/60 transition flex items-center cursor-pointer border border-[rgba(45,41,38,0.12)] bg-[#F4EFEB]"
+              className="w-8 h-8 rounded-full overflow-hidden shrink-0 flex items-center justify-center border border-[rgba(45,41,38,0.15)] bg-[#F4EFEB] hover:ring-2 hover:ring-[#C2A26F]/60 transition cursor-pointer p-0"
               title={user.email ?? 'Account'}
             >
               {userAvatar ? (
                 <img
                   src={userAvatar}
                   alt={userDisplayName}
-                  className="w-7 h-7 rounded-md object-cover"
+                  className="w-full h-full rounded-full object-cover shrink-0"
                 />
               ) : (
-                <div className="w-7 h-7 rounded-md bg-[#EFECE3] text-[#181615] text-xs font-bold flex items-center justify-center font-serif">
+                <div className="w-full h-full rounded-full bg-[#EFECE3] text-[#181615] text-xs font-bold flex items-center justify-center font-serif shrink-0">
                   {userDisplayName.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -255,7 +255,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={() => onSelectTab('account')}
               type="button"
-              className="px-2.5 py-1.5 text-xs rounded-lg bg-[#EFECE3] hover:bg-[#FAF7F2] text-[#181615] border border-[rgba(45,41,38,0.12)] transition flex items-center gap-1 cursor-pointer"
+              className="px-2.5 py-1.5 text-xs rounded-lg bg-[#EFECE3] hover:bg-[#FAF7F2] text-[#181615] border border-[rgba(45,41,38,0.12)] transition flex items-center gap-1 cursor-pointer shrink-0"
               title="Sign in to sync tasks"
             >
               <span className="material-symbols-outlined text-sm text-[#745A2E]">login</span>
