@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import logoUrl from '@/assets/logo.png'
 
 interface InstallModalProps {
   isOpen: boolean
@@ -89,7 +90,21 @@ export const InstallModal: React.FC<InstallModalProps> = ({
         <div className="flex items-center justify-between pb-3.5 border-b border-[rgba(45,41,38,0.08)]">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl overflow-hidden border border-[rgba(45,41,38,0.12)] bg-[#FAF7F2] flex-shrink-0 flex items-center justify-center p-1 shadow-xs">
-              <img src="/logo.png" alt="Chroniq" className="w-full h-full object-contain" />
+              <img
+                src={logoUrl}
+                alt="Chroniq"
+                className="w-full h-full object-contain"
+                onError={(e) => {
+                  const target = e.currentTarget
+                  const base = import.meta.env.BASE_URL || './'
+                  const fallback = base.endsWith('/') ? `${base}logo.png` : `${base}/logo.png`
+                  if (target.src !== fallback && !target.src.endsWith(fallback)) {
+                    target.src = fallback
+                  } else if (!target.src.endsWith('logo.png')) {
+                    target.src = './logo.png'
+                  }
+                }}
+              />
             </div>
             <div>
               <h2 className="text-base font-semibold text-[#181615] tracking-tight font-serif">

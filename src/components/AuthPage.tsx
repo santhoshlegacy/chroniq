@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import logoUrl from '@/assets/logo.png'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useTaskStore } from '@/store/useTaskStore'
 
@@ -165,7 +166,21 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
         {/* Brand Header */}
         <div className="text-center space-y-2">
           <div className="w-14 h-14 mx-auto rounded-2xl border border-[rgba(45,41,38,0.12)] bg-[#FAF7F2] flex items-center justify-center shadow-xs p-2">
-            <img src="/logo.png" alt="Chroniq" className="w-full h-full object-contain" />
+            <img
+              src={logoUrl}
+              alt="Chroniq"
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                const target = e.currentTarget
+                const base = import.meta.env.BASE_URL || './'
+                const fallback = base.endsWith('/') ? `${base}logo.png` : `${base}/logo.png`
+                if (target.src !== fallback && !target.src.endsWith(fallback)) {
+                  target.src = fallback
+                } else if (!target.src.endsWith('logo.png')) {
+                  target.src = './logo.png'
+                }
+              }}
+            />
           </div>
           <h1 className="text-2xl font-bold text-[#181615] tracking-tight font-serif pt-1">
             {mode === 'signin' ? 'Sign In to Chroniq' : 'Create an Account'}

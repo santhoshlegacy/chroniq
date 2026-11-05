@@ -64,8 +64,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
     const durNum = parseInt(form.duration, 10) || null
     const dueIso = form.dueAt ? new Date(form.dueAt).toISOString() : null
 
+    let success = false
     if (taskToEdit) {
-      await updateTask(taskToEdit.id, {
+      success = await updateTask(taskToEdit.id, {
         title: form.title.trim(),
         description: form.description.trim() || null,
         priority: form.priority,
@@ -75,7 +76,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
         category: form.category,
       })
     } else {
-      await addTask({
+      const created = await addTask({
         title: form.title.trim(),
         description: form.description.trim() || null,
         priority: form.priority,
@@ -86,10 +87,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
         completed_at: null,
         category: form.category,
       })
+      success = !!created
     }
 
     setIsSubmitting(false)
-    onClose()
+    if (success) {
+      onClose()
+    }
   }
 
   const priorityConfigs: Record<TaskPriority, { label: string; dot: string; border: string; bg: string }> = {

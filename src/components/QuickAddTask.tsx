@@ -17,7 +17,7 @@ export const QuickAddTask: React.FC = () => {
     setIsSubmitting(true)
     const todayStr = format(new Date(), 'yyyy-MM-dd')
 
-    await addTask({
+    const created = await addTask({
       title: title.trim(),
       description: null,
       priority,
@@ -29,7 +29,9 @@ export const QuickAddTask: React.FC = () => {
       category: 'General',
     })
 
-    setTitle('')
+    if (created) {
+      setTitle('')
+    }
     setIsSubmitting(false)
   }
 

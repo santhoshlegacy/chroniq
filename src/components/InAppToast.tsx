@@ -1,4 +1,5 @@
 import React from 'react'
+import logoUrl from '@/assets/logo.png'
 import type { Task } from '@/types'
 
 interface InAppToastProps {
@@ -25,7 +26,21 @@ export const InAppToast: React.FC<InAppToastProps> = ({
         <div className="flex items-center gap-2">
           {/* Chroniq Brand Logo */}
           <div className="w-6 h-6 rounded-md overflow-hidden shadow-xs flex-shrink-0 bg-[#FFFFFF] border border-[rgba(45,41,38,0.12)] p-0.5">
-            <img src="/logo.png" alt="Chroniq" className="w-full h-full object-contain" />
+            <img
+              src={logoUrl}
+              alt="Chroniq"
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                const target = e.currentTarget
+                const base = import.meta.env.BASE_URL || './'
+                const fallback = base.endsWith('/') ? `${base}logo.png` : `${base}/logo.png`
+                if (target.src !== fallback && !target.src.endsWith(fallback)) {
+                  target.src = fallback
+                } else if (!target.src.endsWith('logo.png')) {
+                  target.src = './logo.png'
+                }
+              }}
+            />
           </div>
           <div className="flex items-center gap-1.5">
             <span className="text-[11px] font-bold text-[#181615] uppercase tracking-widest font-mono">

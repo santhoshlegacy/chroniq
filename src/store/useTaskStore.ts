@@ -210,7 +210,22 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
           .single()
 
         if (error || !data) {
-          set({ errorMessage: error?.message || 'Failed to save task to server.' })
+          const rawMessage = error?.message || error?.details || ''
+          const isRateLimit =
+            rawMessage.includes('Rate limit exceeded') ||
+            rawMessage.toLowerCase().includes('rate limit') ||
+            (error?.code === 'P0001' && rawMessage.includes('Rate limit'))
+
+          const displayMessage = isRateLimit
+            ? 'Rate limit exceeded. Please wait a minute before adding more tasks.'
+            : (error?.message || 'Failed to save task to server.')
+
+          set({ errorMessage: displayMessage })
+          setTimeout(() => {
+            if (get().errorMessage === displayMessage) {
+              set({ errorMessage: null })
+            }
+          }, 6000)
           return null
         }
 
@@ -218,7 +233,23 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
         set({ tasks: [createdTask, ...get().tasks] })
         return createdTask
       } else {
-        // Local mode
+        // Local mode rate limiting (consistent 30 tasks / minute guard)
+        const oneMinuteAgo = Date.now() - 60 * 1000
+        const recentLocalCount = get().tasks.filter(
+          (t) => t.user_id === 'local-user' && new Date(t.created_at || nowIso).getTime() >= oneMinuteAgo
+        ).length
+
+        if (recentLocalCount >= 30) {
+          const displayMessage = 'Rate limit exceeded. Please wait a minute before adding more tasks.'
+          set({ errorMessage: displayMessage })
+          setTimeout(() => {
+            if (get().errorMessage === displayMessage) {
+              set({ errorMessage: null })
+            }
+          }, 6000)
+          return null
+        }
+
         const newTask: Task = {
           id: tempId,
           user_id: 'local-user',

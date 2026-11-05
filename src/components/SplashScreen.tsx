@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import logoUrl from '@/assets/logo.png'
 
 interface SplashScreenProps {
   onEnter: () => void
@@ -125,9 +126,19 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
           {/* Emblem Artwork Container */}
           <div className="relative w-36 h-36 rounded-full bg-[#FFFFFF] border border-[rgba(45,41,38,0.1)] shadow-xl flex items-center justify-center p-3 z-20 group">
             <img
-              src="/logo.png"
+              src={logoUrl}
               alt="Chroniq"
               className="w-full h-full object-contain filter drop-shadow-sm transition-transform duration-700 ease-out group-hover:scale-105"
+              onError={(e) => {
+                const target = e.currentTarget
+                const base = import.meta.env.BASE_URL || './'
+                const fallback = base.endsWith('/') ? `${base}logo.png` : `${base}/logo.png`
+                if (target.src !== fallback && !target.src.endsWith(fallback)) {
+                  target.src = fallback
+                } else if (!target.src.endsWith('logo.png')) {
+                  target.src = './logo.png'
+                }
+              }}
             />
             {/* Center Horizon Bead */}
             <div className="absolute -bottom-1 w-2.5 h-2.5 rounded-full bg-[#745A2E] shadow-sm ring-2 ring-[#FFFFFF]" />
