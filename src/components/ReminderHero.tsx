@@ -1,22 +1,36 @@
 import React, { useState, useEffect } from 'react'
 import { useSettingsStore } from '@/store/useSettingsStore'
-import { useTaskStore } from '@/store/useTaskStore'
 import {
   getCustomReminderSlots,
-  secondsUntilNextReminder,
-  formatCountdown,
   type CustomScheduleConfig,
 } from '@/lib/reminderUtils'
 import { format, addDays, startOfWeek } from 'date-fns'
 
 export const ReminderHero: React.FC = () => {
   const { preferences, permission, enablePushNotifications } = useSettingsStore()
-  const { tasks } = useTaskStore()
-  const [secondsLeft, setSecondsLeft] = useState<number | null>(null)
   const [todaySlots, setTodaySlots] = useState<ReturnType<typeof getCustomReminderSlots>>([])
-  const [_selectedDayOffset, setSelectedDayOffset] = useState(0)
+  
+  // Compute days of the week starting from Monday
+  const today = new Date()
+  const weekStart = startOfWeek(today, { weekStartsOn: 1 })
+  const todayStr = format(today, 'yyyy-MM-dd')
+  
+  const weekDays = Array.from({ length: 7 }, (_, i) => {
+    const d = addDays(weekStart, i)
+    const isToday = format(d, 'yyyy-MM-dd') === todayStr
+    return {
+      date: d,
+      dayName: format(d, 'EEE'),
+      dayNum: format(d, 'd'),
+      isToday,
+      offset: i,
+    }
+  })
 
-  const pendingToday = tasks.filter((t) => t.status !== 'completed' && t.archived_at === null)
+  const [selectedDayOffset, setSelectedDayOffset] = useState(() => {
+    const found = weekDays.findIndex((w) => w.isToday)
+    return found >= 0 ? found : 0
+  })
 
   useEffect(() => {
     const updateCountdown = () => {
@@ -30,7 +44,6 @@ export const ReminderHero: React.FC = () => {
         quietHoursStart: preferences.quiet_hours_start,
         quietHoursEnd: preferences.quiet_hours_end,
       }
-      setSecondsLeft(secondsUntilNextReminder(now, scheduleConfig))
       setTodaySlots(getCustomReminderSlots(now, scheduleConfig))
     }
 
@@ -38,25 +51,6 @@ export const ReminderHero: React.FC = () => {
     const timer = setInterval(updateCountdown, 1000)
     return () => clearInterval(timer)
   }, [preferences])
-
-  // Compute days of the week starting from Monday
-  const today = new Date()
-  const weekStart = startOfWeek(today, { weekStartsOn: 1 })
-  const weekDays = Array.from({ length: 7 }, (_, i) => {
-    const d = addDays(weekStart, i)
-    const isToday = format(d, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd')
-    return {
-      date: d,
-      dayName: format(d, 'EEE'),
-      dayNum: format(d, 'd'),
-      isToday,
-      offset: i,
-    }
-  })
-
-  const bookedHours = (
-    pendingToday.reduce((acc, t) => acc + (t.estimated_duration_minutes || 30), 0) / 60
-  ).toFixed(1)
 
   return (
     <div className="mb-8 space-y-6">
@@ -82,7 +76,7 @@ export const ReminderHero: React.FC = () => {
         {/* Date Strip Scrollable Carousel */}
         <div className="flex items-center gap-2 overflow-x-auto py-2 scrollbar-none">
           {weekDays.map((wd) => {
-            const isSelected = wd.isToday
+            const isSelected = selectedDayOffset === wd.offset
             return (
               <button
                 key={wd.dayNum}
@@ -106,63 +100,6 @@ export const ReminderHero: React.FC = () => {
               </button>
             )
           })}
-        </div>
-      </section>
-
-      {/* Composure Architecture Card */}
-      <section className="bg-[#F4EFEB] border border-[rgba(45,41,38,0.08)] rounded-2xl p-5 sm:p-6 shadow-xs relative overflow-hidden">
-        <div className="flex items-center justify-between gap-4 relative z-10">
-          <div className="flex flex-col gap-1 min-w-0">
-            <div className="flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[16px] text-[#745A2E]">
-                hourglass_top
-              </span>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-[#745A2E] font-semibold">
-                Daily Progress
-              </span>
-            </div>
-            <h2 className="font-serif text-lg sm:text-xl text-[#181615] leading-tight">
-              Daily Focus: {bookedHours}h Planned
-            </h2>
-            <p className="text-xs text-[#7A746E]">
-              Notifications alert you 10 minutes before deadlines and at each scheduled reminder slot.
-            </p>
-          </div>
-
-          {/* Micro Composure Index Dial */}
-          <div className="flex flex-col items-center justify-center flex-shrink-0 bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] rounded-xl p-3 min-w-[78px] shadow-xs">
-            <div className="relative w-12 h-12 flex items-center justify-center">
-              <svg className="w-12 h-12 -rotate-90 transform" viewBox="0 0 48 48">
-                <circle
-                  className="text-[#EFECE3]"
-                  cx="24"
-                  cy="24"
-                  fill="transparent"
-                  r="20"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                />
-                <circle
-                  className="text-[#745A2E]"
-                  cx="24"
-                  cy="24"
-                  fill="transparent"
-                  r="20"
-                  stroke="currentColor"
-                  strokeDasharray="125.6"
-                  strokeDashoffset="27.6"
-                  strokeLinecap="round"
-                  strokeWidth="3"
-                />
-              </svg>
-              <span className="absolute font-mono text-xs font-bold text-[#181615]">
-                {secondsLeft !== null && secondsLeft > 0 ? formatCountdown(secondsLeft) : '84%'}
-              </span>
-            </div>
-            <span className="text-[9px] uppercase tracking-wider text-[#7A746E] font-mono mt-1">
-              Next Alert
-            </span>
-          </div>
         </div>
       </section>
 

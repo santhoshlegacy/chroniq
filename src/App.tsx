@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Navbar } from './components/Navbar'
 import { BottomNav, type NavTab } from './components/BottomNav'
 import { ReminderHero } from './components/ReminderHero'
-import { StatsGrid } from './components/StatsGrid'
 import { QuickAddTask } from './components/QuickAddTask'
 import { TaskFilterBar } from './components/TaskFilterBar'
 import { TaskList } from './components/TaskList'
@@ -416,12 +415,9 @@ export function App() {
 
           {/* VIEW 2: SCHEDULE */}
           {activeTab === 'schedule' && (
-            <div className="animate-in fade-in duration-200 space-y-8">
-              {/* Reminder Hero & Schedule Strip */}
+            <div className="animate-in fade-in duration-200">
+              {/* Reminder Timeline & Calendar Strip */}
               <ReminderHero />
-
-              {/* Executive Productivity Summary */}
-              <StatsGrid />
             </div>
           )}
 
