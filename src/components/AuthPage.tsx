@@ -72,10 +72,10 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onContinueOffline }) => {
               <img
                 src={userAvatar}
                 alt={userDisplayName}
-                className="w-16 h-16 rounded-2xl object-cover border border-[rgba(45,41,38,0.12)] shadow-xs"
+                className="w-16 h-16 rounded-full object-cover shrink-0 border border-[rgba(45,41,38,0.12)] shadow-xs"
               />
             ) : (
-              <div className="w-16 h-16 rounded-2xl bg-[#EFECE3] border border-[rgba(45,41,38,0.12)] text-[#181615] text-xl font-bold flex items-center justify-center shadow-xs font-serif">
+              <div className="w-16 h-16 rounded-full bg-[#EFECE3] border border-[rgba(45,41,38,0.12)] text-[#181615] text-xl font-bold flex items-center justify-center shadow-xs font-serif shrink-0">
                 {userDisplayName.charAt(0).toUpperCase()}
               </div>
             )}

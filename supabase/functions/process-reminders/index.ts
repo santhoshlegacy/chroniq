@@ -780,10 +780,17 @@ Deno.serve(async (req: Request) => {
     { auth: { persistSession: false } },
   )
 
-  // VAPID credentials
-  const rawVapidPublicKey = Deno.env.get('VAPID_PUBLIC_KEY') ?? Deno.env.get('VITE_VAPID_PUBLIC_KEY')
-  const rawVapidPrivateKey = Deno.env.get('VAPID_PRIVATE_KEY')
-  const rawVapidSubject = Deno.env.get('VAPID_SUBJECT')
+  // VAPID credentials (with robust fallback to project keys to guarantee background direct HTTP POSTs)
+  const rawVapidPublicKey =
+    Deno.env.get('VAPID_PUBLIC_KEY') ??
+    Deno.env.get('VITE_VAPID_PUBLIC_KEY') ??
+    'BIlT_Kg9FG5iAz6B0sgyeSWYsydSRFYj5Gw0uy5p_gi00TTWayr77evwKM3IuCQpXztH6Q7b_1MkAESJGkqG0gY'
+  const rawVapidPrivateKey =
+    Deno.env.get('VAPID_PRIVATE_KEY') ??
+    'CC9Pi-AvpWiraFbwxXRLEPmUg-jCLmbeDsT_yfgdFUQ'
+  const rawVapidSubject =
+    Deno.env.get('VAPID_SUBJECT') ??
+    'mailto:notifications@chroniq.app'
 
   const vapidPublicKey = rawVapidPublicKey
     ? rawVapidPublicKey.trim().replace(/^["']|["']$/g, '').trim()

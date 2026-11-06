@@ -19,6 +19,12 @@ interface AuthStore {
   logout: () => Promise<void>
   clearAuthError: () => void
   refreshProfile: () => Promise<void>
+  updateProfile: (updates: {
+    display_name?: string
+    avatar_url?: string
+    full_name?: string
+    timezone?: string
+  }) => Promise<{ success: boolean; error?: string }>
 }
 
 export const useAuthStore = create<AuthStore>((set, get) => ({
@@ -169,6 +175,76 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       return
     }
     set({ user: null, session: null, profile: null, isLoading: false })
+  },
+
+  updateProfile: async (updates) => {
+    const { user, profile } = get()
+    if (!user) {
+      return { success: false, error: 'User must be signed in to update profile.' }
+    }
+
+    try {
+      set({ isLoading: true, authError: null })
+
+      // 1. Update Supabase Auth user_metadata
+      const { data: authData, error: authError } = await supabase.auth.updateUser({
+        data: {
+          full_name: updates.full_name ?? updates.display_name,
+          display_name: updates.display_name,
+          avatar_url: updates.avatar_url,
+        },
+      })
+
+      if (authError) {
+        set({ authError: authError.message, isLoading: false })
+        return { success: false, error: authError.message }
+      }
+
+      // 2. Update profiles table in Supabase DB
+      const updatedProfilePayload: Record<string, any> = {
+        id: user.id,
+        updated_at: new Date().toISOString(),
+      }
+      if (updates.display_name !== undefined) updatedProfilePayload.display_name = updates.display_name
+      if (updates.full_name !== undefined) updatedProfilePayload.full_name = updates.full_name
+      if (updates.avatar_url !== undefined) updatedProfilePayload.avatar_url = updates.avatar_url
+      if (updates.timezone !== undefined) updatedProfilePayload.timezone = updates.timezone
+
+      const { error: dbError } = await (supabase
+        .from('profiles') as any)
+        .upsert(updatedProfilePayload, { onConflict: 'id' })
+
+      if (dbError) {
+        console.warn('[useAuthStore] Profile DB update note:', dbError.message)
+      }
+
+      // 3. Update store state
+      const mergedProfile: Profile = {
+        ...(profile || {
+          id: user.id,
+          display_name: updates.display_name ?? 'User',
+          email: user.email ?? null,
+          avatar_url: updates.avatar_url ?? null,
+          full_name: updates.full_name ?? null,
+          timezone: updates.timezone ?? 'Asia/Kolkata',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }),
+        ...updatedProfilePayload,
+      }
+
+      set({
+        user: authData.user ?? user,
+        profile: mergedProfile,
+        isLoading: false,
+      })
+
+      return { success: true }
+    } catch (err: any) {
+      const msg = err?.message || 'Failed to update profile'
+      set({ authError: msg, isLoading: false })
+      return { success: false, error: msg }
+    }
   },
 
   clearAuthError: () => set({ authError: null }),

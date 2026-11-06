@@ -31,57 +31,61 @@ self.addEventListener('activate', (event) => {
 // ─── Push Notification Handler ────────────────────────────────────────────────
 
 self.addEventListener('push', (event) => {
-  let title = 'Chroniq — Reminder'
-  let body = 'You have pending tasks waiting in Chroniq.'
-  let icon = getAssetUrl('logo.png')
-  let badge = getAssetUrl('logo.png')
-  let targetUrl = self.location.href
-  let tag = 'chroniq-reminder'
-  let data = {}
+  event.waitUntil(
+    (async () => {
+      let title = 'Chroniq — Reminder'
+      let body = 'You have pending tasks waiting in Chroniq.'
+      let targetUrl = self.registration.scope || self.location.href
+      let icon = getAssetUrl('logo.png')
+      let badge = getAssetUrl('logo.png')
+      let tag = 'chroniq-reminder'
+      let data = {}
 
-  if (event.data) {
-    try {
-      const json = event.data.json()
-      if (json && typeof json === 'object') {
-        if (json.title) title = json.title
-        if (json.body) body = json.body
-        if (json.icon) icon = getAssetUrl(json.icon)
-        if (json.badge) badge = getAssetUrl(json.badge)
-        if (json.url) targetUrl = getAssetUrl(json.url)
-        if (json.tag) tag = json.tag
-        data = { ...json }
-      } else {
-        const text = event.data.text()
-        if (text) body = text
+      if (event.data) {
+        try {
+          const json = event.data.json()
+          if (json && typeof json === 'object') {
+            if (json.title) title = json.title
+            if (json.body) body = json.body
+            if (json.icon) icon = getAssetUrl(json.icon)
+            if (json.badge) badge = getAssetUrl(json.badge)
+            if (json.url) targetUrl = getAssetUrl(json.url)
+            if (json.tag) tag = json.tag
+            data = { ...json }
+          } else {
+            const text = event.data.text()
+            if (text) body = text
+          }
+        } catch {
+          // Graceful fallback for non-JSON or plain text payloads
+          try {
+            const text = event.data.text()
+            if (text) body = text
+          } catch (err) {
+            console.warn('[SW] Could not parse push payload as text:', err)
+          }
+        }
       }
-    } catch {
-      // Graceful fallback for non-JSON or plain text payloads
-      try {
-        const text = event.data.text()
-        if (text) body = text
-      } catch (err) {
-        console.warn('[SW] Could not parse push payload as text:', err)
+
+      data.url = targetUrl
+
+      const notificationOptions = {
+        body,
+        icon,
+        badge,
+        tag,
+        renotify: true,
+        requireInteraction: true,
+        data,
+        actions: [
+          { action: 'open', title: 'View Tasks' },
+          { action: 'dismiss', title: 'Dismiss' },
+        ],
       }
-    }
-  }
 
-  data.url = targetUrl
-
-  const notificationOptions = {
-    body,
-    icon,
-    badge,
-    tag,
-    renotify: true,
-    requireInteraction: false,
-    data,
-    actions: [
-      { action: 'open', title: 'View Tasks' },
-      { action: 'dismiss', title: 'Dismiss' },
-    ],
-  }
-
-  event.waitUntil(self.registration.showNotification(title, notificationOptions))
+      await self.registration.showNotification(title, notificationOptions)
+    })()
+  )
 })
 
 // ─── Notification Click Handler ──────────────────────────────────────────────

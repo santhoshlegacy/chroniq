@@ -68,6 +68,9 @@ export interface NotificationPreferences {
   eligible_task_types: EligibleTaskType
   push_enabled: boolean
   voice_enabled: boolean
+  warning_10m_enabled?: boolean
+  overdue_alert_enabled?: boolean
+  recurring_3h_enabled?: boolean
   created_at: string
   updated_at: string
 }

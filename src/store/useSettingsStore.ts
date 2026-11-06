@@ -43,6 +43,9 @@ function getInitialPreferences(): NotificationPreferences {
     eligible_task_types: 'all_pending',
     push_enabled: true,
     voice_enabled: false,
+    warning_10m_enabled: true,
+    overdue_alert_enabled: true,
+    recurring_3h_enabled: true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   }
