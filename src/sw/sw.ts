@@ -16,97 +16,30 @@ declare const self: ServiceWorkerGlobalScope
 self.skipWaiting()
 clientsClaim()
 
-// ─── Extended notification type ──────────────────────────────────────────────
-interface SWNotificationOptions extends NotificationOptions {
-  actions?: Array<{ action: string; title: string; icon?: string }>
-  badge?: string
-  renotify?: boolean
-}
-
 // ─── Precaching (injected by vite-plugin-pwa) ────────────────────────────────
 cleanupOutdatedCaches()
 precacheAndRoute(self.__WB_MANIFEST)
 
-// Dynamically compute asset URLs relative to the service worker location
-const getAssetUrl = (relativePath: string): string => {
-  try {
-    return new URL(relativePath, self.location.href).href
-  } catch {
-    return relativePath
-  }
-}
-
-// ─── Push Notifications ───────────────────────────────────────────────────────
-// Unconditional Native Push Execution:
-// The push event MUST ALWAYS execute event.waitUntil(self.registration.showNotification(...))
-// immediately, regardless of client state. We strictly avoid suppressing alerts based on
-// clients.matchAll() or tab visibility so background lock-screen notifications reliably fire.
-interface ChroniqPushPayload {
-  title?: string
-  body?: string
-  url?: string
-  icon?: string
-  badge?: string
-  tag?: string
-  taskCount?: number
-  urgentCount?: number
-}
+// ─── Push Notifications (Bulletproof High-Priority Display) ─────────────────────
 
 self.addEventListener('push', (event: PushEvent) => {
+  console.log('[sw] push received', new Date().toISOString())
+  let data: any = {}
+  try {
+    data = event.data ? event.data.json() : {}
+  } catch (_e) {
+    data = { body: event.data?.text() }
+  }
+
   event.waitUntil(
-    (async () => {
-      let title = 'Chroniq — Reminder'
-      let body = 'You have pending tasks in Chroniq.'
-      let targetUrl = self.registration.scope || self.location.href
-      let icon = getAssetUrl('icons/icon-192.png')
-      let badge = getAssetUrl('icons/badge-72.png')
-      let tag = 'chroniq-reminder'
-      let data: Record<string, unknown> = {}
-
-      if (event.data) {
-        try {
-          const json = event.data.json() as ChroniqPushPayload
-          if (json && typeof json === 'object') {
-            if (json.title) title = json.title
-            if (json.body) body = json.body
-            if (json.icon) icon = getAssetUrl(json.icon)
-            if (json.badge) badge = getAssetUrl(json.badge)
-            if (json.url) targetUrl = getAssetUrl(json.url)
-            if (json.tag) tag = json.tag
-            data = { ...json }
-          } else {
-            const text = event.data.text()
-            if (text) body = text
-          }
-        } catch {
-          // JSON parsing failed; fall back safely to plain text
-          try {
-            const text = event.data.text()
-            if (text) body = text
-          } catch (textErr) {
-            console.warn('[SW] Could not parse push payload as text:', textErr)
-          }
-        }
-      }
-
-      data.url = targetUrl
-
-      const notificationOptions: SWNotificationOptions = {
-        body,
-        icon,
-        badge,
-        tag,
-        renotify: true,
-        requireInteraction: true,
-        data,
-        actions: [
-          { action: 'open', title: 'View Tasks' },
-          { action: 'dismiss', title: 'Dismiss' },
-        ],
-      }
-
-      await self.registration.showNotification(title, notificationOptions as NotificationOptions)
-    })()
+    self.registration
+      .showNotification(data.title || 'Chroniq', {
+        body: data.body || 'Task reminder',
+        icon: self.registration.scope + 'assets/logo.png',
+        data: data,
+      })
+      .then(() => console.log('[sw] showNotification OK'))
+      .catch((e: unknown) => console.log('[sw] showNotification FAILED', String(e)))
   )
 })
 

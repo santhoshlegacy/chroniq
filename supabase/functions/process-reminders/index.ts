@@ -496,41 +496,69 @@ function isQuietHours(currentMinutes: number, enabled?: boolean, start?: string,
 }
 
 /**
- * Determine if a user has a reminder slot due in Asia/Kolkata (or user's timezone).
- * Extracts current time in Asia/Kolkata and evaluates active slots with a 5-minute grace window.
+ * Determine if a user has custom reminder slots due in their configured timezone (default Asia/Kolkata).
+ * Resolves custom_slots / active_slots and matches if current local time is within the window [0, windowMinutes].
  */
-function getDueSlot(pref: NotificationPreference, nowUtc: Date): Date | null {
+function getDueCustomSlots(
+  pref: NotificationPreference,
+  nowUtc: Date,
+  windowMinutes: number = 15,
+): Array<{ timeStr: string; slotUtc: Date }> {
   const timeZone = pref.timezone?.trim() || 'Asia/Kolkata'
   const local = getLocalTimeDetails(nowUtc, timeZone)
 
-  // Check day of week
+  // Check active days of the week (1 = Monday, 7 = Sunday)
   if (pref.active_days && pref.active_days.length > 0 && !pref.active_days.includes(local.isoDay)) {
-    return null
+    return []
   }
 
   // Check quiet hours
   if (isQuietHours(local.currentMinutes, pref.quiet_hours_enabled, pref.quiet_hours_start, pref.quiet_hours_end)) {
-    return null
+    return []
   }
 
-  // Use custom_slots if present, otherwise default to standard slots
-  const slotsToEvaluate =
-    pref.active_slots && pref.active_slots.length > 0
+  // 1. Resolve custom slots list from preferences
+  const userCustomSlots: string[] =
+    Array.isArray(pref.custom_slots) && pref.custom_slots.length > 0
+      ? pref.custom_slots
+      : (Array.isArray(pref.active_slots) && pref.active_slots.length > 0
+          ? pref.active_slots
+          : ['09:00', '12:00', '15:00', '18:00', '21:00'])
+
+  // 2. Resolve active slots filter
+  const activeSlotsSet = new Set<string>(
+    Array.isArray(pref.active_slots) && pref.active_slots.length > 0
       ? pref.active_slots
-      : ['09:00', '12:00', '15:00', '18:00', '21:00']
+      : userCustomSlots
+  )
+
+  const slotsToEvaluate = userCustomSlots.filter((slot) => activeSlotsSet.has(slot))
+  const dueSlots: Array<{ timeStr: string; slotUtc: Date }> = []
 
   for (const timeStr of slotsToEvaluate) {
-    const slotMinutes = hhmmToMinutes(timeStr)
-    const diff = local.currentMinutes - slotMinutes
+    try {
+      const slotMinutes = hhmmToMinutes(timeStr)
+      const diff = local.currentMinutes - slotMinutes
 
-    // Strict 2-minute window: matches if current local time is within [slot, slot + 2 minutes)
-    // Never matches after the slot window has passed!
-    if (diff >= 0 && diff < 2) {
-      return fromZonedTime(`${local.dateStr}T${timeStr}:00`, timeZone)
+      // Matches if slot time has arrived and is within the cron window [0, windowMinutes]
+      if (diff >= 0 && diff <= windowMinutes) {
+        const slotUtc = fromZonedTime(`${local.dateStr}T${timeStr}:00`, timeZone)
+        dueSlots.push({ timeStr, slotUtc })
+      }
+    } catch {
+      // Safely ignore invalid slot format
     }
   }
 
-  return null
+  return dueSlots
+}
+
+/**
+ * Backwards-compatible single slot resolver.
+ */
+function getDueSlot(pref: NotificationPreference, nowUtc: Date): Date | null {
+  const due = getDueCustomSlots(pref, nowUtc, 15)
+  return due.length > 0 ? due[0].slotUtc : null
 }
 
 /**
@@ -608,11 +636,14 @@ async function dispatchPushToSubscriber(
         continue
       }
 
-      // Stage 4, 5, 6: Payload encryption, Push dispatch & Response processing
+      // Stage 4, 5, 6: Payload encryption, Push dispatch & Response processing (High-Priority Web Push)
       try {
         const pushResult = await subscriber.pushTextMessage(payload, {
           ttl: 3600,
-          urgency: 'normal',
+          urgency: 'high',
+          headers: {
+            'Urgency': 'high',
+          },
         })
 
         const acceptedStatus: number | null =
@@ -852,11 +883,11 @@ Deno.serve(async (req: Request) => {
     console.warn('[process-reminders] Auto-purge 30d completed tasks note:', purgeErr)
   }
 
-  // Fetch enabled notification preferences in bounded batch
+  // Fetch active notification preferences in bounded batch (checks enabled or push_enabled)
   const { data: prefs, error: prefsError } = await supabase
     .from('notification_preferences')
     .select('*')
-    .eq('enabled', true)
+    .or('enabled.eq.true,push_enabled.eq.true')
     .limit(500)
 
   if (prefsError) {
@@ -1084,139 +1115,155 @@ Deno.serve(async (req: Request) => {
       }
     }
 
-    // ── 3. Scheduled Daily Cadence Slot Check ──
-    const dueSlot = getDueSlot(pref, nowUtc)
-    if (!dueSlot) continue
+    // ── Task 4: Custom Reminder Slots (Schedule View Custom Slots) ──
+    try {
+      const dueSlots = getDueCustomSlots(pref, nowUtc, 15)
 
-    const occurrenceKey = buildOccurrenceKey(pref.user_id, dueSlot, pref.timezone)
+      for (const { timeStr, slotUtc } of dueSlots) {
+        const local = getLocalTimeDetails(nowUtc, pref.timezone || 'Asia/Kolkata')
+        const occurrenceKey = `${pref.user_id}:${local.dateStr}T${timeStr}`
 
-    // Atomic claim via INSERT ... ON CONFLICT DO NOTHING
-    const { data: claimed } = await supabase
-      .from('notification_events')
-      .insert({
-        user_id: pref.user_id,
-        schedule_occurrence_key: occurrenceKey,
-        scheduled_at: dueSlot.toISOString(),
-        result: 'pending',
-        delivery_mode: 'push',
-      })
-      .select('id')
-      .maybeSingle()
-
-    if (!claimed) {
-      // Concurrently claimed by another worker
-      skipped++
-      continue
-    }
-
-    const eventId = claimed.id as string
-    const localToday = getLocalTimeDetails(nowUtc, pref.timezone || 'Asia/Kolkata').dateStr
-
-    // Fetch user tasks
-    let taskQuery = supabase
-      .from('tasks')
-      .select('id, title, priority, status, scheduled_date, due_at, archived_at')
-      .eq('user_id', pref.user_id)
-      .neq('status', 'completed')
-      .is('archived_at', null)
-
-    if (pref.eligible_task_types === 'urgent_only') {
-      taskQuery = taskQuery.in('priority', ['urgent', 'high'])
-    }
-
-    const { data: tasks, error: tasksError } = await taskQuery
-
-    if (tasksError) {
-      await supabase
-        .from('notification_events')
-        .update({ result: 'failed', error_category: 'db_query_error', attempted_at: new Date().toISOString() })
-        .eq('id', eventId)
-      errors++
-      continue
-    }
-
-    const eligibleTasks = (tasks ?? []).filter((t: any) => {
-      if (pref.eligible_task_types === 'due_today_or_overdue') {
-        const isScheduledToday = t.scheduled_date && t.scheduled_date <= localToday
-        const dueTimestamp = t.due_at ? parseTaskTimestamp(t.due_at, pref.timezone || 'Asia/Kolkata') : NaN
-        const isDuePast = !isNaN(dueTimestamp) && dueTimestamp <= nowUtc.getTime()
-        return isScheduledToday || isDuePast
-      }
-      return t.scheduled_date === null || t.scheduled_date <= localToday
-    }) as EligibleTask[]
-
-    if (eligibleTasks.length === 0 && pref.suppress_when_no_tasks) {
-      await supabase
-        .from('notification_events')
-        .update({
-          result: 'no_tasks',
-          task_count_snapshot: 0,
-          attempted_at: new Date().toISOString(),
-        })
-        .eq('id', eventId)
-      skipped++
-      continue
-    }
-
-    // Build notification payload
-    const urgentCount = eligibleTasks.filter((t) => t.priority === 'urgent' || t.priority === 'high').length
-    const topTask = eligibleTasks.find((t) => t.priority === 'urgent') ?? eligibleTasks[0]
-    const taskWord = eligibleTasks.length === 1 ? 'task' : 'tasks'
-
-    let body = `You have ${eligibleTasks.length} ${taskWord} waiting.`
-    if (topTask) {
-      body += ` Next: ${topTask.title}`
-    }
-
-    const payload = JSON.stringify({
-      title: 'Chroniq — Reminder',
-      body,
-      url: '/',
-      taskCount: eligibleTasks.length,
-      urgentCount,
-    })
-
-    const pushRes = await dispatchPushToSubscriber(
-      supabase,
-      appServer,
-      pref.user_id,
-      eventId,
-      payload,
-      eligibleTasks.length,
-      pref.push_enabled !== false,
-    )
-
-    if (pushRes.success) {
-      sent++
-    } else {
-      errors++
-    }
-
-    // Check optional telephony voice call preference
-    if (pref.voice_enabled) {
-      const { data: voicePref } = await supabase
-        .from('voice_reminder_preferences')
-        .select('*')
-        .eq('user_id', pref.user_id)
-        .eq('phone_call_enabled', true)
-        .eq('phone_verified', true)
-        .maybeSingle()
-
-      if (voicePref && voicePref.phone_number && voicePref.phone_consent_given_at) {
-        await supabase
+        // Atomic claim via INSERT ... ON CONFLICT DO NOTHING
+        const { data: claimedSlot } = await supabase
           .from('notification_events')
           .insert({
             user_id: pref.user_id,
-            schedule_occurrence_key: `${occurrenceKey}:voice_call`,
-            scheduled_at: dueSlot.toISOString(),
-            attempted_at: new Date().toISOString(),
-            result: 'sent',
-            delivery_mode: 'phone_call',
-            telephony_provider: voicePref.provider_preference,
-            telephony_status: 'initiated',
-            telephony_cost_estimate: 0.014,
+            schedule_occurrence_key: occurrenceKey,
+            scheduled_at: slotUtc.toISOString(),
+            result: 'pending',
+            delivery_mode: 'push',
           })
+          .select('id')
+          .maybeSingle()
+
+        if (!claimedSlot) {
+          // Concurrently claimed by another worker or already dispatched for this date & slot
+          continue
+        }
+
+        const eventId = claimedSlot.id as string
+
+        // Fetch user tasks for the reminder slot payload
+        let taskQuery = supabase
+          .from('tasks')
+          .select('id, title, priority, status, scheduled_date, due_at, archived_at')
+          .eq('user_id', pref.user_id)
+          .neq('status', 'completed')
+          .is('archived_at', null)
+
+        if (pref.eligible_task_types === 'urgent_only') {
+          taskQuery = taskQuery.in('priority', ['urgent', 'high'])
+        }
+
+        const { data: tasks, error: tasksError } = await taskQuery
+
+        if (tasksError) {
+          await supabase
+            .from('notification_events')
+            .update({
+              result: 'failed',
+              error_category: 'db_query_error',
+              attempted_at: nowUtc.toISOString(),
+            })
+            .eq('id', eventId)
+          errors++
+          continue
+        }
+
+        const eligibleTasks = (tasks ?? []).filter((t: any) => {
+          if (pref.eligible_task_types === 'due_today_or_overdue') {
+            const isScheduledToday = t.scheduled_date && t.scheduled_date <= local.dateStr
+            const dueTimestamp = t.due_at ? parseTaskTimestamp(t.due_at, pref.timezone || 'Asia/Kolkata') : NaN
+            const isDuePast = !isNaN(dueTimestamp) && dueTimestamp <= nowUtc.getTime()
+            return isScheduledToday || isDuePast
+          }
+          return t.scheduled_date === null || t.scheduled_date <= local.dateStr
+        }) as EligibleTask[]
+
+        if (eligibleTasks.length === 0 && pref.suppress_when_no_tasks) {
+          await supabase
+            .from('notification_events')
+            .update({
+              result: 'no_tasks',
+              task_count_snapshot: 0,
+              attempted_at: nowUtc.toISOString(),
+            })
+            .eq('id', eventId)
+          skipped++
+          continue
+        }
+
+        // Build notification payload
+        const urgentCount = eligibleTasks.filter((t) => t.priority === 'urgent' || t.priority === 'high').length
+        const topTask = eligibleTasks.find((t) => t.priority === 'urgent') ?? eligibleTasks[0]
+        const taskWord = eligibleTasks.length === 1 ? 'task' : 'tasks'
+
+        let body = eligibleTasks.length > 0
+          ? `Schedule Slot ${timeStr}: You have ${eligibleTasks.length} ${taskWord} waiting.${topTask ? ` Next: "${topTask.title}"` : ''}`
+          : `Schedule Slot ${timeStr}: All caught up! No pending tasks right now.`
+
+        const payload = JSON.stringify({
+          title: 'Chroniq — Schedule Reminder',
+          body,
+          url: '/',
+          taskCount: eligibleTasks.length,
+          urgentCount,
+          tag: `chroniq-slot-${timeStr}`,
+        })
+
+        const pushRes = await dispatchPushToSubscriber(
+          supabase,
+          appServer,
+          pref.user_id,
+          eventId,
+          payload,
+          eligibleTasks.length,
+          pref.push_enabled !== false,
+        )
+
+        // Mark slot strictly as "sent" (or "failed") in database so it never duplicates on subsequent cron ticks
+        await supabase
+          .from('notification_events')
+          .update({
+            result: pushRes.success ? 'sent' : 'failed',
+            push_status_code: pushRes.success ? 200 : 500,
+            attempted_at: nowUtc.toISOString(),
+            task_count_snapshot: eligibleTasks.length,
+          })
+          .eq('id', eventId)
+
+        if (pushRes.success) sent++
+        else errors++
+
+        // Optional telephony voice call preference
+        if (pref.voice_enabled) {
+          const { data: voicePref } = await supabase
+            .from('voice_reminder_preferences')
+            .select('*')
+            .eq('user_id', pref.user_id)
+            .eq('phone_call_enabled', true)
+            .eq('phone_verified', true)
+            .maybeSingle()
+
+          if (voicePref && voicePref.phone_number && voicePref.phone_consent_given_at) {
+            await supabase
+              .from('notification_events')
+              .insert({
+                user_id: pref.user_id,
+                schedule_occurrence_key: `${occurrenceKey}:voice_call`,
+                scheduled_at: slotUtc.toISOString(),
+                attempted_at: nowUtc.toISOString(),
+                result: 'sent',
+                delivery_mode: 'phone_call',
+                telephony_provider: voicePref.provider_preference,
+                telephony_status: 'initiated',
+                telephony_cost_estimate: 0.014,
+              })
+          }
+        }
       }
+    } catch (slotErr: unknown) {
+      console.warn('[process-reminders] Custom reminder slots check note:', slotErr)
     }
   }
 
