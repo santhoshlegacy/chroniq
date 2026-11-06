@@ -39,8 +39,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     permission,
     isSettingUpPush,
     enablePushNotifications,
-    sendTestNotification,
-    testNotificationStatus,
     errorMessage,
     clearError,
     updatePreferences,
@@ -77,8 +75,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       setProfileTimezone(profile?.timezone || preferences.timezone || 'Asia/Kolkata')
     }
   }, [profile, user, preferences.timezone])
-
-  const pendingCount = tasks.filter((t) => t.status !== 'completed' && t.archived_at === null).length
 
   // Armed background reminder calculations
   const nowMs = Date.now()
@@ -326,15 +322,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
               <div className="flex items-center gap-2 shrink-0 self-start sm:self-center">
                 {permission === 'granted' ? (
-                  <button
-                    type="button"
-                    onClick={() => sendTestNotification(pendingCount)}
-                    className="px-3.5 py-2 rounded-xl bg-[#1C1917] hover:bg-[#2D2926] text-[#FAF7F2] text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs transition-all active:scale-[0.98]"
-                    title="Send an immediate test alert to this device"
-                  >
-                    <span className="material-symbols-outlined text-sm text-[#FEDAA3]">send</span>
-                    <span>Send Test Alert</span>
-                  </button>
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#EFECE3] border border-[#4A6B56]/20 text-[#4A6B56] text-xs font-semibold shadow-xs">
+                    <span className="w-2 h-2 rounded-full bg-[#4A6B56]" />
+                    <span>Active &amp; Armed</span>
+                  </div>
                 ) : permission === 'denied' ? (
                   <button
                     type="button"
@@ -361,13 +352,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 )}
               </div>
             </div>
-
-            {testNotificationStatus && (
-              <div className="pt-2 border-t border-[rgba(45,41,38,0.08)] flex items-center gap-2 text-xs text-[#4A6B56] font-mono animate-in fade-in duration-200">
-                <span className="material-symbols-outlined text-sm">check_circle</span>
-                <span>{testNotificationStatus}</span>
-              </div>
-            )}
 
             {errorMessage && (
               <div className="pt-2 border-t border-[rgba(45,41,38,0.08)] flex items-center justify-between text-xs text-[#BA1A1A] font-mono animate-in fade-in duration-200">

@@ -72,6 +72,7 @@ export function App() {
     // Capture beforeinstallprompt
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()
+      ;(window as any).__deferredInstallPrompt = e
       setDeferredPrompt(e)
     }
 

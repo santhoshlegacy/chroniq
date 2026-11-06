@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import type { Task, TaskPriority } from '@/types'
 import { useTaskStore } from '@/store/useTaskStore'
-import { format } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 
 interface TaskModalProps {
   isOpen: boolean
@@ -45,7 +45,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, taskToEdi
         description: taskToEdit.description ?? '',
         priority: taskToEdit.priority,
         scheduledDate: taskToEdit.scheduled_date ?? format(new Date(), 'yyyy-MM-dd'),
-        dueAt: taskToEdit.due_at ? taskToEdit.due_at.slice(0, 16) : '',
+        dueAt: taskToEdit.due_at ? format(parseISO(taskToEdit.due_at), "yyyy-MM-dd'T'HH:mm") : '',
         duration: taskToEdit.estimated_duration_minutes ? String(taskToEdit.estimated_duration_minutes) : '30',
         category: taskToEdit.category ?? 'Productivity',
       })

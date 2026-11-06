@@ -36,8 +36,8 @@ self.addEventListener('push', (event) => {
       let title = 'Chroniq — Reminder'
       let body = 'You have pending tasks waiting in Chroniq.'
       let targetUrl = self.registration.scope || self.location.href
-      let icon = getAssetUrl('logo.png')
-      let badge = getAssetUrl('logo.png')
+      let icon = getAssetUrl('icons/icon-192.png')
+      let badge = getAssetUrl('icons/badge-72.png')
       let tag = 'chroniq-reminder'
       let data = {}
 

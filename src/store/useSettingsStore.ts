@@ -243,10 +243,14 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
     try {
       const { data: { session } } = await supabase.auth.getSession()
       if (session?.user) {
-        const { error } = await (supabase.from('notification_preferences') as any).upsert({
-          ...updated,
-          user_id: session.user.id,
-        })
+        const { id, ...cleanPayload } = updated as any
+        const { error } = await (supabase.from('notification_preferences') as any).upsert(
+          {
+            ...cleanPayload,
+            user_id: session.user.id,
+          },
+          { onConflict: 'user_id' }
+        )
         if (error) {
           set({ errorMessage: `Failed to save reminder preferences: ${error.message}` })
         }
@@ -268,10 +272,14 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
     try {
       const { data: { session } } = await supabase.auth.getSession()
       if (session?.user) {
-        const { error } = await (supabase.from('voice_reminder_preferences') as any).upsert({
-          ...updated,
-          user_id: session.user.id,
-        })
+        const { id, ...cleanPayload } = updated as any
+        const { error } = await (supabase.from('voice_reminder_preferences') as any).upsert(
+          {
+            ...cleanPayload,
+            user_id: session.user.id,
+          },
+          { onConflict: 'user_id' }
+        )
         if (error) {
           set({ errorMessage: `Failed to save voice preferences: ${error.message}` })
         }

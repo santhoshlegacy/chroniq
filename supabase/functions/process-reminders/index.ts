@@ -39,6 +39,10 @@ interface NotificationPreference {
   eligible_task_types?: string
   push_enabled?: boolean
   voice_enabled?: boolean
+  warning_10m_enabled?: boolean
+  advance_warnings_enabled?: boolean
+  overdue_alert_enabled?: boolean
+  recurring_3h_enabled?: boolean
 }
 
 interface PushSubscription {
@@ -866,8 +870,9 @@ Deno.serve(async (req: Request) => {
     processed++
 
     // ── Task 1: 10-15 Minute Advance Window Warning (Checked via warning_sent = false) ──
-    try {
-      const { data: warningTasks } = await supabase
+    if (pref.warning_10m_enabled !== false && pref.advance_warnings_enabled !== false) {
+      try {
+        const { data: warningTasks } = await supabase
         .from('tasks')
         .select('id, title, priority, status, due_at, warning_sent')
         .eq('user_id', pref.user_id)
@@ -932,13 +937,15 @@ Deno.serve(async (req: Request) => {
           }
         }
       }
-    } catch (warnErr: unknown) {
-      console.warn('[process-reminders] 10m advance window check note:', warnErr)
+      } catch (warnErr: unknown) {
+        console.warn('[process-reminders] 10m advance window check note:', warnErr)
+      }
     }
 
     // ── Task 3: Overdue / Due Time Passed Notification (Checked via overdue_sent = false) ──
-    try {
-      const { data: overdueTasks } = await supabase
+    if (pref.overdue_alert_enabled !== false) {
+      try {
+        const { data: overdueTasks } = await supabase
         .from('tasks')
         .select('id, title, priority, status, due_at, overdue_sent')
         .eq('user_id', pref.user_id)
@@ -1000,12 +1007,14 @@ Deno.serve(async (req: Request) => {
         }
       }
     } catch (overdueErr: unknown) {
-      console.warn('[process-reminders] Overdue check note:', overdueErr)
+        console.warn('[process-reminders] Overdue check note:', overdueErr)
+      }
     }
 
     // ── Task 2: 3-Hour Recurring Schedule Reminders for Active Tasks ──
-    try {
-      const { data: activeTasks } = await supabase
+    if (pref.recurring_3h_enabled !== false) {
+      try {
+        const { data: activeTasks } = await supabase
         .from('tasks')
         .select('id, title, priority, status, created_at, last_reminded_at')
         .eq('user_id', pref.user_id)
@@ -1068,10 +1077,11 @@ Deno.serve(async (req: Request) => {
               else errors++
             }
           }
+          }
         }
+      } catch (recurErr: unknown) {
+        console.warn('[process-reminders] 3-hour recurring reminder check note:', recurErr)
       }
-    } catch (recurErr: unknown) {
-      console.warn('[process-reminders] 3-hour recurring reminder check note:', recurErr)
     }
 
     // ── 3. Scheduled Daily Cadence Slot Check ──

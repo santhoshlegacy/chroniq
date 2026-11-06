@@ -11,7 +11,6 @@ import {
   Info,
 } from 'lucide-react'
 import { useSettingsStore } from '@/store/useSettingsStore'
-import { useTaskStore } from '@/store/useTaskStore'
 import { DEFAULT_REMINDER_SLOTS } from '@/lib/reminderUtils'
 import { isValidE164PhoneNumber } from '@/lib/voiceReminderClient'
 import { format, parseISO } from 'date-fns'
@@ -54,8 +53,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
     permission,
     isSettingUpPush,
     enablePushNotifications,
-    sendTestNotification,
-    testNotificationStatus,
     updatePreferences,
     updateVoicePreferences,
     addCustomSlot,
@@ -64,9 +61,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
     toggleDayActive,
     events,
   } = useSettingsStore()
-  const { tasks } = useTaskStore()
 
-  const pendingCount = tasks.filter((t) => t.status !== 'completed' && t.archived_at === null).length
   const [activeTab, setActiveTab] = useState<'schedule' | 'voice' | 'history'>('schedule')
   const [newSlotInput, setNewSlotInput] = useState('14:00')
   const [isSaved, setIsSaved] = useState(false)
@@ -213,15 +208,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
 
                   <div className="shrink-0">
                     {permission === 'granted' ? (
-                      <button
-                        type="button"
-                        onClick={() => sendTestNotification(pendingCount)}
-                        className="px-2.5 py-1.5 rounded-lg bg-[#1C1917] hover:bg-[#2D2926] text-[#FAF7F2] text-[11px] font-semibold flex items-center gap-1 cursor-pointer shadow-xs transition-all"
-                        title="Send test alert"
-                      >
-                        <span className="material-symbols-outlined text-xs text-[#FEDAA3]">send</span>
-                        <span>Test Alert</span>
-                      </button>
+                      <span className="px-2 py-0.5 rounded-md bg-[#EFECE3] border border-[#4A6B56]/20 text-[#4A6B56] text-[10px] font-semibold">
+                        Enabled
+                      </span>
                     ) : (
                       <button
                         type="button"
@@ -235,13 +224,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                     )}
                   </div>
                 </div>
-
-                {testNotificationStatus && (
-                  <div className="pt-1.5 border-t border-[rgba(45,41,38,0.08)] flex items-center gap-1.5 text-[11px] text-[#4A6B56] font-mono">
-                    <span className="material-symbols-outlined text-xs">check_circle</span>
-                    <span>{testNotificationStatus}</span>
-                  </div>
-                )}
               </div>
 
               {/* Master automated check-in toggle */}
