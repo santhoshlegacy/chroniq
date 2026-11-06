@@ -37,6 +37,10 @@ const getAssetUrl = (relativePath: string): string => {
 }
 
 // ─── Push Notifications ───────────────────────────────────────────────────────
+// Unconditional Native Push Execution:
+// The push event MUST ALWAYS execute event.waitUntil(self.registration.showNotification(...))
+// immediately, regardless of client state. We strictly avoid suppressing alerts based on
+// clients.matchAll() or tab visibility so background lock-screen notifications reliably fire.
 interface ChroniqPushPayload {
   title?: string
   body?: string

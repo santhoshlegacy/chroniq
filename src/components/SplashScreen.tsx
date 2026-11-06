@@ -6,40 +6,48 @@ interface SplashScreenProps {
 }
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
-  const [progress, setProgress] = useState(86)
+  const [progress, setProgress] = useState(0)
   const [isSynchronized, setIsSynchronized] = useState(false)
-  const [isUnlocked, setIsUnlocked] = useState(false)
   const [isExiting, setIsExiting] = useState(false)
 
+  // Fluid calibration progress animation
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          setIsSynchronized(true)
-          return 100
-        }
-        const next = prev + Math.random() * 2.8
-        if (next >= 100) {
-          setIsSynchronized(true)
-          return 100
-        }
-        return next
-      })
-    }, 160)
+    const startTime = performance.now()
+    const duration = 2100 // 2.1s smooth calibration progression
 
-    return () => clearInterval(interval)
+    let frameId: number
+
+    const step = (currentTime: number) => {
+      const elapsed = currentTime - startTime
+      const rawProgress = Math.min(100, (elapsed / duration) * 100)
+      // Ease-out cubic for luxury smooth deceleration
+      const eased = 100 * (1 - Math.pow(1 - rawProgress / 100, 2.5))
+      setProgress(Math.min(100, Math.max(0, eased)))
+
+      if (elapsed < duration) {
+        frameId = requestAnimationFrame(step)
+      } else {
+        setProgress(100)
+        setIsSynchronized(true)
+      }
+    }
+
+    frameId = requestAnimationFrame(step)
+    return () => cancelAnimationFrame(frameId)
   }, [])
 
-  const handleEnterSuite = () => {
-    setIsUnlocked(true)
-    setTimeout(() => {
+  // Auto-route navigation when intro animation completes (~2600ms total)
+  useEffect(() => {
+    const exitTimer = setTimeout(() => {
       setIsExiting(true)
-      setTimeout(() => {
+      const completeTimer = setTimeout(() => {
         onEnter()
-      }, 400)
-    }, 450)
-  }
+      }, 450)
+      return () => clearTimeout(completeTimer)
+    }, 2600)
+
+    return () => clearTimeout(exitTimer)
+  }, [onEnter])
 
   return (
     <div
@@ -165,7 +173,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
         </div>
       </section>
 
-      {/* Interactive Biometric Key & Calibration Module */}
+      {/* Calibration Module & Progress Indicator */}
       <section className="w-full flex flex-col items-center z-10 max-w-sm mt-1">
         {/* Calibration Status Strip & Progress Line */}
         <div className="w-full bg-[#F4EFEB] border border-[rgba(45,41,38,0.08)] rounded-xl p-3.5 shadow-sm mb-3 flex flex-col gap-2">
@@ -177,14 +185,14 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
               </span>
             </div>
             <span className="text-xs font-mono font-semibold text-[#745A2E] tabular-nums">
-              {progress.toFixed(1)}%
+              {progress.toFixed(0)}%
             </span>
           </div>
 
           {/* Precision Fluid Spring Loading Bar */}
           <div className="w-full h-1 bg-[#EFECE3] rounded-full overflow-hidden relative">
             <div
-              className="h-full bg-[#745A2E] rounded-full transition-all duration-300 ease-out"
+              className="h-full bg-[#745A2E] rounded-full transition-all duration-200 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -194,52 +202,19 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
               Precision Scheduling
             </span>
             <span className="uppercase tracking-wider text-[#745A2E] font-semibold">
-              {isSynchronized ? 'Ready' : 'Syncing...'}
+              {isSynchronized ? 'Synchronized' : 'Calibrating...'}
             </span>
           </div>
         </div>
 
-        {/* Action Button */}
-        <button
-          aria-label="Open Chroniq"
-          onClick={handleEnterSuite}
-          type="button"
-          className="w-full group bg-[#181615] text-[#FAF7F2] active:scale-[0.98] rounded-xl p-3.5 flex items-center justify-between shadow-lg transition-all duration-300 hover:bg-[#2D2926] cursor-pointer"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[rgba(250,247,242,0.12)] flex items-center justify-center text-[#FEDAA3] transition-colors group-hover:bg-[rgba(250,247,242,0.18)]">
-              <span className="material-symbols-outlined text-xl transition-transform duration-300 group-hover:scale-110">
-                {isUnlocked ? 'lock_open' : 'fingerprint'}
-              </span>
-            </div>
-            <div className="text-left">
-              <div className="text-sm font-semibold text-[#FAF7F2] flex items-center gap-1.5">
-                <span>Open Chroniq</span>
-                <span className="material-symbols-outlined text-xs text-[#FEDAA3]">
-                  verified_user
-                </span>
-              </div>
-              <div className="text-[10px] text-[rgba(250,247,242,0.7)] tracking-wider uppercase font-medium">
-                {isUnlocked ? 'Opening...' : 'Tap to continue'}
-              </div>
-            </div>
-          </div>
-
-          <div className="w-7 h-7 rounded-full bg-[rgba(250,247,242,0.1)] flex items-center justify-center text-[#FEDAA3] group-hover:translate-x-1 transition-transform">
-            <span className="material-symbols-outlined text-base">
-              arrow_forward
-            </span>
-          </div>
-        </button>
-
-        {/* Quick Skip */}
-        <div className="mt-3.5 flex items-center gap-3 text-[10px] uppercase tracking-wider text-[#7A746E]">
+        {/* Quick Skip Intro */}
+        <div className="mt-2 flex items-center gap-3 text-[10px] uppercase tracking-wider text-[#7A746E]">
           <button
             onClick={onEnter}
             type="button"
-            className="hover:text-[#181615] transition-colors cursor-pointer font-medium"
+            className="hover:text-[#181615] transition-colors cursor-pointer font-medium py-1 px-2"
           >
-            Skip
+            Skip Intro
           </button>
           <span>•</span>
           <span>Chroniq</span>

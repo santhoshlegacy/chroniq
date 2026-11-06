@@ -29,6 +29,10 @@ self.addEventListener('activate', (event) => {
 })
 
 // ─── Push Notification Handler ────────────────────────────────────────────────
+// Unconditional Native Push Execution:
+// The push event MUST ALWAYS execute event.waitUntil(self.registration.showNotification(...))
+// immediately, regardless of client state. We strictly avoid suppressing alerts based on
+// clients.matchAll() or tab visibility so background lock-screen notifications reliably fire.
 
 self.addEventListener('push', (event) => {
   event.waitUntil(
