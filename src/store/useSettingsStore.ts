@@ -44,6 +44,7 @@ function getInitialPreferences(): NotificationPreferences {
     push_enabled: true,
     voice_enabled: false,
     warning_10m_enabled: true,
+    advance_warnings_enabled: true,
     overdue_alert_enabled: true,
     recurring_3h_enabled: true,
     created_at: new Date().toISOString(),

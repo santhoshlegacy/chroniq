@@ -69,6 +69,7 @@ export interface NotificationPreferences {
   push_enabled: boolean
   voice_enabled: boolean
   warning_10m_enabled?: boolean
+  advance_warnings_enabled?: boolean
   overdue_alert_enabled?: boolean
   recurring_3h_enabled?: boolean
   created_at: string

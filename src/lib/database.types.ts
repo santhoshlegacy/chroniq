@@ -117,6 +117,10 @@ export type Database = {
           eligible_task_types: string
           push_enabled: boolean
           voice_enabled: boolean
+          advance_warnings_enabled: boolean
+          warning_10m_enabled: boolean
+          overdue_alert_enabled: boolean
+          recurring_3h_enabled: boolean
           created_at: string
           updated_at: string
         }
@@ -138,6 +142,10 @@ export type Database = {
           eligible_task_types?: string
           push_enabled?: boolean
           voice_enabled?: boolean
+          advance_warnings_enabled?: boolean
+          warning_10m_enabled?: boolean
+          overdue_alert_enabled?: boolean
+          recurring_3h_enabled?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -157,6 +165,10 @@ export type Database = {
           eligible_task_types?: string
           push_enabled?: boolean
           voice_enabled?: boolean
+          advance_warnings_enabled?: boolean
+          warning_10m_enabled?: boolean
+          overdue_alert_enabled?: boolean
+          recurring_3h_enabled?: boolean
           updated_at?: string
         }
       }

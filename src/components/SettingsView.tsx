@@ -175,76 +175,104 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </p>
       </section>
 
-      {/* Main Tab Navigation Bar */}
-      <div className="flex items-center gap-1 p-1 rounded-xl bg-[#EFECE3] border border-[rgba(45,41,38,0.1)] mb-6 overflow-x-auto no-scrollbar shadow-xs">
-        <button
-          type="button"
-          onClick={() => setActiveTab('notifications')}
-          className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer ${
-            activeTab === 'notifications'
-              ? 'bg-[#181615] text-[#FAF7F2] shadow-xs'
-              : 'text-[#7A746E] hover:text-[#181615]'
-          }`}
-        >
-          <span className="material-symbols-outlined text-[16px]">notifications</span>
-          <span>Notifications</span>
-        </button>
+      {/* Stacked Vertical Menu Navigation (Native iOS/Android Style) */}
+      <nav aria-label="Settings Sections" className="bg-[#F4EFEB] border border-[rgba(45,41,38,0.12)] rounded-2xl overflow-hidden shadow-xs divide-y divide-[rgba(45,41,38,0.08)] mb-6">
+        {[
+          {
+            id: 'notifications' as const,
+            icon: 'notifications',
+            title: 'Notifications',
+            subtitle: '10-minute advance warnings, overdue alerts, 3h cadence & slots',
+            badge: null,
+          },
+          {
+            id: 'app-info' as const,
+            icon: 'sensors',
+            title: 'App Info & Reminders',
+            subtitle: 'Active background schedules, pg_cron monitor & architecture',
+            badge: pending10mTasks.length + overdueTasks.length > 0
+              ? `${pending10mTasks.length + overdueTasks.length} active`
+              : 'armed',
+          },
+          {
+            id: 'profile' as const,
+            icon: 'person',
+            title: 'Edit Profile',
+            subtitle: 'Display name, luxury avatar presets, verified email & timezone',
+            badge: null,
+          },
+          {
+            id: 'voice' as const,
+            icon: 'volume_up',
+            title: 'Voice & Audio',
+            subtitle: 'Device spoken narration, alert chime harmonics & telephony calls',
+            badge: null,
+          },
+          {
+            id: 'history' as const,
+            icon: 'history',
+            title: 'History',
+            subtitle: 'Audit trail of past reminder dispatches and push receipts',
+            badge: `${events.length} recorded`,
+          },
+        ].map((item) => {
+          const isCurrent = activeTab === item.id
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => setActiveTab(item.id)}
+              className={`w-full flex items-center justify-between p-4 sm:p-4.5 text-left transition-colors cursor-pointer group ${
+                isCurrent
+                  ? 'bg-[#EFECE3]/80 text-[#181615]'
+                  : 'bg-transparent hover:bg-[#FAF7F2]/60 text-[#181615]'
+              }`}
+            >
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors shadow-xs ${
+                    isCurrent
+                      ? 'bg-[#181615] text-[#FAF7F2]'
+                      : 'bg-[#FAF7F2] text-[#745A2E] border border-[rgba(45,41,38,0.08)] group-hover:bg-[#181615] group-hover:text-[#FAF7F2]'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[18px]">{item.icon}</span>
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-xs font-semibold tracking-tight ${isCurrent ? 'text-[#181615]' : 'text-[#2D2926]'}`}>
+                      {item.title}
+                    </span>
+                    {isCurrent && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#745A2E]" />
+                    )}
+                  </div>
+                  <p className="text-[11px] text-[#7A746E] truncate mt-0.5 max-w-xs sm:max-w-md">
+                    {item.subtitle}
+                  </p>
+                </div>
+              </div>
 
-        <button
-          type="button"
-          onClick={() => setActiveTab('app-info')}
-          className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer ${
-            activeTab === 'app-info'
-              ? 'bg-[#181615] text-[#FAF7F2] shadow-xs'
-              : 'text-[#7A746E] hover:text-[#181615]'
-          }`}
-        >
-          <span className="material-symbols-outlined text-[16px]">sensors</span>
-          <span>App Info &amp; Reminders</span>
-          {pending10mTasks.length + overdueTasks.length > 0 && (
-            <span className="w-1.5 h-1.5 rounded-full bg-[#FEDAA3]" />
-          )}
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('profile')}
-          className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer ${
-            activeTab === 'profile'
-              ? 'bg-[#181615] text-[#FAF7F2] shadow-xs'
-              : 'text-[#7A746E] hover:text-[#181615]'
-          }`}
-        >
-          <span className="material-symbols-outlined text-[16px]">person</span>
-          <span>Edit Profile</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('voice')}
-          className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer ${
-            activeTab === 'voice'
-              ? 'bg-[#181615] text-[#FAF7F2] shadow-xs'
-              : 'text-[#7A746E] hover:text-[#181615]'
-          }`}
-        >
-          <span className="material-symbols-outlined text-[16px]">volume_up</span>
-          <span>Voice &amp; Audio</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('history')}
-          className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer ${
-            activeTab === 'history'
-              ? 'bg-[#181615] text-[#FAF7F2] shadow-xs'
-              : 'text-[#7A746E] hover:text-[#181615]'
-          }`}
-        >
-          <span className="material-symbols-outlined text-[16px]">history</span>
-          <span>History</span>
-        </button>
-      </div>
+              <div className="flex items-center gap-2 shrink-0 ml-3">
+                {item.badge && (
+                  <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] text-[#745A2E]">
+                    {item.badge}
+                  </span>
+                )}
+                <span
+                  className={`material-symbols-outlined text-[20px] transition-transform ${
+                    isCurrent
+                      ? 'text-[#181615] translate-x-0.5'
+                      : 'text-[#7A746E]/60 group-hover:text-[#181615] group-hover:translate-x-0.5'
+                  }`}
+                >
+                  chevron_right
+                </span>
+              </div>
+            </button>
+          )
+        })}
+      </nav>
 
       {/* ──────────────── TAB 1: NOTIFICATIONS & ALERTS ──────────────── */}
       {activeTab === 'notifications' && (
@@ -634,37 +662,72 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               </span>
             </div>
 
-            {/* Quick Metrics */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
-              <div className="p-3 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)]">
-                <span className="text-[10px] uppercase font-mono tracking-wider text-[#7A746E] block">
-                  10m Warnings
-                </span>
-                <span className="text-lg font-serif font-bold text-[#181615] mt-0.5 block">
+            {/* Quick Metrics - Vertical List Layout */}
+            <div className="flex flex-col divide-y divide-[rgba(45,41,38,0.08)] rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)] overflow-hidden">
+              <div className="p-3.5 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2 h-2 rounded-full bg-[#745A2E]" />
+                  <div>
+                    <span className="text-xs font-semibold text-[#181615] block">
+                      10m Advance Warnings
+                    </span>
+                    <span className="text-[11px] text-[#7A746E]">
+                      Auto-armed push notifications for upcoming task deadlines
+                    </span>
+                  </div>
+                </div>
+                <span className="font-mono text-sm font-bold text-[#181615] shrink-0 ml-3">
                   {pending10mTasks.length} Armed
                 </span>
               </div>
-              <div className="p-3 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)]">
-                <span className="text-[10px] uppercase font-mono tracking-wider text-[#7A746E] block">
-                  3h Cadence
-                </span>
-                <span className="text-lg font-serif font-bold text-[#181615] mt-0.5 block">
+
+              <div className="p-3.5 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2 h-2 rounded-full bg-[#745A2E]" />
+                  <div>
+                    <span className="text-xs font-semibold text-[#181615] block">
+                      3h Recurring Cadence
+                    </span>
+                    <span className="text-[11px] text-[#7A746E]">
+                      Periodic schedule check-ins for active uncompleted tasks
+                    </span>
+                  </div>
+                </div>
+                <span className="font-mono text-sm font-bold text-[#181615] shrink-0 ml-3">
                   {activeCadenceTasks.length} Active
                 </span>
               </div>
-              <div className="p-3 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)]">
-                <span className="text-[10px] uppercase font-mono tracking-wider text-[#7A746E] block">
-                  Overdue Tasks
-                </span>
-                <span className={`text-lg font-serif font-bold mt-0.5 block ${overdueTasks.length > 0 ? 'text-[#BA1A1A]' : 'text-[#181615]'}`}>
+
+              <div className="p-3.5 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className={`w-2 h-2 rounded-full ${overdueTasks.length > 0 ? 'bg-[#BA1A1A]' : 'bg-[#4A6B56]'}`} />
+                  <div>
+                    <span className="text-xs font-semibold text-[#181615] block">
+                      Overdue Watchdog
+                    </span>
+                    <span className="text-[11px] text-[#7A746E]">
+                      Strict single alert the moment due timestamp expires
+                    </span>
+                  </div>
+                </div>
+                <span className={`font-mono text-sm font-bold shrink-0 ml-3 ${overdueTasks.length > 0 ? 'text-[#BA1A1A]' : 'text-[#181615]'}`}>
                   {overdueTasks.length} Tracked
                 </span>
               </div>
-              <div className="p-3 rounded-xl bg-[#FAF7F2] border border-[rgba(45,41,38,0.08)]">
-                <span className="text-[10px] uppercase font-mono tracking-wider text-[#7A746E] block">
-                  Next Daily Slot
-                </span>
-                <span className="text-lg font-serif font-bold text-[#745A2E] mt-0.5 block truncate">
+
+              <div className="p-3.5 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2 h-2 rounded-full bg-[#C2A26F]" />
+                  <div>
+                    <span className="text-xs font-semibold text-[#181615] block">
+                      Next Daily Check-in Slot
+                    </span>
+                    <span className="text-[11px] text-[#7A746E]">
+                      Configured daily reminder slot countdown
+                    </span>
+                  </div>
+                </div>
+                <span className="font-mono text-sm font-bold text-[#745A2E] shrink-0 ml-3">
                   {nextSlotSeconds !== null && nextSlotSeconds > 0 ? formatCountdown(nextSlotSeconds) : 'Due Now'}
                 </span>
               </div>
